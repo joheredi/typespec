@@ -7,10 +7,12 @@ import {
   getHttpService,
   getServers,
 } from "@typespec/http";
+import { emitTypeReference } from "../common/reference.js";
 import { JsContext, Module, completePendingDeclarations, createModule } from "../ctx.js";
 import { JsEmitterFeature, registerFeature } from "../feature.js";
 import { reportDiagnostic } from "../lib.js";
 import { parseCase } from "../util/case.js";
+import { UnimplementedError } from "../util/error.js";
 
 // Declare the existence of the HTTP feature.
 declare module "../feature.js" {
@@ -101,7 +103,7 @@ function emitRestClient(ctx: HttpContext, operationsModule: Module): Module {
 
   for (const operation of ctx.httpService.operations) {
     restClientModule.declarations.push([
-      ...emitOperationRequestInterface(operation),
+      ...emitOperationRequestInterface(ctx, operation, restClientModule),
       ...emitOperationResponseInterface(operation),
       ...emitRestClientOperationSignature(ctx, operation, restClientModule),
     ]);
@@ -126,7 +128,6 @@ function* emitRestClientOperationSignature(
   module: Module
 ): Iterable<string> {
   const opBaseName = getOperatioBaseName(operation);
-
   const verb = operation.verb;
 
   completePendingDeclarations(ctx);
@@ -137,8 +138,15 @@ function* emitRestClientOperationSignature(
   if (hasParameters(operation)) {
     yield `request: ${opBaseName}${opBaseName}Request`;
   }
-  yield `  ): Promise<any>`;
+  yield `  ): Promise<${getOperationResponses(operation).join(" | ")}>`;
   yield `}`;
+}
+
+function getOperationResponses(operation: HttpOperation): string[] {
+  return operation.responses.map((response) => {
+    const statusCode = response.statusCodes === "*" ? "Error" : response.statusCodes;
+    return `${getOperatioBaseName(operation)}${statusCode}Response`;
+  });
 }
 
 function hasParameters(operation: HttpOperation): boolean {
@@ -158,7 +166,11 @@ function* emitOperationResponseInterface(operation: HttpOperation): Iterable<str
   yield ``;
 }
 
-function* emitOperationRequestInterface(operation: HttpOperation): Iterable<string> {
+function* emitOperationRequestInterface(
+  ctx: JsContext,
+  operation: HttpOperation,
+  module: Module
+): Iterable<string> {
   const operationBaseName = getOperatioBaseName(operation);
   const queryParams: Extract<HttpOperationParameter, { type: "query" }>[] = [];
   const headerParams: Extract<HttpOperationParameter, { type: "header" }>[] = [];
@@ -183,6 +195,26 @@ function* emitOperationRequestInterface(operation: HttpOperation): Iterable<stri
     }
   }
 
+  let bodyTypeName: string | undefined = undefined;
+
+  if (operation.parameters.body) {
+    const body = operation.parameters.body;
+
+    if (body.contentTypes.length > 1) {
+      throw new UnimplementedError("dynamic request content type");
+    }
+
+    const defaultBodyTypeName = `${getOperatioBaseName(operation)}RequestBody`;
+
+    bodyTypeName = emitTypeReference(
+      ctx,
+      body.type,
+      body.parameter?.type ?? operation.operation.node,
+      module,
+      defaultBodyTypeName
+    );
+  }
+
   yield `export interface ${operationBaseName}Request {`;
   if (headerParams.length > 0) {
     yield `  headers: {`;
@@ -198,6 +230,10 @@ function* emitOperationRequestInterface(operation: HttpOperation): Iterable<stri
       yield `    ${param.name}: string;`;
     }
     yield `  },`;
+  }
+
+  if (bodyTypeName) {
+    yield `  body: ${bodyTypeName};`;
   }
   yield `}`;
 }

@@ -16,7 +16,8 @@ import { writeModuleTree } from "./write.js";
 
 // #region features
 
-import "./http/feature.js";
+import "./http-client/feature.js";
+// import "./http/feature.js";
 
 // #endregion
 

@@ -49,6 +49,12 @@ export const $lib = createTypeSpecLibrary({
         default: "HTTP emit is disabled because the HTTP library returned errors.",
       },
     },
+    "http-client-emit-disabled": {
+      severity: "warning",
+      messages: {
+        default: "HTTP client emit is disabled because the HTTP library returned errors.",
+      },
+    },
     "no-services-in-program": {
       severity: "warning",
       messages: {

@@ -60,7 +60,7 @@ export interface HttpContext extends JsContext {
    */
   httpOptions: HttpOptions;
   /**
-   * The root module for HTTP-specific code.
+   * The root module for HTTP Client specific code.
    */
   httpModule: Module;
   /**

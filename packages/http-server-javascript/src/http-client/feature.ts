@@ -136,7 +136,7 @@ function* emitRestClientOperationSignature(
   // prettier-ignore
   yield ` ${verb}(`
   if (hasParameters(operation)) {
-    yield `request: ${opBaseName}${opBaseName}Request`;
+    yield `request: ${opBaseName}Request`;
   }
   yield `  ): Promise<${getOperationResponses(operation).join(" | ")}>`;
   yield `}`;
@@ -150,7 +150,8 @@ function getOperationResponses(operation: HttpOperation): string[] {
 }
 
 function hasParameters(operation: HttpOperation): boolean {
-  return operation.parameters.parameters.some((param) => param.type !== "path");
+  const body = operation.parameters.body;
+  return operation.parameters.parameters.some((param) => param.type !== "path") || Boolean(body);
 }
 
 function* emitOperationResponseInterface(operation: HttpOperation): Iterable<string> {

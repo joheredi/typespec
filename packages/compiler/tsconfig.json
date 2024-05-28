@@ -3,13 +3,16 @@
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": ".",
-    "tsBuildInfoFile": "temp/tsconfig.tsbuildinfo"
+    "tsBuildInfoFile": "temp/tsconfig.tsbuildinfo",
+    "jsx": "preserve",
+    "jsxFactory": "createElement"
   },
   "include": [
     "src/**/*.ts",
     "test/**/*.ts",
+    "test/**/*.tsx",
     "generated-defs/**/*.ts",
     "templates/index.ts",
     "templates/*.e2e.ts"
-  ]
+   ]
 }

@@ -30,6 +30,11 @@ import {
   StringBuilder,
 } from "../../src/emitter-framework/index.js";
 
+import Literal from "./components/literal.js";
+import ModelDeclaration from "./components/model-declaration.jsx";
+import ModelLiteral from "./components/model-literal.js";
+import ScalarComponent from "./components/scalar.js";
+
 export function isArrayType(m: Model) {
   return m.name === "Array";
 }
@@ -49,64 +54,50 @@ export const intrinsicNameToTSType = new Map<string, string>([
 export class TypeScriptInterfaceEmitter extends CodeTypeEmitter {
   // type literals
   booleanLiteral(boolean: BooleanLiteral): EmitterOutput<string> {
-    return JSON.stringify(boolean.value);
+    return <Literal literal={boolean} />;
   }
 
   numericLiteral(number: NumericLiteral): EmitterOutput<string> {
-    return JSON.stringify(number.value);
+    return <Literal literal={number} />;
   }
 
   stringLiteral(string: StringLiteral): EmitterOutput<string> {
-    return JSON.stringify(string.value);
+    return <Literal literal={string} />;
   }
 
   scalarDeclaration(scalar: Scalar, scalarName: string): EmitterOutput<string> {
-    if (!intrinsicNameToTSType.has(scalarName)) {
-      throw new Error("Unknown scalar type " + scalarName);
-    }
-
-    const code = intrinsicNameToTSType.get(scalarName)!;
-    return this.emitter.result.rawCode(code);
+    return <ScalarComponent scalarName={scalarName} />;
   }
 
   intrinsic(intrinsic: IntrinsicType, name: string): EmitterOutput<string> {
-    if (!intrinsicNameToTSType.has(name)) {
-      throw new Error("Unknown intrinsic type " + name);
-    }
-
-    const code = intrinsicNameToTSType.get(name)!;
-    return this.emitter.result.rawCode(code);
+    return <ScalarComponent scalarName={name} />;
   }
 
   modelLiteral(model: Model): EmitterOutput<string> {
-    return this.emitter.result.rawCode(code`{ ${this.emitter.emitModelProperties(model)}}`);
+    return <ModelLiteral>{this.emitter.emitModelProperties(model)}</ModelLiteral>;
   }
 
   modelDeclaration(model: Model, name: string): EmitterOutput<string> {
-    let extendsClause;
+    let extendsClause: string;
 
     if (model.baseModel) {
-      extendsClause = code`extends ${this.emitter.emitTypeReference(model.baseModel)}`;
+      extendsClause = code`${this.emitter.emitTypeReference(model.baseModel)}`.toString();
     } else {
       extendsClause = "";
     }
 
-    const comment = getDoc(this.emitter.getProgram(), model);
-    let commentCode = "";
-
-    if (comment) {
-      commentCode = `
-        /**
-         * ${comment}
-         */`;
-    }
-
-    return this.emitter.result.declaration(
-      name,
-      code`${commentCode}\nexport interface ${name} ${extendsClause} {
-        ${this.emitter.emitModelProperties(model)}
-      }`
+    const declaration = (
+      <ModelDeclaration
+        model={model}
+        name={name}
+        extendsClause={extendsClause}
+        program={this.emitter.getProgram()}
+      >
+        {this.emitter.emitModelProperties(model)}
+      </ModelDeclaration>
     );
+
+    return this.emitter.result.declaration(name, declaration);
   }
 
   modelInstantiation(model: Model, name: string): EmitterOutput<string> {

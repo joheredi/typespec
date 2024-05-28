@@ -225,6 +225,9 @@ importers:
       change-case:
         specifier: ~5.4.4
         version: 5.4.4
+      codegenx:
+        specifier: link:/home/joheredi/azure/playground/codegenx
+        version: link:../../../playground/codegenx
       globby:
         specifier: ~14.0.1
         version: 14.0.1

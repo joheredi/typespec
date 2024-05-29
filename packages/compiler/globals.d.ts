@@ -1,5 +1,5 @@
-import * as codegenx from "codegenx";
+import * as jsx from "@typespec/jsx-handler";
 
 declare global {
-  const createElement: typeof codegenx.createElement;
+  const createElement: typeof jsx.createElement;
 }

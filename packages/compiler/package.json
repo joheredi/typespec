@@ -89,7 +89,7 @@
     "@babel/code-frame": "~7.24.2",
     "ajv": "~8.12.0",
     "change-case": "~5.4.4",
-    "codegenx": "link:/home/joheredi/azure/playground/codegenx",
+    "@typespec/jsx-handler": "workspace:~",
     "globby": "~14.0.1",
     "mustache": "~4.2.0",
     "picocolors": "~1.0.0",

@@ -1,4 +1,4 @@
-import { code } from "codegenx";
+import { code } from "@typespec/jsx-handler";
 export interface ModelLiteralProps {
   children?: any[];
 }

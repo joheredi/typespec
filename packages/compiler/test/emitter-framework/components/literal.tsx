@@ -1,4 +1,4 @@
-import { code } from "codegenx";
+import { code } from "@typespec/jsx-handler";
 import { LiteralType } from "../../../src/index.js";
 
 export interface LiteralProps {

@@ -1,4 +1,4 @@
-import { Property, createElement } from "codegenx";
+import { Property, createElement } from "@typespec/jsx-handler";
 import { ModelProperty, Program, getDoc } from "../../../src/index.js";
 import { EmitEntity } from "../../../src/emitter-framework/types.js";
 

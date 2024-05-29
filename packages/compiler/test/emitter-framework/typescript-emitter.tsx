@@ -35,7 +35,7 @@ import ModelLiteral from "./components/model-literal.js";
 import ModelPropertyComponent from "./components/model-property.js";
 import ScalarComponent from "./components/scalar.js";
 
-import { createElement } from "codegenx";
+import { createElement } from "@typespec/jsx-handler";
 import Ref from "./components/type-reference.js";
 
 export function isArrayType(m: Model) {

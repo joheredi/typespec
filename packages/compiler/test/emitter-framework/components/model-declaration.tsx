@@ -1,4 +1,4 @@
-import { Interface, createElement } from "codegenx";
+import { Interface, createElement } from "@typespec/jsx-handler";
 import { Model, Program, getDoc } from "../../../src/index.js";
 
 export interface ModelDeclarationProps {

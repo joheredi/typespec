@@ -4,13 +4,13 @@
     "outDir": "dist",
     "rootDir": ".",
     "tsBuildInfoFile": "temp/tsconfig.tsbuildinfo",
-    "jsx": "preserve",
+    "jsx": "react",
     "jsxFactory": "createElement"
   },
+  
   "include": [
-    "src/**/*.ts",
-    "test/**/*.ts",
-    "test/**/*.tsx",
+    "src",
+    "test",
     "generated-defs/**/*.ts",
     "templates/index.ts",
     "templates/*.e2e.ts"

@@ -1,13 +1,16 @@
-import { Property } from "codegenx";
+import { Property, createElement } from "codegenx";
 import { ModelProperty, Program, getDoc } from "../../../src/index.js";
+import { EmitEntity } from "../../../src/emitter-framework/types.js";
 
-export interface ModelPropertylProps {
+export interface ModelPropertyProps {
   property: ModelProperty;
+  type: string;
   program: Program;
 }
 
-export default function ModelProperty({ property, program }: ModelPropertylProps) {
+export default function ModelProperty({ property, program, type }: ModelPropertyProps) {
   const name = property.name === "_" ? "statusCode" : property.name;
   const doc = getDoc(program, property);
-  return <Property name={name} docs={doc} type={"any"} required={!property.optional} />;
+
+  return <Property name={name} docs={doc} type={type} required={!property.optional} />;
 }

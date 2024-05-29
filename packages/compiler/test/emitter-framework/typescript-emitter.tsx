@@ -3,7 +3,6 @@ import {
   BooleanLiteral,
   Enum,
   EnumMember,
-  getDoc,
   Interface,
   IntrinsicType,
   Model,
@@ -31,9 +30,13 @@ import {
 } from "../../src/emitter-framework/index.js";
 
 import Literal from "./components/literal.js";
-import ModelDeclaration from "./components/model-declaration.jsx";
+import ModelDeclaration from "./components/model-declaration.js";
 import ModelLiteral from "./components/model-literal.js";
+import ModelPropertyComponent from "./components/model-property.js";
 import ScalarComponent from "./components/scalar.js";
+
+import { createElement } from "codegenx";
+import Ref from "./components/type-reference.js";
 
 export function isArrayType(m: Model) {
   return m.name === "Array";
@@ -49,6 +52,7 @@ export const intrinsicNameToTSType = new Map<string, string>([
   ["int64", "bigint"],
   ["boolean", "boolean"],
   ["null", "null"],
+  ["void", "void"],
 ]);
 
 export class TypeScriptInterfaceEmitter extends CodeTypeEmitter {
@@ -93,7 +97,7 @@ export class TypeScriptInterfaceEmitter extends CodeTypeEmitter {
         extendsClause={extendsClause}
         program={this.emitter.getProgram()}
       >
-        {this.emitter.emitModelProperties(model)}
+        {(this.emitter.emitModelProperties(model) as any).value}
       </ModelDeclaration>
     );
 
@@ -109,22 +113,31 @@ export class TypeScriptInterfaceEmitter extends CodeTypeEmitter {
   }
 
   modelPropertyLiteral(property: ModelProperty): EmitterOutput<string> {
-    const name = property.name === "_" ? "statusCode" : property.name;
-    const doc = getDoc(this.emitter.getProgram(), property);
-    let docString = "";
+    // const name = property.name === "_" ? "statusCode" : property.name;
+    // const doc = getDoc(this.emitter.getProgram(), property);
+    // let docString = "";
 
-    if (doc) {
-      docString = `
-      /**
-       * ${doc}
-       */
-      `;
-    }
+    // if (doc) {
+    //   docString = `
+    //   /**
+    //    * ${doc}
+    //    */
+    //   `;
+    // }
 
-    return this.emitter.result.rawCode(
-      code`${docString}${name}${property.optional ? "?" : ""}: ${this.emitter.emitTypeReference(
-        property.type
-      )}`
+    // return this.emitter.result.rawCode(
+    //   code`${docString}${name}${property.optional ? "?" : ""}: ${this.emitter.emitTypeReference(
+    //     property.type
+    //   )}`
+    // );
+
+    const typeReference = this.emitter.emitTypeReference(property.type);
+    return (
+      <ModelPropertyComponent
+        program={this.emitter.getProgram()}
+        property={property}
+        type={<Ref reference={typeReference} />}
+      />
     );
   }
 

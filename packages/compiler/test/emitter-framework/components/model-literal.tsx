@@ -1,6 +1,6 @@
-import { Element, code } from "codegenx";
+import { code } from "codegenx";
 export interface ModelLiteralProps {
-  children?: Element[];
+  children?: any[];
 }
 
 export default function Model({ children }: ModelLiteralProps) {

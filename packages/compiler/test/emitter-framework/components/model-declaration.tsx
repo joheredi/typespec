@@ -1,4 +1,4 @@
-import { Element, Interface } from "codegenx";
+import { Interface, createElement } from "codegenx";
 import { Model, Program, getDoc } from "../../../src/index.js";
 
 export interface ModelDeclarationProps {
@@ -6,7 +6,7 @@ export interface ModelDeclarationProps {
   name: string;
   extendsClause?: string;
   program: Program;
-  children?: Element[];
+  children?: any[];
 }
 
 export default function ModelDeclaration({

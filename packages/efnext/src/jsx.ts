@@ -1,27 +1,35 @@
 interface FunctionComponent {
-  (...args: any[]): SourceNode;
-}
-export function jsx(component: FunctionComponent, props?: Record<string, any>): SourceNode {
-  return createSourceElement(component, props);
+  (props: Record<string, any>): SourceNode | Promise<SourceNode>;
 }
 
-// fix these types obv
-export function Fragment(props: Record<string, any>): any[] {
+export function jsx(
+  component: FunctionComponent,
+  props?: Record<string, any> & { children: any }
+): SourceNode {
+  const { children, ...rest } = props || {};
+  return createElement(component, rest, children);
+}
+
+export function Fragment(props: { children: any[] }): any[] {
   return props.children;
 }
 
-export function jsxs(component: FunctionComponent, props?: Record<string, any>): SourceNode {
-  return createSourceElement(component, props);
+export function jsxs(
+  component: FunctionComponent,
+  props?: Record<string, any> & { children: any }
+): SourceNode {
+  const { children, ...rest } = props || {};
+  return createElement(component, rest, children);
 }
 
 export interface SourceNode {
-  type: FunctionComponent;
-  props: Record<string, any>;
+  type: FunctionComponent | typeof Fragment;
+  props: Record<string, any> & { children?: any[] };
 }
 
-function createSourceElement(type: FunctionComponent, props?: Record<string, any>): SourceNode {
-  return {
-    type,
-    props: props ?? {},
-  };
+export function createElement(tag: any, props: any, ...children: any[]) {
+  if (typeof tag === "function") {
+    return tag({ ...props, children });
+  }
+  return { tag, props: { ...props, children } };
 }

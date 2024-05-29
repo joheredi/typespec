@@ -1,13 +1,23 @@
-import { SourceNode } from "#jsx/jsx-runtime";
-import { Model, ModelProperty, Operation, Union } from "@typespec/compiler";
+import { Fragment, SourceNode } from "#jsx/jsx-runtime";
+import {
+  EmitContext,
+  Model,
+  ModelProperty,
+  Operation,
+  Type,
+  Union,
+  listOperationsIn,
+} from "@typespec/compiler";
 import { EmitOutput, SourceFile } from "./framework/index.js";
 import { Block } from "./typescript/block.js";
 import { Function } from "./typescript/function.js";
 import { ObjectValue } from "./typescript/value.js";
 
-export function $onEmit() {
-  const op: Operation = {} as any;
-  return (
+export function $onEmit(context: EmitContext) {
+  const operations = listOperationsIn(context.program.getGlobalNamespaceType());
+  console.log(operations.length);
+  const op: Operation = operations[0];
+  const x = (
     <EmitOutput>
       <SourceFile path="test1.txt">
         import <lb /> parseArgs, type ParseArgsConfig <rb /> from "node:util";
@@ -16,12 +26,28 @@ export function $onEmit() {
       <SourceFile path="test2.txt"></SourceFile>
     </EmitOutput>
   );
+
+  renderTree(x);
 }
 
 export interface CommandArgParserProps {
   command: Operation;
 }
-declare function $verbatim(code: string): any;
+function $verbatim(code: string): any {
+  return code;
+}
+
+function isBoolean(type: Type): boolean {
+  return type.kind === "Boolean";
+}
+
+function hasShortName(option: ModelProperty): boolean {
+  return false;
+}
+
+function getShortName(option: ModelProperty): string {
+  return "NYI";
+}
 
 export function CommandArgParser({ command }: CommandArgParserProps) {
   const parseArgsArg: Record<string, any> = {
@@ -57,11 +83,6 @@ export function CommandArgParser({ command }: CommandArgParserProps) {
     </Function>
   );
 }
-
-// helpers
-declare const isBoolean: any;
-declare const hasShortName: any;
-declare const getShortName: any;
 
 function collectCommandOptions(command: Operation): ModelProperty[] {
   const commandOpts: ModelProperty[] = [];
@@ -128,21 +149,58 @@ function parse<%= string.capitalize(command.name) %>Args(args: string[]) {
 }
 */
 
-const res = $onEmit();
-renderTree(res);
+// const res = $onEmit();
+// renderTree(res);
 
 // if this guy sees a promise somewhere in props, it can wait for resolution
 // then replace that index of the array with that text.
-function renderTree(root: SourceNode) {
-  let currentNode = root;
 
-  while (currentNode) {
-    if (Array.isArray(currentNode)) {
-      // handle this stuff
-      break;
-    }
-    currentNode = currentNode.type(currentNode.props);
+async function renderTree(root: SourceNode) {
+  try {
+    const output = await renderNode(root);
+    console.log(output);
+  } catch (error) {
+    console.error("Error rendering tree:", error);
+  }
+}
+
+export async function renderNode(node: SourceNode): Promise<string> {
+  if (Array.isArray(node)) {
+    return renderNodes(node);
   }
 
-  console.log(currentNode);
+  if (node.type === Fragment) {
+    return renderNodes(node.props.children || []);
+  }
+
+  if (typeof node.type === "function") {
+    const result = await node.type(node.props as any);
+    if (typeof result === "string") {
+      return result;
+    }
+    if (typeof result === "object" && "type" in result) {
+      return renderNode(result);
+    }
+    throw new Error(`Unexpected result type: ${typeof result}`);
+  }
+
+  if (typeof node === "string") {
+    return node;
+  }
+
+  if (node instanceof Promise) {
+    const resolvedNode = await node;
+    return renderNode(resolvedNode);
+  }
+
+  throw new Error(`Unknown node type: ${JSON.stringify(node)}`);
+}
+
+export async function renderNodes(nodes: SourceNode[]): Promise<string> {
+  const result: string[] = [];
+  for (const node of nodes) {
+    const renderedNode = await renderNode(node);
+    result.push(renderedNode);
+  }
+  return result.join("");
 }

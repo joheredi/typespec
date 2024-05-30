@@ -1,12 +1,12 @@
-import { ComponentChildren, SourceNode } from "#jsx/jsx-runtime";
+import { SourceNode } from "#jsx/jsx-runtime";
 import { EmitContext, Model, ModelProperty, Operation, Union } from "@typespec/compiler";
 import { EmitOutput, SourceFile } from "./framework/components/index.js";
+import { render } from "./framework/core/render.js";
 import { Block } from "./typescript/block.js";
 import { Function } from "./typescript/function.js";
 import { ObjectValue } from "./typescript/value.js";
-import { render } from "./framework/core/render.js";
 
-export function $onEmit(context: EmitContext) {
+export async function $onEmit(context: EmitContext) {
   const op: Operation = [...context.program.getGlobalNamespaceType().operations.values()][0];
   const tree = render(
     <EmitOutput>
@@ -92,7 +92,9 @@ export function CommandArgParser({ command }: CommandArgParserProps) {
       <Function.Parameters>args: string[]</Function.Parameters>
       <Function.Body>
         const <Block> tokens </Block> = nodeParseArgs(
-        <ObjectValue jsValue={parseArgsArg} />
+        <Block>
+          <ObjectValue jsValue={parseArgsArg} />
+        </Block>
         );
       </Function.Body>
     </Function>

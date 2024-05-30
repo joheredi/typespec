@@ -27,7 +27,7 @@ export function ObjectValue({ jsValue }: ObjectValueProps) {
       .map(([key, jsPropValue]) => {
         return <ObjectValue.Property name={key} jsPropertyValue={jsPropValue} />;
       })
-      .reduce((prev, curr) => [prev, ", ", curr]); // no idea why this works, and why join doesn't.
+      .reduce((prev, curr) => [prev, ", ", curr], ""); // no idea why this works, and why join doesn't.
 
     return val;
   }

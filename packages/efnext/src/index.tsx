@@ -16,7 +16,7 @@ export function $onEmit(context: EmitContext) {
       </SourceFile>
     </EmitOutput>
   );
-  console.log(JSON.stringify(tree, null, 4));
+  // console.log(JSON.stringify(tree, null, 4));
   console.log((tree as any).flat(Infinity).join(""));
 }
 
@@ -86,7 +86,7 @@ export function CommandArgParser({ command }: CommandArgParserProps) {
     }
   }
 
-  return (
+  const x = (
     <Function name={`parse${command.name}Args`}>
       <Function.Parameters>args: string[]</Function.Parameters>
       <Function.Body>
@@ -96,6 +96,9 @@ export function CommandArgParser({ command }: CommandArgParserProps) {
       </Function.Body>
     </Function>
   );
+
+  console.log(x);
+  return x;
 }
 
 // helpers
@@ -184,16 +187,37 @@ function renderTree(root: SourceNode): RenderedTreeNode {
   // for debugging, if you like
   // node.push(root.type.name);
 
-  const rendered = root.type(root.props);
+  if (Array.isArray(root)) {
+    for (const element of root) {
+      node.push(renderTree(element));
+    }
+    return node;
+  }
+
+  let rendered;
+  if (typeof root === "string") {
+    rendered = root;
+  } else {
+    rendered = root.type(root.props);
+  }
+
+  // if (typeof root.type !== "function") {
+  //   throw new Error(`Unknown type ${root} ${root.type}`);
+  // }
 
   let children: ComponentChildren;
 
   if (typeof rendered === "object" && rendered !== null && "type" in rendered) {
-    children = rendered.props.children;
+    if (typeof rendered.type === "function") {
+      const rnd = renderTree(rendered.type(rendered.props) as any);
+      children = rnd as any;
+    } else {
+      children = rendered.props.children;
+    }
   } else if (Array.isArray(rendered)) {
     // react allows children to be nested arbitrarily deeply in arrays, so I guess
     // flatten? I dunno, this seems super suspicious.
-    children = rendered.flat(Infinity);
+    children = flattenArray(rendered);
   } else {
     children = rendered;
   }
@@ -206,11 +230,21 @@ function renderTree(root: SourceNode): RenderedTreeNode {
 
   for (const child of children) {
     if (typeof child === "object" && child !== null && "type" in child) {
-      node.push(renderTree(child));
+      if (typeof child.type === "function") {
+        renderTree(child.type(child.props) as any);
+      } else {
+        node.push(renderTree(child));
+      }
     } else {
       node.push(String(child));
     }
   }
 
   return node;
+}
+
+function flattenArray(arr: any[]): any[] {
+  return arr.reduce((flat, toFlatten) => {
+    return flat.concat(Array.isArray(toFlatten) ? flattenArray(toFlatten) : toFlatten);
+  }, []);
 }

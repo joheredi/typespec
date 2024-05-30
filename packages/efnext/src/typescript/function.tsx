@@ -19,7 +19,38 @@ export function Function({ operation, name, children }: FunctionProps) {
       </>
     );
   }
-  return null;
+
+  const Parameters: any = children.find((child) => {
+    if (typeof child.type === "function") {
+      if (child.type.name === "Parameters") {
+        return true;
+      }
+    }
+
+    return false;
+  })!;
+
+  const Body: SourceNode = children.find((child) => {
+    if (typeof child.type === "function") {
+      if (child.type.name === "Body") {
+        return true;
+      }
+    }
+
+    return false;
+  })! as any;
+
+  if (typeof Body.type !== "function") {
+    throw new Error("Body must be a function");
+  }
+
+  return (
+    <>
+      function {name ?? operation!.name} ({Parameters.type(Parameters.props)} ):{"{"}
+      {Body.type(Body.props)}
+      {"}"}
+    </>
+  );
 }
 
 export interface FunctionParametersProps {

@@ -23,6 +23,16 @@ export async function createTypespecCliTestRunner() {
   });
 }
 
+export async function createTypespecTestRunner() {
+  const host = await createTypespecCliTestHost();
+
+  return createTestWrapper(host, {
+    compilerOptions: {
+      noEmit: true,
+    },
+  });
+}
+
 export async function emitWithDiagnostics(
   code: string
 ): Promise<[Record<string, string>, readonly Diagnostic[]]> {

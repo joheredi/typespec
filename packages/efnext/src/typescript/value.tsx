@@ -1,3 +1,5 @@
+import { SourceNode } from "#jsx/jsx-runtime";
+
 export interface ValueProps {
   jsValue?: unknown;
   tspValue?: unknown;
@@ -49,10 +51,23 @@ export function ObjectValue({ jsValue }: ObjectValueProps) {
 
 export interface ObjectValuePropertyProps {
   name?: string;
+  value?: SourceNode;
   jsPropertyValue?: unknown;
 }
 
-ObjectValue.Property = function Property({ name, jsPropertyValue }: ObjectValuePropertyProps) {
+ObjectValue.Property = function Property({
+  name,
+  jsPropertyValue,
+  value,
+}: ObjectValuePropertyProps) {
+  // TODO: Revisit - Noy sure about this change TBH, If I passed the Reference as jsPropertyValue, it goes into an infinite loop "Maximum call stack size exceeded"
+  if (value) {
+    return (
+      <>
+        {name}: {value}
+      </>
+    );
+  }
   return (
     <>
       {name}: <Value jsValue={jsPropertyValue} />

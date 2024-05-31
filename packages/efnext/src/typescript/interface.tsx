@@ -1,5 +1,5 @@
 import { SourceNode } from "#jsx/jsx-runtime";
-import { Interface, Model } from "@typespec/compiler";
+import { Interface, Model, Type } from "@typespec/compiler";
 import { Reference } from "../framework/components/reference.js";
 import { Block } from "./block.js";
 import { FunctionSignature } from "./function.js";
@@ -7,56 +7,88 @@ import { ObjectValue } from "./value.js";
 
 export interface InterfaceModelProps {
   model: Model;
+  interfaceType?: never;
 }
 
 export interface InterfaceInterfaceProps {
+  model?: never;
   interfaceType: Interface;
 }
 
-export type InterfaceProps = Partial<InterfaceModelProps & InterfaceInterfaceProps>;
+export type InterfaceProps = InterfaceModelProps | InterfaceInterfaceProps;
 
-export function Interface({ model }: InterfaceModelProps): SourceNode;
-export function Interface({ interfaceType }: InterfaceInterfaceProps): SourceNode;
-export function Interface(props: InterfaceProps): SourceNode {
+function InterfaceComponent(props: InterfaceProps): SourceNode {
+  let name: string;
+  let extendsFrom: (Model | Interface)[] | undefined;
+  let interfaceBody: SourceNode;
+
   if (isInterfaceModel(props)) {
     const { model } = props;
-    return <InterfaceModel model={model} />;
+    name = model.name;
+    extendsFrom = model.baseModel ? [model.baseModel] : undefined;
+    const properties = [...model.properties.values()];
+    interfaceBody = (
+      <Block>
+        {properties.map((p) => {
+          return <ObjectValue.Property name={p.name} value={<Reference type={p.type} />} />;
+        })}
+      </Block>
+    );
   } else if (isInterfaceInterface(props)) {
     const { interfaceType } = props;
-    return <InterfaceInterface interfaceType={interfaceType} />;
+    name = interfaceType.name;
+    extendsFrom = interfaceType.sourceInterfaces;
+    const operations = [...interfaceType.operations.values()];
+    interfaceBody = (
+      <Block>
+        {operations.map((operation) => {
+          return (
+            <>
+              <FunctionSignature operation={operation} />;
+            </>
+          );
+        })}
+      </Block>
+    );
   } else {
     throw new Error("Not implemented: Handle custom interface definition");
   }
-}
-
-function InterfaceInterface({ interfaceType }: InterfaceInterfaceProps): SourceNode {
-  const name = interfaceType.name;
-  const operations = [...interfaceType.operations.values()];
 
   return (
     <>
-      interface {name}{" "}
-      <Block>
-        {operations.map((operation) => {
-          return <FunctionSignature operation={operation} />;
-        })}
-      </Block>
+      interface {name} <InterfaceComponent.Extends types={extendsFrom} />
+      {interfaceBody}
     </>
   );
 }
 
-function InterfaceModel({ model }: InterfaceModelProps): SourceNode {
-  // TODO: Handle extends, implements, and other properties
-  const properties = [...model.properties.values()];
+interface InterfaceExtendsProps {
+  types?: Type[];
+}
+
+InterfaceComponent.Extends = function Extends({ types }: InterfaceExtendsProps): SourceNode {
+  if (!types || types.length === 0) {
+    return <></>;
+  }
+
   return (
     <>
-      interface {model.name} <lb />
-      {properties.map((p) => {
-        return <ObjectValue.Property name={p.name} value={<Reference type={p.type} />} />;
-      })}
-      <rb />
+      extends{" "}
+      {types.map((type, index) => (
+        <>
+          <Reference type={type} /> {isLastExtended(types, index) ? "" : ","}
+        </>
+      ))}
     </>
   );
+};
+
+function isLastExtended(types: Type[], index: number) {
+  if (types.length - 1 === index) {
+    return true;
+  }
+
+  return false;
 }
 
 function isInterfaceModel(props: any): props is InterfaceModelProps {
@@ -66,3 +98,5 @@ function isInterfaceModel(props: any): props is InterfaceModelProps {
 function isInterfaceInterface(props: any): props is InterfaceInterfaceProps {
   return "interfaceType" in props;
 }
+
+export { InterfaceComponent as Interface };

@@ -23,7 +23,7 @@ const intrinsicMap: Record<string, string> = {
   br: "\n",
 };
 
-export function render(root: SourceNode): RenderedTreeNode {
+export function render(root: SourceNode, unsettledPromises: Promise<any>[]): RenderedTreeNode {
   if (isIntrinsicComponent(root)) {
     return [intrinsicMap[root.type]];
   }
@@ -40,11 +40,12 @@ export function render(root: SourceNode): RenderedTreeNode {
 
   let children = root.type(root.props);
   if (children instanceof Promise) {
-    children.then((children) => {
-      handleChildren(node, children);
+    const unsettledPromise = children.then((children) => {
+      handleChildren(node, children, unsettledPromises);
     });
+    unsettledPromises.push(unsettledPromise);
   } else {
-    handleChildren(node, children);
+    handleChildren(node, children, unsettledPromises);
   }
 
   renderContext = oldContext;
@@ -52,7 +53,11 @@ export function render(root: SourceNode): RenderedTreeNode {
   return node;
 }
 
-function handleChildren(node: RenderedTreeNode, children: ComponentChildren) {
+function handleChildren(
+  node: RenderedTreeNode,
+  children: ComponentChildren,
+  unsettledPromises: Promise<any>[]
+) {
   if (!Array.isArray(children)) {
     children = [children];
   }
@@ -61,13 +66,15 @@ function handleChildren(node: RenderedTreeNode, children: ComponentChildren) {
 
   for (const child of children) {
     if (isSourceNode(child)) {
-      const childRender = render(child);
+      const childRender = render(child, unsettledPromises);
       node.push(childRender);
     } else if (child instanceof Promise) {
       const index = node.push("{ pending }");
-      child.then((v) => {
+      const unsettledPromise = child.then((v) => {
         node[index - 1] = v;
       });
+
+      unsettledPromises.push(unsettledPromise);
     } else if (child === undefined || child === null || typeof child === "boolean") {
       continue;
     } else {

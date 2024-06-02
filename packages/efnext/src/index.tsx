@@ -1,10 +1,10 @@
-import { ComponentChildren, SourceNode } from "#jsx/jsx-runtime";
+import { SourceNode } from "#jsx/jsx-runtime";
 import { EmitContext, Model, ModelProperty, Operation, Union } from "@typespec/compiler";
 import { EmitOutput, SourceFile } from "./framework/components/index.js";
+import { render } from "./framework/core/render.js";
 import { Block } from "./typescript/block.js";
 import { Function } from "./typescript/function.js";
 import { ObjectValue } from "./typescript/value.js";
-import { render } from "./framework/core/render.js";
 
 export function $onEmit(context: EmitContext) {
   const op: Operation = [...context.program.getGlobalNamespaceType().operations.values()][0];
@@ -15,7 +15,8 @@ export function $onEmit(context: EmitContext) {
         <br />
         <CommandArgParser command={op} />
       </SourceFile>
-    </EmitOutput>
+    </EmitOutput>,
+    []
   );
   console.log(JSON.stringify(tree, null, 4));
   console.log((tree as any).join(""));

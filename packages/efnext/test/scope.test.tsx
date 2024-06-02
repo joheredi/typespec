@@ -1,9 +1,9 @@
 import { strict as assert } from "node:assert";
 import { describe, it } from "vitest";
-import { render } from "../src/framework/core/render.js";
+import { EmitOutput } from "../src/framework/components/emit-output.js";
 import { Scope, ScopeContext } from "../src/framework/components/scope.js";
 import { useContext } from "../src/framework/core/context.js";
-import { EmitOutput } from "../src/framework/components/emit-output.js";
+import { render } from "../src/framework/core/render.js";
 
 describe("Scope component", () => {
   it("provides scope", () => {
@@ -14,11 +14,14 @@ describe("Scope component", () => {
       assert.equal(currentScope.parent!.name, "<global>");
     }
 
-    render(<EmitOutput>
-      <Scope name="test">
-        <Test />
-      </Scope>
-    </EmitOutput>);
+    render(
+      <EmitOutput>
+        <Scope name="test">
+          <Test />
+        </Scope>
+      </EmitOutput>,
+      []
+    );
   });
 
   it("sets nested context", () => {
@@ -29,12 +32,15 @@ describe("Scope component", () => {
       assert.equal(currentScope.parent!.name, "parent");
     }
 
-    render(<EmitOutput>
-      <Scope name="parent">
-        <Scope name="child">
-          <Test />
+    render(
+      <EmitOutput>
+        <Scope name="parent">
+          <Scope name="child">
+            <Test />
+          </Scope>
         </Scope>
-      </Scope>
-    </EmitOutput>);
-  })
-})
+      </EmitOutput>,
+      []
+    );
+  });
+});

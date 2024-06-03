@@ -1,6 +1,7 @@
 import { ComponentChild, ComponentChildren, FunctionComponent, SourceNode } from "#jsx/jsx-runtime";
-import { setImmediate } from "node:timers/promises";
+import { useContext } from "./context.js";
 import { MetaNode, getMeta } from "./metatree.js";
+import { TaskQueueContext } from "./task-queue.js";
 
 export interface RenderContext {
   node?: RenderedTreeNode;
@@ -29,13 +30,22 @@ export async function render(root: SourceNode): Promise<RenderedTreeNode> {
   // I /think/ this should work to ensure render doesn't resolve until
   // all async work called from render finishes. But, it won't work
   // for any async work that is queued as a result of an resolution.
+  const taskQueue = useContext(TaskQueueContext);
+  if (!taskQueue) {
+    throw new Error("Need task queue context to render");
+  }
 
   const res = renderWorker(root);
-  await setImmediate();
+  await taskQueue.wait();
 
   return res;
 }
 function renderWorker(root: SourceNode): RenderedTreeNode {
+  const taskQueue = useContext(TaskQueueContext);
+  if (!taskQueue) {
+    throw new Error("Need task queue context to render");
+  }
+
   if (isIntrinsicComponent(root)) {
     return [intrinsicMap[root.type]];
   }
@@ -52,9 +62,10 @@ function renderWorker(root: SourceNode): RenderedTreeNode {
 
   let children = root.type(root.props);
   if (children instanceof Promise) {
-    children.then((children) => {
+    const task = children.then((children) => {
       handleChildren(node, children);
     });
+    taskQueue.enqueue(task);
   } else {
     handleChildren(node, children);
   }
@@ -65,6 +76,12 @@ function renderWorker(root: SourceNode): RenderedTreeNode {
 }
 
 function handleChildren(node: RenderedTreeNode, children: ComponentChildren) {
+  const taskQueue = useContext(TaskQueueContext);
+
+  if (!taskQueue) {
+    throw new Error("Need task queue context to render");
+  }
+
   if (!Array.isArray(children)) {
     children = [children];
   }
@@ -77,9 +94,10 @@ function handleChildren(node: RenderedTreeNode, children: ComponentChildren) {
       node.push(childRender);
     } else if (child instanceof Promise) {
       const index = node.push("{ pending }");
-      child.then((v) => {
+      const task = child.then((v) => {
         node[index - 1] = v;
       });
+      taskQueue.enqueue(task);
     } else if (child === undefined || child === null || typeof child === "boolean") {
       continue;
     } else {

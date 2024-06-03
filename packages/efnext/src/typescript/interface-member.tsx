@@ -6,7 +6,9 @@ export interface InterfaceMemberProps {
 }
 
 export function InterfaceMember({ type }: InterfaceMemberProps) {
-  return <>
-    {type.name}: <TypeExpression type={type.type} />;
-  </>
+  return (
+    <>
+      {type.name}: <TypeExpression type={type.type} />;
+    </>
+  );
 }

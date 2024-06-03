@@ -1,6 +1,6 @@
-import { createContext, useContext } from "../core/context.js";
-import { BinderContext, Scope } from "../core/binder.js";
 import { ComponentChildren } from "#jsx/jsx-runtime";
+import { BinderContext, Scope } from "../core/binder.js";
+import { createContext, useContext } from "../core/context.js";
 
 export const ScopeContext = createContext<Scope>();
 
@@ -16,7 +16,5 @@ export function Scope({ name, children, meta }: ScopeProps) {
   }
   const currentScope = useContext(ScopeContext);
   const newScope = binder.createScope(name, currentScope, meta);
-  return <ScopeContext.Provider value={newScope}>
-    {children}
-  </ScopeContext.Provider>;
+  return <ScopeContext.Provider value={newScope}>{children}</ScopeContext.Provider>;
 }

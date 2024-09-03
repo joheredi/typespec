@@ -1,15 +1,24 @@
 import * as ay from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
-import { EmitContext, getNamespaceFullName, isStdNamespace, Type, listServices, Operation, getEffectiveModelType } from "@typespec/compiler";
+import {
+  EmitContext,
+  getEffectiveModelType,
+  getNamespaceFullName,
+  isStdNamespace,
+  listServices,
+  Model,
+  Operation,
+  Type,
+} from "@typespec/compiler";
+import { $ } from "@typespec/compiler/typekit";
 import { TypeCollector } from "@typespec/emitter-framework";
 import { namespace as HttpNamespace } from "@typespec/http";
-import { ModelsFile } from "./components/models-file.js";
-import { ModelSerializers } from "./components/serializers.js";
 import path from "path";
 import { ClientContext } from "./components/client-context.js";
+import { ModelsFile } from "./components/models-file.js";
 import { OperationsFile } from "./components/operations-file.js";
+import { ModelSerializers } from "./components/serializers.js";
 import { HttpFetch, HttpRequestOptions } from "./components/static-fetch-wrapper.jsx";
-import { $ } from "@typespec/compiler/typekit";
 
 const RestNamespace = "TypeSpec.Rest";
 
@@ -20,7 +29,7 @@ export async function $onEmit(context: EmitContext) {
   const sourcesDir = path.join(outputDir, "src");
   const modelsDir = path.join(sourcesDir, "models");
   const apiDir = path.join(sourcesDir, "api");
-  const  utilitiesDir = path.join(sourcesDir, "utilities");
+  const utilitiesDir = path.join(sourcesDir, "utilities");
   const service = listServices(context.program)[0]!;
 
   return (
@@ -54,25 +63,48 @@ function queryTypes(context: EmitContext) {
   const operations = new Set<Operation>();
   const globalns = context.program.getGlobalNamespaceType();
   const allTypes = new TypeCollector(globalns).flat();
-  for (const dataType of [...allTypes.models, ...allTypes.unions, ...allTypes.enums, ...allTypes.scalars, ...allTypes.operations]) {
+  const operationResponses = queryHttpOperationsModels(allTypes.operations);
+  for (const dataType of [
+    ...allTypes.models,
+    ...operationResponses,
+    ...allTypes.unions,
+    ...allTypes.enums,
+    ...allTypes.scalars,
+    ...allTypes.operations,
+  ]) {
     if (isNoEmit(dataType)) {
       continue;
     }
 
-    if(dataType.kind === "Operation") {
+    if (dataType.kind === "Operation") {
       operations.add(dataType);
     } else {
       types.add(dataType);
     }
   }
 
+  function queryHttpOperationsModels(operations: Operation[]): Model[] {
+    const models: Model[] = [];
+    for (const operation of operations) {
+      const httpOperation = $.httpOperation.get(operation);
+      const responses = httpOperation.responses;
+      for (const statusCodeResponse of responses) {
+        for (const responseContent of statusCodeResponse.responses) {
+          const model = $.httpOperation.getResponseModel(operation, statusCodeResponse, responseContent);
+          models.push(model);
+        }
+      }
+    }
+    return models;
+  }
+
   // Collect all the types that are used in the body of the operations
   // might want to make this part of the TypeCollector
-  for(const operation of operations) {
+  for (const operation of operations) {
     const httpOperation = $.httpOperation.get(operation);
-    if(httpOperation.parameters.body) {
+    if (httpOperation.parameters.body) {
       let bodyType = httpOperation.parameters.body.type;
-      if(bodyType.kind === "Model") {
+      if (bodyType.kind === "Model") {
         bodyType = getEffectiveModelType(context.program, bodyType);
       }
       types.add(bodyType);

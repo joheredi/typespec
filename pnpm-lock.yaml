@@ -643,6 +643,9 @@ importers:
 
   packages/http:
     devDependencies:
+      '@alloy-js/core':
+        specifier: https://pkg.pr.new/alloy-framework/alloy/@alloy-js/core@c7857f6
+        version: https://pkg.pr.new/alloy-framework/alloy/@alloy-js/core@c7857f6
       '@types/node':
         specifier: ~18.11.19
         version: 18.11.19

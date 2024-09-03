@@ -60,6 +60,7 @@
     "@typespec/compiler": "workspace:~"
   },
   "devDependencies": {
+    "@alloy-js/core": "https://pkg.pr.new/alloy-framework/alloy/@alloy-js/core@c7857f6",
     "@types/node": "~18.11.19",
     "@typespec/compiler": "workspace:~",
     "@typespec/library-linter": "workspace:~",

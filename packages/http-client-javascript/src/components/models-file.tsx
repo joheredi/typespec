@@ -18,7 +18,11 @@ export function ModelsFile(props: ModelsFileProps) {
         (type) => {
           if(!declarations.has(type)) {
             declarations.add(type);
-            return <ef.TypeDeclaration export type={type} />
+            let name = "ModelExpression"
+            if("name" in type && type.name && typeof type.name === "string") {
+              name = type.name
+            } 
+            return <ef.TypeDeclaration export type={type} name={name} />
           }
         },
         { joiner: ";\n" }

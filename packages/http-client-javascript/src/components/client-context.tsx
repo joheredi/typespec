@@ -8,6 +8,10 @@ export interface ClientContextProps {
   service?: Service;
 }
 
+export interface ParametrerDescriptor extends ts.ParameterDescriptor {
+  optional?: boolean;
+}
+
 export function ClientContext(props: ClientContextProps): Children {
   if (!props.service) {
     return null;
@@ -22,7 +26,7 @@ export function ClientContext(props: ClientContextProps): Children {
   const servers = getServers($.program, props.service.type);
 
   const server = servers?.[0];
-  const clientParameters: Record<string, ts.ParameterDescriptor> = {};
+  const clientParameters: Record<string, ParametrerDescriptor> = {};
   const clientOptions: Map<string, Children> = new Map();
   const bodyVars: Map<string, Children> = new Map();
 
@@ -37,14 +41,14 @@ export function ClientContext(props: ClientContextProps): Children {
 
   }
 
-  clientParameters["options"] = { type: clientOptionsName, refkey: getClientOptionsRefkey(props.service) };
+  clientParameters["options"] = { type: clientOptionsName, refkey: getClientOptionsRefkey(props.service), optional: true };
   const clientContextInterfaceRefkey = getClientContextRefkey(props.service)
   return (
     <ts.SourceFile path="clientContext.ts">
-      <ts.InterfaceDeclaration name={contextInterface} refkey={clientContextInterfaceRefkey}>
+      <ts.InterfaceDeclaration export name={contextInterface} refkey={clientContextInterfaceRefkey}>
         <ts.InterfaceMember optional name="endpoint" type="string" />
       </ts.InterfaceDeclaration>
-      <ts.InterfaceDeclaration name={clientOptionsName} refkey={getClientOptionsRefkey(props.service)}>
+      <ts.InterfaceDeclaration export name={clientOptionsName} refkey={getClientOptionsRefkey(props.service)}>
         {mapJoin(clientOptions, (key, value) => (
           <ts.InterfaceMember optional name={key} type={value} />
         ), { joiner: ";\n" })}

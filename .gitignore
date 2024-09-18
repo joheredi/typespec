@@ -181,7 +181,7 @@ common/temp/**
 package-deps.json
 
 # Default TypeSpec output
-tsp-output/
+# tsp-output/
 
 # Visual Studio / C#
 bin/

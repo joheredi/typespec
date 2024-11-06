@@ -1,8 +1,23 @@
 import * as ts from "@alloy-js/typescript";
-import { Operation } from "@typespec/compiler";
+import { Model, Operation } from "@typespec/compiler";
 import {refkey as getRefkey} from "@alloy-js/core"
 import { TypeExpression } from "./type-expression.jsx";
 import { buildParameterDescriptors, getReturnType } from "../utils/operation.js";
+
+
+export interface ClassConstructorProps  extends Omit<ts.ClassMethodProps, "name" | "parameters">  {
+  parameters?: Model
+}
+
+
+export function ClassConstructor(props: ClassConstructorProps) {
+  return <ts.ClassMethod
+    name="constructor"
+    parameters={props.parameters ? buildParameterDescriptors(props.parameters) : {}}
+  >
+    {props.children}
+  </ts.ClassMethod>;
+}
 
 export interface ClassMethodPropsWithType extends Omit<ts.ClassMethodProps, "name"> {
   type: Operation;

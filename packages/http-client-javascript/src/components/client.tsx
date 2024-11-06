@@ -1,7 +1,9 @@
 import { refkey as getRefkey, mapJoin, refkey } from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
-import { Interface, Namespace, Operation, Service } from "@typespec/compiler";
-import { ClassMethod } from "@typespec/emitter-framework/typescript";
+import { Interface, Model, Namespace, Operation, Service } from "@typespec/compiler";
+import { $ } from "@typespec/compiler/typekit";
+import { ClassConstructor, ClassMethod } from "@typespec/emitter-framework/typescript";
+import "@typespec/http-client-library/typekit";
 import { getClientParams } from "../utils/client.js";
 import { prepareOperation } from "../utils/operations.js";
 import { ClientContextFactoryRefkey, ClientContextRefkey } from "./client-context.jsx";
@@ -63,6 +65,14 @@ export function Client(props: ClientProps) {
   const paramsInit = Object.keys(clientParameters);
   const thisContext = refkey();
 
+  let constructorParams: Model | undefined;
+  if (props.type.kind === "Namespace") {
+    const client = $.clientLibrary.listClients(props.type)[0];
+    if (client) {
+      constructorParams = $.client.getInitializationModel(client);
+    }
+  }
+
   const contextInit = props.clientlet ? (
     <><ts.Reference refkey={thisContext} /> = context</>
   ) : (
@@ -72,14 +82,14 @@ export function Client(props: ClientProps) {
   return <ts.ClassDeclaration export name={className} refkey={getClientletClassRefkey(props.type)}>
   {mapJoin(clientlets, (namespace) => <ClientletField type={namespace} />, {joiner: "\n"})}
   <ts.ClassField name="context" jsPrivate={true} refkey={thisContext} type={<ts.Reference refkey={ClientContextRefkey} />}/>
-    <ts.ClassMethod name="constructor" parameters={clientParameters}>
+    <ClassConstructor parameters={constructorParams}>
      {contextInit}
       {mapJoin(clientlets, (namespace) => {
         return <>
           <ts.Reference refkey={getClientletFieldRefkey(namespace)} /> = new <ts.Reference refkey={getClientletClassRefkey(namespace)} />({thisContext});
         </>
       }, {joiner: "\n"})}
-    </ts.ClassMethod>
+    </ClassConstructor>
     <OperationClassMethods operations={methods} />
 </ts.ClassDeclaration>;
 }

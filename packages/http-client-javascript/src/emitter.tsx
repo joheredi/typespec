@@ -16,7 +16,7 @@ import {
 } from "@typespec/compiler";
 import { ClientLibrary } from "@typespec/http-client-library/components";
 import { ClientContext } from "./components/client-context.js";
-import { ClientFile } from "./components/client.jsx";
+import { Client } from "./components/client-v2.jsx";
 import { uriTemplateLib } from "./components/external-packages/uri-template.js";
 import { ModelsFile } from "./components/models-file.js";
 import { Operations } from "./components/operations-file.js";
@@ -25,17 +25,20 @@ import {
   HttpFetchDeclaration,
   HttpFetchOptionsDeclaration,
 } from "./components/static-fetch-wrapper.jsx";
+import { $ } from "@typespec/compiler/typekit";
 
 export async function $onEmit(context: EmitContext) {
   const visited = operationWalker(context);
   const tsNamePolicy = ts.createTSNamePolicy();
   const service: Service | undefined = listServices(context.program)[0];
+  const rootNs = $.clientLibrary.listNamespaces()[0]; // TODO: Handle multiple namespaces
+  const client = $.clientLibrary.listClients(rootNs)[0]; // TODO: Handle multiple clients
   return <ay.Output namePolicy={tsNamePolicy} externals={[uriTemplateLib]}>
       <ClientLibrary scope="typescript">
         <ts.PackageDirectory name="test-package" version="1.0.0" path=".">
           <ay.SourceDirectory path="src">
             <ts.BarrelFile export="." />
-            <ClientFile service={service}  />
+            <Client client={client} />
             <ay.SourceDirectory path="models">
               <ts.BarrelFile />
               <ModelsFile types={visited.dataTypes} />

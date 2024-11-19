@@ -1,6 +1,6 @@
 import * as ts from "@alloy-js/typescript";
 import { Operation } from "@typespec/compiler";
-import {refkey as getRefkey} from "@alloy-js/core"
+import {code, refkey as getRefkey} from "@alloy-js/core"
 import { TypeExpression } from "./type-expression.jsx";
 import { buildParameterDescriptors, getReturnType } from "../utils/operation.js";
 
@@ -19,7 +19,11 @@ export function ClassMethod(props: ClassMethodProps) {
   const refkey = props.refkey ?? getRefkey(props.type, "method");
 
   const name = props.name ? props.name : ts.useTSNamePolicy().getName(props.type.name, "function");
-  const returnType = props.returnType ?? <TypeExpression type={getReturnType(props.type)} />;
+  let returnType = props.returnType !== undefined ? props.returnType : <TypeExpression type={getReturnType(props.type)} />;
+
+  if(props.async) {
+    returnType = code`Promise<${returnType}>`;
+  }
 
   return <ts.ClassMethod
     refkey={refkey}

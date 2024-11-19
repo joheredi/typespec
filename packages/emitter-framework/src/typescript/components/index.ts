@@ -8,3 +8,4 @@ export * from "./type-expression.js";
 export * from "./type-transform.js";
 export * from "./union-declaration.js";
 export * from "./union-expression.js";
+export * from "./function-call-expression.jsx"

@@ -259,3 +259,52 @@ describe("isPubliclyInitializable", () => {
     expect($.client.isPubliclyInitializable(subclients[0])).toBeFalsy();
   });
 });
+
+describe("listServiceOperations", () => {
+  it("should list operations", async () => {
+    const { DemoService } = (await runner.compile(`
+      @service({
+        title: "Widget Service",
+      })
+      @test namespace DemoService;
+      op get(): string;
+      @post op create(): void;
+      @put op update(): void;
+      `)) as { DemoService: Namespace };
+
+    const client = $.clientLibrary.listClients(DemoService)[0];
+    const operations = $.client.listServiceOperations(client);
+    expect(operations).toHaveLength(3);
+    expect(operations[0].name).toEqual("get");
+    expect(operations[1].name).toEqual("create");
+    expect(operations[2].name).toEqual("update");
+  });
+});
+
+describe("listServiceOperations", () => {
+  it("should list operations from given client only", async () => {
+    const { DemoService } = (await runner.compile(`
+      @service({
+        title: "Widget Service",
+      })
+      @test namespace DemoService;
+      op get(): string;
+      @post op create(): void;
+      @put op update(): void;
+      
+      @route("attachments")
+      namespace Attachments {
+        @get op get(): string;
+        @post op create(): void;
+        @put op update(): void;
+      }
+      `)) as { DemoService: Namespace };
+
+    const client = $.clientLibrary.listClients(DemoService)[0];
+    const operations = $.client.listServiceOperations(client);
+    expect(operations).toHaveLength(3);
+    expect(operations[0].name).toEqual("get");
+    expect(operations[1].name).toEqual("create");
+    expect(operations[2].name).toEqual("update");
+  });
+});

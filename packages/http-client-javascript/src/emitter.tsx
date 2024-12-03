@@ -4,13 +4,11 @@ import {
   EmitContext,
   Enum,
   getNamespaceFullName,
-  listServices,
   Model,
   navigateProgram,
   navigateType,
   Operation,
   Scalar,
-  Service,
   Type,
   Union,
 } from "@typespec/compiler";
@@ -27,7 +25,6 @@ import { ModelSerializers } from "./components/serializers.js";
 export async function $onEmit(context: EmitContext) {
   const visited = operationWalker(context);
   const tsNamePolicy = ts.createTSNamePolicy();
-  const service: Service | undefined = listServices(context.program)[0];
   const rootNs = $.clientLibrary.listNamespaces()[0]; // TODO: Handle multiple namespaces
   const client = $.client.get(rootNs); // TODO: Handle multiple clients
   return <ay.Output namePolicy={tsNamePolicy} externals={[uriTemplateLib, httpRuntimeTemplateLib]}>

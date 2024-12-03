@@ -4,6 +4,7 @@ import {
   getHeaderFieldOptions,
   getPathParamOptions,
   getQueryParamOptions,
+  isBody,
   isHeader,
   isMultipartBodyProperty,
   isPathParam,
@@ -19,6 +20,7 @@ export interface HttpModelPropertyKit {
   getHttpPathOptions(prop: ModelProperty): PathParameterOptions | undefined;
   getHttpQueryOptions(prop: ModelProperty): QueryParameterOptions | undefined;
   isHttpHeader(prop: ModelProperty): boolean;
+  isHttpBody(prop: ModelProperty): boolean;
   isHttpPathParam(prop: ModelProperty): boolean;
   isHttpQueryParam(prop: ModelProperty): boolean;
   isHttpMultipartBody(prop: ModelProperty): boolean;
@@ -69,6 +71,9 @@ defineKit<HttpKit>({
     },
     isHttpMultipartBody(prop: ModelProperty) {
       return isMultipartBodyProperty(this.program, prop);
+    },
+    isHttpBody(prop: ModelProperty) {
+      return isBody(this.program, prop);
     },
   },
 });

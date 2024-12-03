@@ -2,14 +2,14 @@ import { getDiscriminatedUnion } from "../../../core/helpers/discriminator-utils
 import { Discriminator, getDiscriminator } from "../../../core/intrinsic-type-state.js";
 import { isErrorType } from "../../../core/type-utils.js";
 import { Enum, Model, Scalar, Union, type Namespace, type Type } from "../../../core/types.js";
-import { getSummary, getDoc } from "../../../lib/decorators.js";
+import { getDoc, getSummary } from "../../../lib/decorators.js";
 import { resolveEncodedName } from "../../../lib/encoded-names.js";
 import { $, defineKit } from "../define-kit.js";
 import { copyMap } from "../utils.js";
 import { getPlausibleName } from "../utils/get-plausible-name.js";
 
 /**  @experimental */
-export interface TypeKit {
+export interface TypeTypekit {
   /**
    * Clones a type and adds it to the typekit's realm.
    * @param type Type to clone
@@ -66,7 +66,7 @@ interface BaseTypeKit {
   /**
    * Utilities for working with general types.
    */
-  type: TypeKit;
+  type: TypeTypekit;
 }
 
 declare module "../define-kit.js" {

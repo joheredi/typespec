@@ -1,5 +1,7 @@
 import { ModelProperty, Operation, Type } from "@typespec/compiler";
+import { unsafe_Mutator as Mutator, unsafe_mutateSubgraph } from "@typespec/compiler/experimental";
 import { $, defineKit } from "@typespec/compiler/typekit";
+import { createRekeyableMap } from "@typespec/compiler/utils";
 import { Client } from "../../interfaces.js";
 import { getConstructors } from "../../utils/client-helpers.js";
 import { AccessKit, getAccess, getName, NameKit } from "./utils.js";
@@ -26,6 +28,16 @@ export interface SdkOperationKit extends NameKit<Operation>, AccessKit<Operation
    * Get exception response type for an operation
    */
   getExceptionReturnType(operation: Operation): Type | undefined;
+  /**
+   * Gets an operation in the context of a client
+   * @param client the client within the context of which the operation is being retrieved
+   * @param operation the operation to retrieve
+   */
+  getClientOperation(
+    client: Client,
+    operation: Operation,
+    options?: { mutator?: Mutator },
+  ): Operation;
 }
 
 interface SdkKit {
@@ -37,8 +49,35 @@ declare module "@typespec/compiler/typekit" {
   interface OperationKit extends SdkOperationKit {}
 }
 
+const clientOperationCache = new Map<Client, Map<Operation, Operation>>();
+
 defineKit<SdkKit>({
   operation: {
+    getClientOperation(client, operation, options = {}) {
+      if (!clientOperationCache.has(client)) {
+        clientOperationCache.set(client, new Map());
+      }
+
+      if (clientOperationCache.get(client)!.has(operation)) {
+        return clientOperationCache.get(client)!.get(operation)!;
+      }
+
+      let clientOperation = this.type.clone(operation);
+      clientOperation.parameters = $.type.clone(clientOperation.parameters);
+      clientOperation.parameters.properties = createRekeyableMap([
+        // TODO: filter out client parameters.
+        ...clientOperation.parameters.properties.entries(),
+      ]);
+
+      if (options.mutator) {
+        clientOperation = unsafe_mutateSubgraph($.program, [options.mutator], clientOperation)
+          .type as Operation;
+      }
+
+      clientOperationCache.get(client)!.set(operation, clientOperation);
+
+      return clientOperation;
+    },
     getOverloads(client, operation) {
       if (operation.name === "constructor") {
         const constructors = getConstructors(client);

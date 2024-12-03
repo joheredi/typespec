@@ -1,11 +1,11 @@
 import { refkey as getRefkey, mapJoin, refkey } from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
-import { Interface, Namespace, Operation, Service } from "@typespec/compiler";
-import { ClassMethod, FunctionCallExpression } from "@typespec/emitter-framework/typescript";
-import { prepareOperation } from "../utils/operations.js";
-import { ClientContextFactoryRefkey, ClientContextRefkey } from "./client-context.jsx";
-import * as cl from "@typespec/http-client-library";
+import { Interface, Namespace, Operation } from "@typespec/compiler";
 import { $ } from "@typespec/compiler/typekit";
+import { ClassMethod, FunctionCallExpression } from "@typespec/emitter-framework/typescript";
+import * as cl from "@typespec/http-client-library";
+import { prepareOperation } from "../utils/operations.js";
+import { getClientContextFactoryRefkey, getContextDeclarationRefkey } from "./client-context.js";
 
 export interface ClientFileProps {
   name?: string;
@@ -46,15 +46,14 @@ export function Client(props: ClientProps) {
   const thisContext = refkey();
 
   const contextInit = $.client.isPubliclyInitializable(props.client) ? (
-    <> <ts.Reference refkey={thisContext} /> = <FunctionCallExpression refkey={ClientContextFactoryRefkey} type={constructor.parameters}  /></>
+    <> <ts.Reference refkey={thisContext} /> = <FunctionCallExpression refkey={getClientContextFactoryRefkey(props.client)} type={constructor.parameters}  /></>
   ) : (
     <><ts.Reference refkey={thisContext} /> = context</>
   );
 
-
   return <ts.ClassDeclaration export name={className} refkey={getClientletClassRefkey(props.client.type)}>
   {mapJoin(clientlets, (client) => <ClientletField type={client.type} />, {joiner: "\n"})}
-  <ts.ClassField name="context" jsPrivate={true} refkey={thisContext} type={<ts.Reference refkey={ClientContextRefkey} />}/>
+  <ts.ClassField name="context" jsPrivate={true} refkey={thisContext} type={<ts.Reference refkey={getContextDeclarationRefkey(props.client)} />}/>
     <ClassMethod type={constructor} returnType={null}>
      {contextInit}
       {mapJoin(clientlets, (client) => {

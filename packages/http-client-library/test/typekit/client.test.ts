@@ -1,4 +1,4 @@
-import { Namespace } from "@typespec/compiler";
+import { Namespace, StringLiteral } from "@typespec/compiler";
 import { BasicTestRunner } from "@typespec/compiler/testing";
 import { $ } from "@typespec/compiler/typekit";
 import { ok } from "assert";
@@ -12,6 +12,56 @@ beforeEach(async () => {
   runner = await createTypespecHttpClientLibraryTestRunner();
 });
 
+it("should have undefined parent", async () => {
+  const { DemoService } = (await runner.compile(`
+    @service({
+      title: "Widget Service",
+    })
+    @test namespace DemoService;
+    `)) as { DemoService: Namespace };
+
+  const client = $.client.get(DemoService)!;
+  expect(client).toBeDefined();
+
+  expect(client.parent).toBeUndefined();
+});
+
+it("should have the right parent", async () => {
+  const { DemoService } = (await runner.compile(`
+    @service({
+      title: "Widget Service",
+    })
+    @test namespace DemoService;
+    namespace SubDemo {}
+    `)) as { DemoService: Namespace };
+
+  const client = $.client.get(DemoService)!;
+  expect(client).toBeDefined();
+
+  expect(client.parent).toBeUndefined();
+  const subClient = $.clientLibrary.listClients(client)[0];
+  expect(subClient).toBeDefined();
+  expect(subClient.parent).toEqual(client);
+});
+
+it("should have the right when accessing sub directly", async () => {
+  const { DemoService, SubDemo } = (await runner.compile(`
+    @service({
+      title: "Widget Service",
+    })
+    @test namespace DemoService;
+    @test namespace SubDemo {}
+    `)) as { DemoService: Namespace; SubDemo: Namespace };
+
+  const client = $.client.get(DemoService)!;
+  expect(client).toBeDefined();
+
+  expect(client.parent).toBeUndefined();
+  const subClient = $.client.get(SubDemo);
+  expect(subClient).toBeDefined();
+  expect(subClient!.parent).toEqual(client);
+});
+
 describe("getConstructor", () => {
   describe("credential parameter", () => {
     it("none", async () => {
@@ -22,7 +72,8 @@ describe("getConstructor", () => {
         @test namespace DemoService;
         `)) as { DemoService: Namespace };
 
-      const client = $.clientLibrary.listClients(DemoService)[0];
+      const client = $.client.get(DemoService)!;
+      expect(client).toBeDefined();
       const constructor = $.client.getConstructor(client);
       // no overloads, should just be one
       expect($.operation.getOverloads(client, constructor)).toHaveLength(0);
@@ -31,6 +82,84 @@ describe("getConstructor", () => {
       expect(params[0].name).toEqual("endpoint");
       expect($.scalar.isString(params[0].type)).toBeTruthy();
     });
+
+    it("subclient inherits parameters from parent", async () => {
+      const { DemoService } = (await runner.compile(`
+        @service({
+          title: "Widget Service",
+        })
+        @useAuth(ApiKeyAuth<ApiKeyLocation.header, "x-ms-api-key">)
+        @test namespace DemoService;
+        namespace SubDemo {};
+        `)) as { DemoService: Namespace };
+
+      const client = $.client.get(DemoService)!;
+      expect(client).toBeDefined();
+      const clientConstructor = $.client.getConstructor(client);
+
+      const subClient = $.clientLibrary.listClients(client)[0];
+      expect(subClient).toBeDefined();
+      const subClientConstructor = $.client.getConstructor(subClient);
+
+      expect(clientConstructor).toEqual(subClientConstructor);
+    });
+
+    it("subclient overrides parameters from parent", async () => {
+      const { DemoService } = (await runner.compile(`
+        @service({
+          title: "Widget Service",
+        })
+        @useAuth(ApiKeyAuth<ApiKeyLocation.header, "x-ms-api-key">)
+        @test namespace DemoService;
+        @useAuth(NoAuth)
+        namespace SubDemo {};
+        `)) as { DemoService: Namespace };
+
+      const client = $.client.get(DemoService)!;
+      expect(client).toBeDefined();
+      const clientConstructor = $.client.getConstructor(client);
+
+      const subClient = $.clientLibrary.listClients(client)[0];
+      expect(subClient).toBeDefined();
+      const subClientConstructor = $.client.getConstructor(subClient);
+
+      expect(
+        (clientConstructor.parameters.properties.get("credential")?.type as StringLiteral).value,
+      ).toEqual("apiKey");
+
+      expect(
+        (subClientConstructor.parameters.properties.get("credential")?.type as StringLiteral).value,
+      ).toEqual("noAuth");
+    });
+
+    it("subclient overrides parameters from parent", async () => {
+      const { DemoService } = (await runner.compile(`
+        @service({
+          title: "Widget Service",
+        })
+        @useAuth(ApiKeyAuth<ApiKeyLocation.header, "x-ms-api-key">)
+        @test namespace DemoService;
+        @useAuth(NoAuth)
+        namespace SubDemo {};
+        `)) as { DemoService: Namespace };
+
+      const client = $.client.get(DemoService)!;
+      expect(client).toBeDefined();
+      const clientConstructor = $.client.getConstructor(client);
+
+      const subClient = $.clientLibrary.listClients(client)[0];
+      expect(subClient).toBeDefined();
+      const subClientConstructor = $.client.getConstructor(subClient);
+
+      expect(
+        (clientConstructor.parameters.properties.get("credential")?.type as StringLiteral).value,
+      ).toEqual("apiKey");
+
+      expect(
+        (subClientConstructor.parameters.properties.get("credential")?.type as StringLiteral).value,
+      ).toEqual("noAuth");
+    });
+
     it("apikey", async () => {
       const { DemoService } = (await runner.compile(`
         @service({
@@ -40,7 +169,8 @@ describe("getConstructor", () => {
         @test namespace DemoService;
         `)) as { DemoService: Namespace };
 
-      const client = $.clientLibrary.listClients(DemoService)[0];
+      const client = $.client.get(DemoService)!;
+      expect(client).toBeDefined();
       const constructor = $.client.getConstructor(client);
       // no constructor overloads, should just be one
       expect($.operation.getOverloads(client, constructor)).toHaveLength(0);
@@ -66,7 +196,8 @@ describe("getConstructor", () => {
         @test namespace DemoService;
         `)) as { DemoService: Namespace };
 
-      const client = $.clientLibrary.listClients(DemoService)[0];
+      const client = $.client.get(DemoService)!;
+      expect(client).toBeDefined();
       const constructor = $.client.getConstructor(client);
       // no constructor overloads, should just be one
       expect($.operation.getOverloads(client, constructor)).toHaveLength(0);
@@ -89,7 +220,8 @@ describe("getConstructor", () => {
         @test namespace DemoService;
         `)) as { DemoService: Namespace };
 
-      const client = $.clientLibrary.listClients(DemoService)[0];
+      const client = $.client.get(DemoService)!;
+      expect(client).toBeDefined();
       const constructor = $.client.getConstructor(client);
       // no overloads, should just be one
       expect($.operation.getOverloads(client, constructor)).toHaveLength(0);
@@ -107,7 +239,8 @@ describe("getConstructor", () => {
         @test namespace DemoService;
         `)) as { DemoService: Namespace };
 
-      const client = $.clientLibrary.listClients(DemoService)[0];
+      const client = $.client.get(DemoService)!;
+      expect(client).toBeDefined();
       const constructor = $.client.getConstructor(client);
       expect($.operation.getOverloads(client, constructor)).toHaveLength(0);
       const params = $.operation.getClientSignature(client, constructor);
@@ -126,7 +259,8 @@ describe("getConstructor", () => {
         @test namespace DemoService;
         `)) as { DemoService: Namespace };
 
-      const client = $.clientLibrary.listClients(DemoService)[0];
+      const client = $.client.get(DemoService)!;
+      expect(client).toBeDefined();
       const constructor = $.client.getConstructor(client);
 
       // base operation
@@ -179,7 +313,8 @@ describe("getConstructor", () => {
         })
         @test namespace DemoService;
         `)) as { DemoService: Namespace };
-      const client = $.clientLibrary.listClients(DemoService)[0];
+      const client = $.client.get(DemoService)!;
+      expect(client).toBeDefined();
       const constructor = $.client.getConstructor(client);
 
       // base operation
@@ -213,11 +348,26 @@ describe("isPubliclyInitializable", () => {
       @test namespace DemoService;
       `)) as { DemoService: Namespace };
 
-    const responses = $.clientLibrary.listClients(DemoService);
-    expect(responses).toHaveLength(1);
-    expect(responses[0].name).toEqual("DemoServiceClient");
-    expect($.client.isPubliclyInitializable(responses[0])).toBeTruthy();
+    const client = $.client.get(DemoService)!;
+    expect(client).toBeDefined();
+    expect(client.name).toEqual("DemoServiceClient");
+    expect($.client.isPubliclyInitializable(client)).toBeTruthy();
   });
+
+  it("gets a client from a namespace", async () => {
+    const { DemoService } = (await runner.compile(`
+      @service({
+        title: "Widget Service",
+      })
+      @test namespace DemoService;
+      `)) as { DemoService: Namespace };
+
+    const client = $.client.get(DemoService);
+    expect(client).toBeDefined();
+    expect(client!.name).toEqual("DemoServiceClient");
+    expect($.client.isPubliclyInitializable(client!)).toBeTruthy();
+  });
+
   it("nested namespace", async () => {
     const { DemoService } = (await runner.compile(`
       @service({
@@ -228,15 +378,10 @@ describe("isPubliclyInitializable", () => {
       }
       `)) as { DemoService: Namespace };
 
-    const responses = $.clientLibrary.listClients(DemoService);
-    expect(responses).toHaveLength(1);
-    expect(responses[0].name).toEqual("DemoServiceClient");
-    expect($.client.isPubliclyInitializable(responses[0])).toBeTruthy();
-
-    const subclients = $.clientLibrary.listClients(responses[0]);
-    expect(subclients).toHaveLength(1);
-    expect(subclients[0].name).toEqual("NestedServiceClient");
-    expect($.client.isPubliclyInitializable(subclients[0])).toBeTruthy();
+    const subClients = $.clientLibrary.listClients(DemoService);
+    expect(subClients).toHaveLength(1);
+    expect(subClients[0].name).toEqual("NestedServiceClient");
+    expect($.client.isPubliclyInitializable(subClients[0])).toBeTruthy();
   });
   it("nested interface", async () => {
     const { DemoService } = (await runner.compile(`
@@ -248,12 +393,12 @@ describe("isPubliclyInitializable", () => {
       }
       `)) as { DemoService: Namespace };
 
-    const responses = $.clientLibrary.listClients(DemoService);
-    expect(responses).toHaveLength(1);
-    expect(responses[0].name).toEqual("DemoServiceClient");
-    expect($.client.isPubliclyInitializable(responses[0])).toBeTruthy();
+    const client = $.client.get(DemoService)!;
+    expect(client).toBeDefined();
+    expect(client.name).toEqual("DemoServiceClient");
+    expect($.client.isPubliclyInitializable(client)).toBeTruthy();
 
-    const subclients = $.clientLibrary.listClients(responses[0]);
+    const subclients = $.clientLibrary.listClients(client);
     expect(subclients).toHaveLength(1);
     expect(subclients[0].name).toEqual("NestedInterfaceClient");
     expect($.client.isPubliclyInitializable(subclients[0])).toBeFalsy();
@@ -272,7 +417,8 @@ describe("listServiceOperations", () => {
       @put op update(): void;
       `)) as { DemoService: Namespace };
 
-    const client = $.clientLibrary.listClients(DemoService)[0];
+    const client = $.client.get(DemoService)!;
+    expect(client).toBeDefined();
     const operations = $.client.listServiceOperations(client);
     expect(operations).toHaveLength(3);
     expect(operations[0].name).toEqual("get");
@@ -300,7 +446,8 @@ describe("listServiceOperations", () => {
       }
       `)) as { DemoService: Namespace };
 
-    const client = $.clientLibrary.listClients(DemoService)[0];
+    const client = $.client.get(DemoService)!;
+    expect(client).toBeDefined();
     const operations = $.client.listServiceOperations(client);
     expect(operations).toHaveLength(3);
     expect(operations[0].name).toEqual("get");

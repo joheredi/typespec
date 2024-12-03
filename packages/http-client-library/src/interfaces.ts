@@ -5,6 +5,7 @@ export interface Client {
   name: string;
   type: Namespace | Interface;
   service: Namespace;
+  parent?: Client;
 }
 
 export interface ReferencedType {

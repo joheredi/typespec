@@ -1,11 +1,4 @@
-import {
-  Enum,
-  getLocationContext,
-  Interface,
-  listServices,
-  Model,
-  Namespace,
-} from "@typespec/compiler";
+import { Enum, getLocationContext, Interface, Model, Namespace } from "@typespec/compiler";
 import { $, defineKit } from "@typespec/compiler/typekit";
 import { Client } from "../../interfaces.js";
 
@@ -49,6 +42,8 @@ declare module "@typespec/compiler/typekit" {
   interface TypekitPrototype extends Typekit {}
 }
 
+const clientCache = new Map<Namespace | Client, Client[]>();
+
 defineKit<Typekit>({
   clientLibrary: {
     listNamespaces(namespace) {
@@ -60,39 +55,43 @@ defineKit<Typekit>({
       );
     },
     listClients(type) {
+      if (clientCache.has(type)) {
+        return clientCache.get(type)!;
+      }
       // if there is no explicit client, we will treat namespaces with service decorator as clients
       function getClientName(name: string): string {
         return name.endsWith("Client") ? name : `${name}Client`;
       }
-      if (type.kind === "Client") {
-        const clientType = type.type;
-        const clientIsNamespace = clientType.kind === "Namespace";
-        if (!clientIsNamespace) {
-          return [];
-        }
-        const subnamespaces: (Namespace | Interface)[] = [
-          ...$.clientLibrary.listNamespaces(clientType),
-          ...clientType.interfaces.values(),
-        ];
-        return subnamespaces.map((sn) => {
-          return {
-            kind: "Client",
-            name: getClientName(sn.name),
-            service: sn,
-            type: sn,
-          } as Client;
-        });
+
+      const client = type.kind === "Client" ? type : this.client.get(type);
+
+      if (!client) {
+        clientCache.set(type, []);
+        return [];
       }
-      return listServices($.program)
-        .filter((i) => i.type === type)
-        .map((service) => {
-          return {
-            kind: "Client",
-            name: getClientName(service.type.name),
-            service: service.type,
-            type: service.type,
-          };
-        });
+      const clientType = client.type;
+      const clientIsNamespace = clientType.kind === "Namespace";
+      if (!clientIsNamespace) {
+        clientCache.set(type, []);
+        return [];
+      }
+      const subnamespaces: (Namespace | Interface)[] = [
+        ...$.clientLibrary.listNamespaces(clientType),
+        ...clientType.interfaces.values(),
+      ];
+      const subClients = subnamespaces.map((sn) => {
+        const parent = $.client.getParent(sn);
+        return {
+          kind: "Client",
+          name: getClientName(sn.name),
+          service: sn,
+          type: sn,
+          parent,
+        } as Client;
+      });
+
+      clientCache.set(type, subClients);
+      return subClients;
     },
     listModels(namespace) {
       const allModels = [...namespace.models.values()];

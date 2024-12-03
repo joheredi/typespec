@@ -11,7 +11,7 @@ import { getStringValue, getUniqueTypes } from "./helpers.js";
  */
 export function getEndpointParametersPerConstructor(client: Client): ModelProperty[][] {
   const servers = getServers($.program, client.service);
-  if (servers === undefined) {
+  if (servers === undefined && client.parent === undefined) {
     const name = "endpoint";
     return [
       [
@@ -25,7 +25,7 @@ export function getEndpointParametersPerConstructor(client: Client): ModelProper
     ];
   }
   const retval: ModelProperty[][] = [];
-  for (const server of servers) {
+  for (const server of servers ?? []) {
     const overridingEndpointConstructor: ModelProperty[] = [];
     // add a parameter for each server, this is where users can override and pass in the full server
     overridingEndpointConstructor.push(
@@ -74,37 +74,54 @@ export function getCredentalParameter(client: Client): ModelProperty | undefined
   });
 }
 
+const constructorCache = new Map<Client, Operation[]>();
+
 export function getConstructors(client: Client): Operation[] {
-  const constructors: Operation[] = [];
-  let params: ModelProperty[] = [];
-  const credParam = getCredentalParameter(client);
-  if (credParam) {
-    params.push(credParam);
+  if (constructorCache.has(client)) {
+    return constructorCache.get(client)!;
   }
+
+  const parentConstructors = client.parent ? getConstructors(client.parent) : [];
+  let constructors: Operation[] = parentConstructors;
+
+  const credentialParam = getCredentalParameter(client);
   const endpointParams = getEndpointParametersPerConstructor(client);
-  if (endpointParams.length === 1) {
-    // this means we have a single constructor
-    params = [...endpointParams[0], ...params];
-    constructors.push(
-      $.operation.create({
-        name: "constructor",
-        parameters: params,
-        returnType: $.program.checker.voidType,
-      }),
-    );
-  } else {
-    // this means we have one constructor with overloads, one for each group of endpoint parameter
+
+  if (!endpointParams.length && !credentialParam) {
+    return constructors;
+  }
+
+  if (endpointParams.length) {
+    constructors = [];
+    const creds = credentialParam
+      ? credentialParam
+      : parentConstructors[0]?.parameters.properties.get("credential");
     for (const endpointParamGrouping of endpointParams) {
       constructors.push(
         $.operation.create({
           name: "constructor",
-          parameters: [...endpointParamGrouping, ...params],
+          parameters: [...endpointParamGrouping, ...(creds ? [creds] : [])],
           returnType: $.program.checker.voidType,
         }),
       );
     }
   }
 
+  // Apply credential override
+  if (credentialParam) {
+    const subClientConstructors: Operation[] = [];
+    for (const constructor of constructors) {
+      const newOperation = $.type.clone(constructor);
+      const clonedParams = $.type.clone(newOperation.parameters);
+      newOperation.parameters = clonedParams;
+      clonedParams.properties.set(credentialParam.name, credentialParam);
+      subClientConstructors.push(newOperation);
+    }
+
+    constructors = subClientConstructors;
+  }
+
+  constructorCache.set(client, constructors);
   return constructors;
 }
 

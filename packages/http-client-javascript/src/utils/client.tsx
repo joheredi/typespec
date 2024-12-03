@@ -3,16 +3,12 @@ import { ParameterDescriptor, Reference } from "@alloy-js/typescript";
 import { Interface, Namespace } from "@typespec/compiler";
 import { $ } from "@typespec/compiler/typekit";
 import { getServers } from "@typespec/http";
-import { ClientContextRefkey, ClientOptionsRefkey } from "../components/client-context.jsx";
+import { getClientOptionsRefkey } from "../components/client-context.js";
 
 export function getClientParams(
   type: Namespace | Interface,
   options?: { isClientlet?: boolean },
 ): Record<string, ParameterDescriptor> {
-  if (options?.isClientlet) {
-    return { context: <Reference refkey={ClientContextRefkey} /> };
-  }
-
   if (type.kind === "Interface") {
     return {};
   }
@@ -26,7 +22,7 @@ export function getClientParams(
 
   clientParameters["options"] = {
     optional: true,
-    type: <Reference refkey={ClientOptionsRefkey } />,
+    type: <Reference refkey={getClientOptionsRefkey($.client.get(type)!) } />,
     refkey: getRefkey("client.options"),
   };
 

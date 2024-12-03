@@ -44,8 +44,7 @@ export function HttpResponses(props: HttpResponsesProps) {
       if (body && body.bodyKind === "single") {
         expression =
           <>
-      const bodyJson = await response.json();
-      return <TypeTransformCall type={body.type} target="application" itemPath={["bodyJson"]} />;
+      return <TypeTransformCall type={body.type} target="application" itemPath={["response", "body"]} />;
       </>;
       }
 

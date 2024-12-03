@@ -15,16 +15,19 @@ export function prepareOperation(operation: Operation): Operation {
   return mutateSubgraph($.program, [httpParamsMutator], operation).type as Operation;
 }
 
+export const MutatedOperationMap = new Map<Operation, Operation>();
+
 /**
  * Mutates the operation so that the parameters model is split into required and optional parameters.
  */
-const httpParamsMutator: Mutator = {
+export const httpParamsMutator: Mutator = {
   name: "Http parameters",
   Operation: {
     filter() {
       return MutatorFlow.DoNotRecurse;
     },
     mutate(o, clone, _program, realm) {
+      MutatedOperationMap.set(clone, o);
       const httpOperation = $.httpOperation.get(o);
       const params = $.httpRequest.getParameters(httpOperation, [
         "query",

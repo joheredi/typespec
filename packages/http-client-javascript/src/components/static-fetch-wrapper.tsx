@@ -1,5 +1,7 @@
+import * as ay from "@alloy-js/core";
 import { code, refkey } from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
+import { ApiKeyAuth, Authentication } from "@typespec/http";
 
 export const HttpFetchOptionsOptionsRefkey = refkey();
 export function HttpFetchOptionsDeclaration() {
@@ -30,4 +32,64 @@ export function HttpFetchDeclaration() {
         }
       `}
     </ts.FunctionDeclaration>;
+}
+
+export const BearerCredentialRefkey = refkey();
+export function BearerCredential() {
+  return <ts.InterfaceDeclaration export name="BearerCredential" refkey={BearerCredentialRefkey}>
+    <ts.InterfaceMember name="kind" type={`"bearer`} />
+    <ts.InterfaceMember name="token" type="string" />
+  </ts.InterfaceDeclaration>;
+}
+
+export const ApiKeyCredentialRefkey = refkey();
+export function ApiKeyCredential() {
+  return <ts.InterfaceDeclaration export name="ApiKeyCredential" refkey={ApiKeyCredentialRefkey}>
+    <ts.InterfaceMember name="kind" type={`apiKey`} />
+    <ts.InterfaceMember name="key" type="string" />
+  </ts.InterfaceDeclaration>;
+}
+
+export const CredentialRefkey = refkey();
+export function Credential() {
+  return <ts.TypeDeclaration export name="Credential" refkey={CredentialRefkey}>
+    <ts.Reference refkey={BearerCredentialRefkey} /> | <ts.Reference refkey={ApiKeyCredentialRefkey} />
+  </ts.TypeDeclaration>;
+}
+
+export interface AuthenticateRequestProps {
+  auth: Authentication;
+}
+
+export function AuthenticateRequest() {}
+
+export function applyBearer() {
+  return ay.code`
+    if(credential.kind === "bearer") {
+      headers[""Authorization""] = "Bearer " + credential.token;
+    }
+  `;
+}
+
+export function applyApiKey(apiKeyAuth: ApiKeyAuth<"header" | "query" | "cookie", string>) {
+  if (apiKeyAuth.in === "header") {
+    return ay.code`
+      headers["${apiKeyAuth.name}"] = credential.key;
+    `;
+  }
+
+  if (apiKeyAuth.in === "cookie") {
+    return ay.code`
+      headers["Cookie"] = "${apiKeyAuth.name}"=credential.key;
+    `;
+  }
+
+  if (apiKeyAuth.in === "query") {
+    throw new Error("Query API key is not supported yet");
+  }
+  return ay.code`
+    if(credential.kind === "apiKey") {
+      headers[""Authorization""] = "Bearer " + credential.key;
+    }
+  `;
 }

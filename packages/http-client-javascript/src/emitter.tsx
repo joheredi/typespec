@@ -14,26 +14,23 @@ import {
   Type,
   Union,
 } from "@typespec/compiler";
+import { $ } from "@typespec/compiler/typekit";
 import { ClientLibrary } from "@typespec/http-client-library/components";
 import { ClientContext } from "./components/client-context.js";
 import { Client } from "./components/client-v2.jsx";
+import { httpRuntimeTemplateLib } from "./components/external-packages/ts-http-runtime.js";
 import { uriTemplateLib } from "./components/external-packages/uri-template.js";
 import { ModelsFile } from "./components/models-file.js";
-import { Operations } from "./components/operations-file.js";
+import { Operations } from "./components/operations.js";
 import { ModelSerializers } from "./components/serializers.js";
-import {
-  HttpFetchDeclaration,
-  HttpFetchOptionsDeclaration,
-} from "./components/static-fetch-wrapper.jsx";
-import { $ } from "@typespec/compiler/typekit";
 
 export async function $onEmit(context: EmitContext) {
   const visited = operationWalker(context);
   const tsNamePolicy = ts.createTSNamePolicy();
   const service: Service | undefined = listServices(context.program)[0];
   const rootNs = $.clientLibrary.listNamespaces()[0]; // TODO: Handle multiple namespaces
-  const client = $.clientLibrary.listClients(rootNs)[0]; // TODO: Handle multiple clients
-  return <ay.Output namePolicy={tsNamePolicy} externals={[uriTemplateLib]}>
+  const client = $.client.get(rootNs); // TODO: Handle multiple clients
+  return <ay.Output namePolicy={tsNamePolicy} externals={[uriTemplateLib, httpRuntimeTemplateLib]}>
       <ClientLibrary scope="typescript">
         <ts.PackageDirectory name="test-package" version="1.0.0" path=".">
           <ay.SourceDirectory path="src">
@@ -45,15 +42,9 @@ export async function $onEmit(context: EmitContext) {
               <ModelSerializers types={visited.dataTypes} />
             </ay.SourceDirectory>
             <ay.SourceDirectory path="api">
-              <ClientContext service={service} />
-              <Operations operations={visited.operations} service={service} />
+              <ClientContext client={client} />
+              <Operations client={client} />
               <ts.BarrelFile />
-            </ay.SourceDirectory>
-            <ay.SourceDirectory path="utilities">
-              <ts.SourceFile path="http-fetch.ts">
-                <HttpFetchOptionsDeclaration />
-                <HttpFetchDeclaration />
-              </ts.SourceFile>
             </ay.SourceDirectory>
           </ay.SourceDirectory>
         </ts.PackageDirectory>

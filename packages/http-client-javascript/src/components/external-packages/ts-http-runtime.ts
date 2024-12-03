@@ -5,7 +5,14 @@ export const httpRuntimeTemplateLib = createPackage({
   version: "1.0.0-alpha.20240611.3",
   descriptor: {
     ".": {
-      named: ["Client", "ClientOptions", "getClient", "KeyCredential", "isKeyCredential"],
+      named: [
+        "Client",
+        "ClientOptions",
+        "getClient",
+        "KeyCredential",
+        "TokenCredential",
+        "isKeyCredential",
+      ],
     },
   },
 });

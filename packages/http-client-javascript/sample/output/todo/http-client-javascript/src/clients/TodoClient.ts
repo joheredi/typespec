@@ -1,3 +1,4 @@
+import { KeyCredential, TokenCredential } from "@typespec/ts-http-runtime";
 import { createAttachment, list as list_2 } from "../api/attachmentsClient/operations.js";
 import {
   AttachmentsClientContext,
@@ -32,17 +33,19 @@ export class TodoClient {
   #context: TodoClientContext;
   usersClient: UsersClient;
   todoItemsClient: TodoItemsClient;
-  constructor(endpoint: string, credential: "http" | "apiKey") {
-    this.usersClient = new UsersClient(endpoint, credential);
+  constructor(endpoint: string, credential: TokenCredential | KeyCredential) {
+    this.usersClient = new UsersClient(endpoint);
     this.todoItemsClient = new TodoItemsClient(endpoint, credential);
+
     this.#context = createTodoClientContext(endpoint, credential);
   }
 }
 export class TodoItemsClient {
   #context: TodoItemsClientContext;
   attachmentsClient: AttachmentsClient;
-  constructor(endpoint: string, credential: "http" | "apiKey") {
+  constructor(endpoint: string, credential: TokenCredential | KeyCredential) {
     this.attachmentsClient = new AttachmentsClient(endpoint, credential);
+
     this.#context = createTodoItemsClientContext(endpoint, credential);
   }
   async list(options?: {
@@ -79,7 +82,7 @@ export class TodoItemsClient {
 export class AttachmentsClient {
   #context: AttachmentsClientContext;
 
-  constructor(endpoint: string, credential: "http" | "apiKey") {
+  constructor(endpoint: string, credential: TokenCredential | KeyCredential) {
     this.#context = createAttachmentsClientContext(endpoint, credential);
   }
   async list(
@@ -97,8 +100,8 @@ export class AttachmentsClient {
 export class UsersClient {
   #context: UsersClientContext;
 
-  constructor(endpoint: string, credential: "noAuth") {
-    this.#context = createUsersClientContext(endpoint, credential);
+  constructor(endpoint: string) {
+    this.#context = createUsersClientContext(endpoint);
   }
   async create(
     user: User,

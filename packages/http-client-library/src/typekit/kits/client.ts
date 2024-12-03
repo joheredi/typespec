@@ -8,7 +8,7 @@ import {
 } from "@typespec/compiler";
 import { unsafe_Mutator as Mutator } from "@typespec/compiler/experimental";
 import { $, defineKit } from "@typespec/compiler/typekit";
-import { getServers } from "@typespec/http";
+import { getAuthentication, getServers, HttpAuth } from "@typespec/http";
 import { Client } from "../../interfaces.js";
 import { createBaseConstructor, getConstructors } from "../../utils/client-helpers.js";
 import { NameKit } from "./utils.js";
@@ -50,6 +50,7 @@ interface ClientKit extends NameKit<Client> {
    * @param type The client to get the parent of
    */
   getParent(type: Client | Namespace | Interface): Client | undefined;
+  getAuthentication(client: Client): HttpAuth[] | undefined;
 }
 
 interface TypeKit {
@@ -65,6 +66,17 @@ const clientCache = new Map<Namespace | Client, Client>();
 
 defineKit<TypeKit>({
   client: {
+    getAuthentication(client) {
+      const authSchemes = getAuthentication($.program, client.service)?.options.flatMap(
+        (o) => o.schemes,
+      );
+
+      if (!authSchemes) {
+        return client.parent ? this.client.getAuthentication(client.parent) : undefined;
+      }
+
+      return authSchemes;
+    },
     get(namespace) {
       if (clientCache.has(namespace)) {
         return clientCache.get(namespace)!;

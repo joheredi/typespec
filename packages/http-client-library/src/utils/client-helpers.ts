@@ -1,6 +1,6 @@
-import { ModelProperty, Operation, StringLiteral, Type } from "@typespec/compiler";
+import { ModelProperty, Operation } from "@typespec/compiler";
 import { $ } from "@typespec/compiler/typekit";
-import { getAuthentication, getServers } from "@typespec/http";
+import { getServers } from "@typespec/http";
 import { Client } from "../interfaces.js";
 import { getStringValue, getUniqueTypes } from "./helpers.js";
 
@@ -55,25 +55,6 @@ export function getEndpointParametersPerConstructor(client: Client): ModelProper
   return retval;
 }
 
-export function getCredentalParameter(client: Client): ModelProperty | undefined {
-  const schemes = getAuthentication($.program, client.service)?.options.flatMap((o) => o.schemes);
-  if (!schemes) return;
-  const credTypes: StringLiteral[] = schemes.map((scheme) => {
-    return $.literal.createString(scheme.type);
-  });
-  let credType: Type;
-  if (credTypes.length === 1) {
-    credType = credTypes[0];
-  } else {
-    const variants = credTypes.map((v) => $.unionVariant.create({ name: v.value, type: v }));
-    credType = $.union.create({ variants });
-  }
-  return $.modelProperty.create({
-    name: "credential",
-    type: credType,
-  });
-}
-
 const constructorCache = new Map<Client, Operation[]>();
 
 export function getConstructors(client: Client): Operation[] {
@@ -84,41 +65,23 @@ export function getConstructors(client: Client): Operation[] {
   const parentConstructors = client.parent ? getConstructors(client.parent) : [];
   let constructors: Operation[] = parentConstructors;
 
-  const credentialParam = getCredentalParameter(client);
   const endpointParams = getEndpointParametersPerConstructor(client);
 
-  if (!endpointParams.length && !credentialParam) {
+  if (!endpointParams.length) {
     return constructors;
   }
 
   if (endpointParams.length) {
     constructors = [];
-    const creds = credentialParam
-      ? credentialParam
-      : parentConstructors[0]?.parameters.properties.get("credential");
     for (const endpointParamGrouping of endpointParams) {
       constructors.push(
         $.operation.create({
           name: "constructor",
-          parameters: [...endpointParamGrouping, ...(creds ? [creds] : [])],
+          parameters: endpointParamGrouping,
           returnType: $.program.checker.voidType,
         }),
       );
     }
-  }
-
-  // Apply credential override
-  if (credentialParam) {
-    const subClientConstructors: Operation[] = [];
-    for (const constructor of constructors) {
-      const newOperation = $.type.clone(constructor);
-      const clonedParams = $.type.clone(newOperation.parameters);
-      newOperation.parameters = clonedParams;
-      clonedParams.properties.set(credentialParam.name, credentialParam);
-      subClientConstructors.push(newOperation);
-    }
-
-    constructors = subClientConstructors;
   }
 
   constructorCache.set(client, constructors);

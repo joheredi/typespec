@@ -1,12 +1,12 @@
-import { Client, ClientOptions } from "@typespec/ts-http-runtime";
+import { Client, ClientOptions, KeyCredential, TokenCredential } from "@typespec/ts-http-runtime";
 
 export interface TodoClientContext extends Client {}
 export interface TodoClientOptions extends ClientOptions {
   endpoint?: string;
 }
 export function createTodoClientContext(
+  credential: TokenCredential | KeyCredential,
   endpoint: string,
-  credential: "http" | "apiKey",
 ): TodoClientContext {
   throw new Error("Not implemented");
 }
@@ -15,8 +15,8 @@ export interface TodoItemsClientOptions extends ClientOptions {
   endpoint?: string;
 }
 export function createTodoItemsClientContext(
+  credential: TokenCredential | KeyCredential,
   endpoint: string,
-  credential: "http" | "apiKey",
 ): TodoItemsClientContext {
   throw new Error("Not implemented");
 }
@@ -25,8 +25,8 @@ export interface AttachmentsClientOptions extends ClientOptions {
   endpoint?: string;
 }
 export function createAttachmentsClientContext(
+  credential: TokenCredential | KeyCredential,
   endpoint: string,
-  credential: "http" | "apiKey",
 ): AttachmentsClientContext {
   throw new Error("Not implemented");
 }
@@ -34,9 +34,6 @@ export interface UsersClientContext extends Client {}
 export interface UsersClientOptions extends ClientOptions {
   endpoint?: string;
 }
-export function createUsersClientContext(
-  endpoint: string,
-  credential: "noAuth",
-): UsersClientContext {
+export function createUsersClientContext(endpoint: string): UsersClientContext {
   throw new Error("Not implemented");
 }

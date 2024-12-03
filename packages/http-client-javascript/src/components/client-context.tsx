@@ -3,7 +3,7 @@ import * as ts from "@alloy-js/typescript";
 import { $ } from "@typespec/compiler/typekit";
 import { FunctionDeclaration } from "@typespec/emitter-framework/typescript";
 import * as cl from "@typespec/http-client-library";
-import { flattenClients } from "./client-v2.jsx";
+import { buildClientAuthParameter, flattenClients } from "./client-v2.jsx";
 import { httpRuntimeTemplateLib } from "./external-packages/ts-http-runtime.js";
 export interface ClientContextProps {
   client?: cl.Client;
@@ -77,12 +77,15 @@ function ClientContextFactoryDeclaration(props: ClientContextFactoryDeclaration)
 
   const clientConstructor = $.client.getConstructor(props.client);
 
+  const parameters = buildClientAuthParameter(props.client);
+
   return <FunctionDeclaration
   export
   name={factoryFunctionName}
   type={clientConstructor}
   returnType={<ts.Reference refkey={getContextDeclarationRefkey(props.client)} />}
   refkey={contextFactoryRefkey}
+  parameters={parameters}
 >
 throw new Error("Not implemented");
 </FunctionDeclaration>;

@@ -1,11 +1,14 @@
 import * as ay from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
 import { ClassDeclaration } from "@alloy-js/typescript";
+import { Type } from "@typespec/compiler";
 import { $ } from "@typespec/compiler/typekit";
 import { ClassMethod, FunctionCallExpression } from "@typespec/emitter-framework/typescript";
+import { HttpAuth } from "@typespec/http";
 import * as cl from "@typespec/http-client-library";
 import { httpParamsMutator } from "../utils/operations.js";
 import { getClientContextFactoryRefkey, getContextDeclarationRefkey } from "./client-context.jsx";
+import { httpRuntimeTemplateLib } from "./external-packages/ts-http-runtime.js";
 
 export interface ClientProps {
   client: cl.Client | undefined;
@@ -33,8 +36,9 @@ export function Client(props: ClientProps) {
           return (<ts.ClassField name={subClientName} type={<ts.Reference refkey={ay.refkey(subClient.type, "client")} />} refkey={ay.refkey(subClient.type, "member")} />)
         })}
         <ClientConstructor client={client} />
-        {ay.mapJoin(operations, (op) => {
+        {ay.mapJoin(operations, (op) => {         
           const args = [...op.parameters.properties.keys()];
+
           return (
           <ClassMethod async type={op}>
             return <ts.FunctionCallExpression refkey={ay.refkey(op)} args={["this.#context", ...args]}/>;
@@ -54,13 +58,87 @@ interface ClientConstructorProps {
 function ClientConstructor(props: ClientConstructorProps) {
   const subClients = $.clientLibrary.listClients(props.client);
   const thisContext = ay.refkey(props.client.type, "context");
-  return <ClassMethod  name="constructor" returnType={null} type={$.client.getConstructor(props.client)}>
+  const constructor = $.client.getConstructor(props.client);
+  const parameters = buildClientAuthParameter(props.client);
+
+  const extraArgs = [];
+  const credential = $.client.getAuthentication(props.client);
+
+  if (credential && credential.filter((c) => c.type !== "noAuth").length) {
+    extraArgs.push("credential");
+  }
+
+  return <ClassMethod  name="constructor" returnType={null} type={constructor} parameters={parameters}>
     {ay.mapJoin(subClients, subClient => {
-      return <><ts.Reference refkey={ay.refkey(subClient.type, "member")} /> = new <FunctionCallExpression refkey={ay.refkey(subClient.type, "client")} type={$.client.getConstructor(subClient).parameters} /></>
+      const extraArgs = [];
+      const credential = $.client.getAuthentication(subClient);
+
+      if(credential && credential.filter(c => c.type !== "noAuth").length) {
+        extraArgs.push("credential");
+      }
+
+      return <><ts.Reference refkey={ay.refkey(subClient.type, "member")} /> = new <FunctionCallExpression refkey={ay.refkey(subClient.type, "client")} type={$.client.getConstructor(subClient).parameters} args={extraArgs}/></>
     }, {joiner: "\n"})}
-    <ts.Reference refkey={thisContext} /> = <FunctionCallExpression refkey={getClientContextFactoryRefkey(props.client)} type={$.client.getConstructor(props.client).parameters}  />
+
+    <ts.Reference refkey={thisContext} /> = <FunctionCallExpression refkey={getClientContextFactoryRefkey(props.client)} type={$.client.getConstructor(props.client).parameters} args={extraArgs}  />
 
   </ClassMethod>;
+}
+
+export function buildClientAuthParameter(
+  client: cl.Client,
+): Record<string, ts.ParameterDescriptor> {
+  const authSchemes = $.client.getAuthentication(client);
+  if (!authSchemes) {
+    return {};
+  }
+
+  const parameterType = ay.mapJoin<HttpAuth, ay.Children>(
+    authSchemes.filter((s) => s.type !== "noAuth"),
+    (scheme) => {
+      switch (scheme.type) {
+        case "apiKey":
+          return <ts.Reference refkey={httpRuntimeTemplateLib.KeyCredential} />;
+        case "http":
+          return <ts.Reference refkey={httpRuntimeTemplateLib.TokenCredential} />;
+        default:
+          return <>any</>;
+      }
+    },
+    { joiner: " | " },
+  );
+
+  if (!parameterType.length) {
+    return {};
+  }
+
+  return {
+    credential: {
+      refkey: ay.refkey(client.type, "credential"),
+      type: parameterType,
+    },
+  };
+}
+
+function Credential(props: { type: Type }) {
+  if (props.type.kind === "Union") {
+    return ay.mapJoin(
+      props.type.variants,
+      (_, variant) => {
+        return <Credential type={variant.type} />;
+      },
+      { joiner: " | " },
+    );
+  } else if (props.type.kind === "String") {
+    switch (props.type.value) {
+      case "apiKey":
+        return <ts.Reference refkey={httpRuntimeTemplateLib.KeyCredential} />;
+      case "http":
+        return <ts.Reference refkey={httpRuntimeTemplateLib.TokenCredential} />;
+      default:
+        return <>any</>;
+    }
+  }
 }
 
 export function flattenClients(client: cl.Client): cl.Client[] {

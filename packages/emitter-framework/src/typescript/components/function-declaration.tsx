@@ -8,6 +8,7 @@ export interface FunctionDeclarationPropsWithType
   extends Omit<ts.FunctionDeclarationProps, "name"> {
   type: Operation;
   name?: string;
+  overrideParameters?: Record<string, ts.ParameterDescriptor>;
 }
 
 export type FunctionDeclarationProps =
@@ -32,7 +33,7 @@ export function FunctionDeclaration(props: FunctionDeclarationProps) {
   }
 
   const returnType = props.returnType ?? <TypeExpression type={getReturnType(props.type)} />;
-  const allParameters = buildParameterDescriptors(props.type.parameters, {
+  const allParameters = props.overrideParameters ??  buildParameterDescriptors(props.type.parameters, {
     params: props.parameters,
   });
   return (

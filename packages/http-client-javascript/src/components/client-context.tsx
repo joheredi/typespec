@@ -1,4 +1,4 @@
-import { Children, mapJoin, refkey } from "@alloy-js/core";
+import { Children, code, mapJoin, refkey } from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
 import { $ } from "@typespec/compiler/typekit";
 import { FunctionDeclaration } from "@typespec/emitter-framework/typescript";
@@ -78,7 +78,9 @@ function ClientContextFactoryDeclaration(props: ClientContextFactoryDeclaration)
   const clientConstructor = $.client.getConstructor(props.client);
 
   const parameters = buildClientAuthParameter(props.client);
-
+  const args = [...clientConstructor.parameters.properties.keys(), ...Object.keys(parameters)].join(
+    ", ",
+  );
   return <FunctionDeclaration
   export
   name={factoryFunctionName}
@@ -87,6 +89,6 @@ function ClientContextFactoryDeclaration(props: ClientContextFactoryDeclaration)
   refkey={contextFactoryRefkey}
   parameters={parameters}
 >
-throw new Error("Not implemented");
+return {httpRuntimeTemplateLib.getClient}({args}, {code`{allowInsecureConnection: true}`});
 </FunctionDeclaration>;
 }

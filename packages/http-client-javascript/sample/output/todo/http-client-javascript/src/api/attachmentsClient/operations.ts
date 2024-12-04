@@ -1,19 +1,12 @@
 import { parse } from "uri-template";
-import {
-  AttachmentPage,
-  NoContentResponse,
-  NotFoundResponse,
-  Standard4XxResponse,
-  Standard5XxResponse,
-  TodoAttachment,
-} from "../../models/models.js";
+import { AttachmentPage, TodoAttachment } from "../../models/models.js";
 import { attachmentPageToApplication } from "../../models/serializers.js";
 import { AttachmentsClientContext } from "../clientContext.js";
 
 export async function list(
   client: AttachmentsClientContext,
   itemId: number,
-): Promise<AttachmentPage | NotFoundResponse | Standard4XxResponse | Standard5XxResponse> {
+): Promise<AttachmentPage | void> {
   const path = parse("/items/{itemId}/attachments").expand({
     itemId: itemId,
   });
@@ -23,11 +16,11 @@ export async function list(
   };
 
   const response = await client.path(path).get(httpRequestOptions);
-  if (response.status === 200) {
+  if (response.status === "200") {
     return attachmentPageToApplication(response.body);
   }
 
-  if (response.status === 404 && !response.body) {
+  if (response.status === "204" && !response.body) {
     return;
   }
 
@@ -37,7 +30,7 @@ export async function createAttachment(
   client: AttachmentsClientContext,
   itemId: number,
   contents: TodoAttachment,
-): Promise<NoContentResponse | NotFoundResponse | Standard4XxResponse | Standard5XxResponse> {
+): Promise<void> {
   const path = parse("/items/{itemId}/attachments").expand({
     itemId: itemId,
   });
@@ -50,11 +43,7 @@ export async function createAttachment(
   };
 
   const response = await client.path(path).post(httpRequestOptions);
-  if (response.status === 204 && !response.body) {
-    return;
-  }
-
-  if (response.status === 404 && !response.body) {
+  if (response.status === "204" && !response.body) {
     return;
   }
 

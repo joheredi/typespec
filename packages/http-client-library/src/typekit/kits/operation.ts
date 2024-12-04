@@ -69,6 +69,8 @@ defineKit<SdkKit>({
         ...clientOperation.parameters.properties.entries(),
       ]);
 
+      clientOperation.returnType = $.httpOperation.getReturnType(clientOperation);
+
       if (options.mutator) {
         clientOperation = unsafe_mutateSubgraph($.program, [options.mutator], clientOperation)
           .type as Operation;

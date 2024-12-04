@@ -22,7 +22,7 @@ export function Client(props: ClientProps) {
   const name = namePolicy.getName($.client.getName(props.client), "class");
   const clients = flattenClients(props.client);
 
-  return <ay.SourceDirectory path="clients"><ts.SourceFile path={`${name}.ts`}>
+  return <ts.SourceFile path={`${name}.ts`}>
     {ay.mapJoin(clients, client => {
       const subClientName = namePolicy.getName($.client.getName(client), "class");
       const operations = $.client.listServiceOperations(client, {mutator: httpParamsMutator})
@@ -47,8 +47,7 @@ export function Client(props: ClientProps) {
     </ClassDeclaration>
     </>
 })}
-</ts.SourceFile>
-</ay.SourceDirectory>;
+</ts.SourceFile>;
 }
 
 interface ClientConstructorProps {

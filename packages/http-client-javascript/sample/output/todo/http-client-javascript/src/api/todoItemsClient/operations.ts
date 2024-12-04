@@ -1,13 +1,9 @@
 import { parse } from "uri-template";
 import {
-  InvalidTodoItem,
-  NoContentResponse,
-  NotFoundResponse,
-  Standard4XxResponse,
-  Standard5XxResponse,
   TodoAttachment,
   TodoItem,
   TodoItemPatch,
+  TodoLabels,
   TodoPage,
 } from "../../models/models.js";
 import {
@@ -25,7 +21,7 @@ export async function list(
     limit?: number;
     offset?: number;
   },
-): Promise<TodoPage | Standard4XxResponse | Standard5XxResponse> {
+): Promise<TodoPage> {
   const path = parse("/items{?limit,offset}").expand({
     limit: options?.limit,
     offset: options?.offset,
@@ -36,7 +32,7 @@ export async function list(
   };
 
   const response = await client.path(path).get(httpRequestOptions);
-  if (response.status === 200) {
+  if (response.status === "200") {
     return todoPageToApplication(response.body);
   }
 
@@ -49,7 +45,18 @@ export async function create(
   options?: {
     attachments?: TodoAttachment[];
   },
-): Promise<TodoItem | InvalidTodoItem | Standard4XxResponse | Standard5XxResponse> {
+): Promise<{
+  id: number;
+  title: string;
+  createdBy: number;
+  assignedTo?: number;
+  description?: string;
+  status: "NotStarted" | "InProgress" | "Completed";
+  createdAt: Date;
+  updatedAt: Date;
+  completedAt?: Date;
+  labels?: TodoLabels;
+}> {
   const path = parse("/items").expand({});
 
   const httpRequestOptions = {
@@ -65,7 +72,7 @@ export async function create(
   };
 
   const response = await client.path(path).post(httpRequestOptions);
-  if (response.status === 200) {
+  if (response.status === "200") {
     return {
       id: response.body.id,
       title: response.body.title,
@@ -87,7 +94,18 @@ export async function create(
 export async function get(
   client: TodoItemsClientContext,
   id: number,
-): Promise<TodoItem | NotFoundResponse> {
+): Promise<{
+  id: number;
+  title: string;
+  createdBy: number;
+  assignedTo?: number;
+  description?: string;
+  status: "NotStarted" | "InProgress" | "Completed";
+  createdAt: Date;
+  updatedAt: Date;
+  completedAt?: Date;
+  labels?: TodoLabels;
+} | void> {
   const path = parse("/items/{id}").expand({
     id: id,
   });
@@ -97,7 +115,7 @@ export async function get(
   };
 
   const response = await client.path(path).get(httpRequestOptions);
-  if (response.status === 200) {
+  if (response.status === "200") {
     return {
       id: response.body.id,
       title: response.body.title,
@@ -114,7 +132,7 @@ export async function get(
     };
   }
 
-  if (response.status === 404 && !response.body) {
+  if (response.status === "204" && !response.body) {
     return;
   }
 
@@ -125,7 +143,18 @@ export async function update(
   id: number,
   patch: TodoItemPatch,
   contentType: "application/merge-patch+json",
-): Promise<TodoItem> {
+): Promise<{
+  id: number;
+  title: string;
+  createdBy: number;
+  assignedTo?: number;
+  description?: string;
+  status: "NotStarted" | "InProgress" | "Completed";
+  createdAt: Date;
+  updatedAt: Date;
+  completedAt?: Date;
+  labels?: TodoLabels;
+}> {
   const path = parse("/items/{id}").expand({
     id: id,
   });
@@ -138,7 +167,7 @@ export async function update(
   };
 
   const response = await client.path(path).post(httpRequestOptions);
-  if (response.status === 200) {
+  if (response.status === "200") {
     return {
       id: response.body.id,
       title: response.body.title,
@@ -157,10 +186,7 @@ export async function update(
 
   throw new Error("Unhandled response");
 }
-export async function delete_(
-  client: TodoItemsClientContext,
-  id: number,
-): Promise<NoContentResponse | NotFoundResponse | Standard4XxResponse | Standard5XxResponse> {
+export async function delete_(client: TodoItemsClientContext, id: number): Promise<void> {
   const path = parse("/items/{id}").expand({
     id: id,
   });
@@ -170,11 +196,7 @@ export async function delete_(
   };
 
   const response = await client.path(path).get(httpRequestOptions);
-  if (response.status === 204 && !response.body) {
-    return;
-  }
-
-  if (response.status === 404 && !response.body) {
+  if (response.status === "204" && !response.body) {
     return;
   }
 

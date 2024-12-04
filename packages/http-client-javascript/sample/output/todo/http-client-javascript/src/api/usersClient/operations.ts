@@ -1,25 +1,17 @@
 import { parse } from "uri-template";
-import {
-  InvalidUserResponse,
-  Standard4XxResponse,
-  Standard5XxResponse,
-  User,
-  UserCreatedResponse,
-  UserExistsResponse,
-} from "../../models/models.js";
+import { User } from "../../models/models.js";
 import { userToTransport } from "../../models/serializers.js";
 import { UsersClientContext } from "../clientContext.js";
 
 export async function create(
   client: UsersClientContext,
   user: User,
-): Promise<
-  | UserCreatedResponse
-  | UserExistsResponse
-  | InvalidUserResponse
-  | Standard4XxResponse
-  | Standard5XxResponse
-> {
+): Promise<{
+  id: number;
+  username: string;
+  email: string;
+  token: string;
+}> {
   const path = parse("/").expand({});
 
   const httpRequestOptions = {
@@ -30,7 +22,7 @@ export async function create(
   };
 
   const response = await client.path(path).post(httpRequestOptions);
-  if (response.status === 200) {
+  if (response.status === "200") {
     return {
       id: response.body.id,
       username: response.body.username,

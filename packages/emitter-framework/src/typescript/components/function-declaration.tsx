@@ -9,6 +9,7 @@ export interface FunctionDeclarationPropsWithType
   type: Operation;
   name?: string;
   overrideParameters?: Record<string, ts.ParameterDescriptor>;
+  prependParameters?: boolean;
 }
 
 export type FunctionDeclarationProps =
@@ -32,9 +33,12 @@ export function FunctionDeclaration(props: FunctionDeclarationProps) {
     name = `${name}_`;
   }
 
+  const location = props.prependParameters ? "start" : "end";
+
   const returnType = props.returnType ?? <TypeExpression type={getReturnType(props.type)} />;
   const allParameters = props.overrideParameters ??  buildParameterDescriptors(props.type.parameters, {
     params: props.parameters,
+    location: location,
   });
   return (
     <ts.FunctionDeclaration

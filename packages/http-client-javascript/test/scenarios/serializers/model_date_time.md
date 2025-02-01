@@ -14,8 +14,8 @@ op foo(): Foo;
 
 ## TypeScript
 
-Should generate a type for type with name `Foo` in the `src/models/models.ts` file along with a serializer named `fooToTransport` and a deserializer named `fooToApplication` in `src/models/serializers.ts`.
-The generated model should have a property `createdOn` of type `Date`, the generated serializer `fooToTransport` should convert a Date into a string.
+Should generate a type for type with name `Foo` in the `src/models/models.ts` file along with a serializer named `jsonFooToTransportTransform` and a deserializer named `jsonFooToApplicationTransform` in `src/models/serializers.ts`.
+The generated model should have a property `createdOn` of type `Date`, the generated serializer `jsonFooToTransportTransform` should convert a Date into a string.
 
 ```ts src/models/models.ts interface Foo
 export interface Foo {
@@ -23,16 +23,16 @@ export interface Foo {
 }
 ```
 
-```ts src/models/serializers.ts function fooToTransport
-export function fooToTransport(item: Foo): any {
+```ts src/models/serializers.ts function jsonFooToTransportTransform
+export function jsonFooToTransportTransform(item: Foo): any {
   return {
     created_on: dateRfc3339Serializer(item.createdOn),
   };
 }
 ```
 
-```ts src/models/serializers.ts function fooToApplication
-export function fooToApplication(item: any): Foo {
+```ts src/models/serializers.ts function jsonFooToApplicationTransform
+export function jsonFooToApplicationTransform(item: any): Foo {
   return {
     createdOn: dateDeserializer(item.created_on),
   };
@@ -53,11 +53,11 @@ op foo(): Foo;
 
 ## TypeScript
 
-Should generate a type for type with name `Foo` in the `src/models/models.ts` file along with a serializer named `fooToTransport` and a deserializer named `fooToApplication` in `src/models/serializers.ts`.
-The generated model should have a property `createdOn` of type `Date`, the generated serializer `fooToTransport` should convert a Date into a string using `toUTCString()`
+Should generate a type for type with name `Foo` in the `src/models/models.ts` file along with a serializer named `jsonFooToTransportTransform` and a deserializer named `jsonFooToApplicationTransform` in `src/models/serializers.ts`.
+The generated model should have a property `createdOn` of type `Date`, the generated serializer `jsonFooToTransportTransform` should convert a Date into a string using `toUTCString()`
 
-```ts src/models/serializers.ts function fooToTransport
-export function fooToTransport(item: Foo): any {
+```ts src/models/serializers.ts function jsonFooToTransportTransform
+export function jsonFooToTransportTransform(item: Foo): any {
   return {
     created_on: dateRfc7231Serializer(item.createdOn),
   };

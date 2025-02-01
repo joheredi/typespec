@@ -2,7 +2,7 @@ import { Children, code, mapJoin, refkey } from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
 import { Model, ModelProperty } from "@typespec/compiler";
 import { $ } from "@typespec/compiler/typekit";
-import { DataTransform } from "./transforms/data-transform.jsx";
+import { JsonTransform } from "./transforms/json/json-transform.jsx";
 
 export interface HttpRequestParametersExpressionProps {
   optionsParameter: ModelProperty;
@@ -37,7 +37,7 @@ export function HttpRequestParametersExpression(props: HttpRequestParametersExpr
 
       const input = parameter.optional ? code`${optionsParamRef}?.${name}` : refkey(parameter);
 
-      const value = <DataTransform type={parameter} itemRef={input} target="transport" />;
+      const value = <JsonTransform itemRef={input} type={parameter.type} target="transport" />;
       return <ts.ObjectProperty name={JSON.stringify(name)} value={value} />;
     },
     { joiner: ",\n" },

@@ -1,8 +1,8 @@
-# Should generate a basic http operation
+# **Generating a Basic HTTP Operation**
 
-This is a simple get operation with no request payload or parameters and a simple model return.
+This test verifies that a simple HTTP `GET` operation with no request payload or parameters correctly generates a **client class, model, serializer, context, and operation function**. The operation returns a `Widget` model, ensuring proper TypeScript type generation and serialization.
 
-## TypeSpec
+## **TypeSpec**
 
 ```tsp
 @service
@@ -16,11 +16,11 @@ model Widget {
 op foo(): Widget;
 ```
 
-## TypeScript
+## **TypeScript**
 
-### Client
+### **Client Generation**
 
-It generates a class called TestClient with a single operation
+A class named `TestClient` is generated, encapsulating API operations. It includes a single method, `foo`, which internally calls the corresponding operation function.
 
 ```ts src/testClient.ts
 import { foo } from "./api/testClientOperations.js";
@@ -42,9 +42,9 @@ export class TestClient {
 }
 ```
 
-### Model
+### **Model Definition**
 
-It generates a model for the Widget return type
+A TypeScript interface for the `Widget` model is generated in `src/models/models.ts`. The field `total_weight` is renamed to `totalWeight` to align with TypeScript naming conventions.
 
 ```ts src/models/models.ts interface Widget
 export interface Widget {
@@ -54,23 +54,23 @@ export interface Widget {
 }
 ```
 
-### Serializer
+### **Serializer Generation**
 
-A serializer that transforms the Widget from its application form to the wire form is generated. The application form renames properties to align with TypeScript common conventions, and the serializer reverts these renames before sending out to the wire.
+A serializer function, `jsonWidgetToTransportTransform`, is generated to transform the `Widget` model into its transport format. It converts TypeScript-friendly property names (`totalWeight`) back to their wire format (`total_weight`).
 
-```ts src/models/serializers.ts function widgetToTransport
-export function widgetToTransport(item: Widget): any {
+```ts src/models/serializers.ts function jsonWidgetToTransportTransform
+export function jsonWidgetToTransportTransform(input_: Widget): any {
   return {
-    id: item.id,
-    total_weight: item.totalWeight,
-    color: item.color,
+    id: input_.id,
+    total_weight: input_.totalWeight,
+    color: input_.color,
   };
 }
 ```
 
-### Context
+### **Context Generation**
 
-The context stores the information required to reach the service. In this case a createTestContext function should be generated with a required endpoint parameter. This example has no auth or other client parameters so endpoint will be the only.
+The generated `createTestClientContext` function initializes the API client context with the required endpoint. Since no authentication or additional parameters are used, only the endpoint is required.
 
 ```ts src/api/testClientContext.ts function createTestClientContext
 export function createTestClientContext(
@@ -83,26 +83,21 @@ export function createTestClientContext(
 }
 ```
 
-It also generates an interface that defines the shape of the context
+An interface, `TestClientContext`, is also generated to define the shape of the context.
 
 ```ts src/api/testClientContext.ts interface TestClientContext
 export interface TestClientContext extends Client {}
 ```
 
-### Operation
+### **Operation Function**
 
-Generates the operation function which prepares the request options. In this case it has not query, path or header parameters. No body either so headers is empty.
+A function named `foo` is generated to handle the HTTP request. It prepares the request, sends it using the client context, and processes the response.
 
-The response body is of type Widget so the right transform should be imported to transform the widget from its wire format to the application form.
+- The request has **no query, path, or header parameters**.
+- The expected response body is a `Widget`, requiring transformation from wire format using `jsonWidgetToApplication`.
+- If the response status code is unexpected, an exception is thrown.
 
-It should throw an exception if an unexpected status code is received
-
-```ts src/api/testClientOperations.ts
-import { Widget } from "../models/models.js";
-import { parse } from "uri-template";
-import { widgetToApplication } from "../models/serializers.js";
-import { TestClientContext } from "./testClientContext.js";
-
+```ts src/api/testClientOperations.ts function foo
 export async function foo(client: TestClientContext): Promise<Widget> {
   const path = parse("/").expand({});
 
@@ -112,7 +107,7 @@ export async function foo(client: TestClientContext): Promise<Widget> {
 
   const response = await client.path(path).get(httpRequestOptions);
   if (+response.status === 200 && response.headers["content-type"]?.includes("application/json")) {
-    return widgetToApplication(response.body);
+    return jsonWidgetToApplicationTransform(response.body);
   }
 
   throw new Error("Unhandled response");

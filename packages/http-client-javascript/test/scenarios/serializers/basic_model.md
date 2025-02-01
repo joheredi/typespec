@@ -1,6 +1,8 @@
-# Should generate a model and its serializer
+# Should Generate a Type, Serializer, and Deserializer for a Simple Model
 
 ## TypeSpec
+
+This TypeSpec block defines a simple model, Foo, containing two properties: name (a string) and age (an integer). The foo operation returns an instance of Foo, ensuring that the generated TypeScript code includes the correct type definitions and transformation functions.
 
 ```tsp
 model Foo {
@@ -12,7 +14,9 @@ op foo(): Foo;
 
 ## TypeScript
 
-Should generate a type for type with name `Foo` in the `src/models/models.ts` file along with a serializer named `fooToTransport` and a deserializer named `fooToApplication` in `src/models/serializers.ts`
+### Interface Definition (Foo)
+
+The test expects a TypeScript interface Foo to be generated in src/models/models.ts, preserving the original properties from the TypeSpec definition.
 
 ```ts src/models/models.ts interface Foo
 export interface Foo {
@@ -21,27 +25,37 @@ export interface Foo {
 }
 ```
 
-```ts src/models/serializers.ts function fooToTransport
-export function fooToTransport(item: Foo): any {
+### Serializer (jsonFooToTransportTransform)
+
+This function should correctly transform a Foo instance into a transport-friendly format, ensuring all properties are properly mapped.
+
+```ts src/models/serializers.ts function jsonFooToTransportTransform
+export function jsonFooToTransportTransform(input_: Foo): any {
   return {
-    name: item.name,
-    age: item.age,
+    name: input_.name,
+    age: input_.age,
   };
 }
 ```
 
-```ts src/models/serializers.ts function fooToApplication
-export function fooToApplication(item: any): Foo {
+### Deserializer (jsonFooToApplicationTransform)
+
+This function should correctly reconstruct a Foo instance from a transport-friendly representation, ensuring all properties are properly mapped back.
+
+```ts src/models/serializers.ts function jsonFooToApplicationTransform
+export function jsonFooToApplicationTransform(input_: any): Foo {
   return {
-    name: item.name,
-    age: item.age,
+    name: input_.name,
+    age: input_.age,
   };
 }
 ```
 
-# Should generate a serializer for a model with nested models
+# Should Call Nested Serializers and Deserializers for Model Properties
 
 ## TypeSpec
+
+This TypeSpec block defines two models, Foo and Bar, where Foo includes a nested reference to Bar. The foo operation returns either a Foo or a Bar, testing how the serialization and deserialization logic handles model properties that reference other models.
 
 ```tsp
 model Bar {
@@ -58,22 +72,28 @@ op foo(): Foo | Bar;
 
 ## TypeScript
 
-When a property of model `Foo` has a type of another model `Bar`, `Foo` serializer/deserializer should call the serializer/deserializer generated for `Bar`
+### Serializer for Foo (jsonFooToTransportTransform)
 
-```ts src/models/serializers.ts function fooToTransport
-export function fooToTransport(item: Foo): any {
+This function should transform Foo into a transport-friendly format while ensuring that the bar property is serialized using the jsonBarToTransportTransform function.
+
+```ts src/models/serializers.ts function jsonFooToTransportTransform
+export function jsonFooToTransportTransform(input_: Foo): any {
   return {
-    name: item.name,
-    age: item.age,
-    bar: barToTransport(item.bar),
+    name: input_.name,
+    age: input_.age,
+    bar: jsonBarToTransportTransform(input_.bar),
   };
 }
 ```
 
-```ts src/models/serializers.ts function barToTransport
-export function barToTransport(item: Bar): any {
+### Serializer for Bar (jsonBarToTransportTransform)
+
+This function should transform a Bar instance into its transport format, correctly mapping its properties.
+
+```ts src/models/serializers.ts function jsonBarToTransportTransform
+export function jsonBarToTransportTransform(input_: Bar): any {
   return {
-    address: item.address,
+    address: input_.address,
   };
 }
 ```

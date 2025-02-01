@@ -1,5 +1,4 @@
 import * as ts from "@alloy-js/typescript";
-import * as ef from "@typespec/emitter-framework/typescript";
 import {
   ArraySerializer,
   DateDeserializer,
@@ -12,6 +11,7 @@ import {
 } from "@typespec/emitter-framework/typescript";
 import { useClientLibrary } from "@typespec/http-client-library";
 import { flattenClients } from "../utils/client-discovery.js";
+import { JsonTransformDeclaration } from "./transforms/json/json-transform.jsx";
 import { TransformDeclaration } from "./transforms/operation-transform-declaration.jsx";
 export interface ModelSerializersProps {
   path?: string;
@@ -36,8 +36,8 @@ export function ModelSerializers(props: ModelSerializersProps) {
         .filter((m) => m.kind === "Model")
         .map((type) => (
           <>
-            <ef.TypeTransformDeclaration type={type} target="transport" />
-            <ef.TypeTransformDeclaration type={type} target="application" />
+            <JsonTransformDeclaration type={type} target="transport" />
+            <JsonTransformDeclaration type={type} target="application" />
           </>          
         ))}
     </ts.SourceFile>;

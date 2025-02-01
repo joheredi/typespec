@@ -1,8 +1,8 @@
-# Should handle a basic response
+# **Handling a Response with No Body (204 No Content)**
 
-This test verifies that a basic response with status `204` and no body is correctly handled.
+This test verifies that a response with status `204` and no body is correctly handled. The generated TypeScript function should recognize an empty response and return `void` without errors.
 
-## TypeSpec
+## **TypeSpec**
 
 ```tsp
 @service({
@@ -17,9 +17,9 @@ interface Widgets {
 }
 ```
 
-## TypeScript
+## **TypeScript**
 
-### Response
+### **Response Handling**
 
 ```ts src/api/widgetsClient/widgetsClientOperations.ts function read
 export async function read(client: WidgetsClientContext): Promise<void> {
@@ -38,11 +38,13 @@ export async function read(client: WidgetsClientContext): Promise<void> {
 }
 ```
 
-# Should handle a response with body
+---
 
-This test verifies that a response with a body containing a `Widget` model is correctly handled.
+# **Handling a Response with a JSON Body**
 
-## TypeSpec
+This test verifies that a response with a body containing a `Widget` model is correctly handled. The generated TypeScript function should deserialize the response body into a `Widget` instance.
+
+## **TypeSpec**
 
 ```tsp
 @service({
@@ -63,9 +65,24 @@ interface Widgets {
 }
 ```
 
-## TypeScript
+## **TypeScript**
 
-### Response
+### **Deserializer**
+
+This function converts the received JSON response into a `Widget` instance.
+
+```ts src/models/serializers.ts function jsonWidgetToApplicationTransform
+export function jsonWidgetToApplicationTransform(input_: any): Widget {
+  return {
+    name: input_.name,
+    age: input_.age,
+  };
+}
+```
+
+### **Response Handling**
+
+The function reads a `Widget` instance from the response body, ensuring it only processes JSON responses with a `200` status.
 
 ```ts src/api/widgetsClient/widgetsClientOperations.ts function read
 export async function read(client: WidgetsClientContext): Promise<Widget> {
@@ -77,18 +94,20 @@ export async function read(client: WidgetsClientContext): Promise<Widget> {
 
   const response = await client.path(path).get(httpRequestOptions);
   if (+response.status === 200 && response.headers["content-type"]?.includes("application/json")) {
-    return widgetToApplication(response.body);
+    return jsonWidgetToApplicationTransform(response.body);
   }
 
   throw new Error("Unhandled response");
 }
 ```
 
-# Should handle a response with multiple status codes
+---
 
-This test verifies that a response with multiple status codes (`200` and `204`) is correctly handled, where `200` returns a `Widget` and `204` returns void.
+# **Handling a Response with Multiple Status Codes (200 & 204)**
 
-## TypeSpec
+This test verifies that a response with multiple status codes (`200` and `204`) is correctly handled. If the response is `200`, it should deserialize a `Widget`; if `204`, it should return `void`.
+
+## **TypeSpec**
 
 ```tsp
 @service({
@@ -109,9 +128,11 @@ interface Widgets {
 }
 ```
 
-## TypeScript
+## **TypeScript**
 
-### Response
+### **Response Handling**
+
+The function determines the response type based on the status code. If `200`, it deserializes a `Widget`; if `204`, it returns `void`.
 
 ```ts src/api/widgetsClient/widgetsClientOperations.ts function read
 export async function read(client: WidgetsClientContext): Promise<Widget | void> {
@@ -123,7 +144,7 @@ export async function read(client: WidgetsClientContext): Promise<Widget | void>
 
   const response = await client.path(path).get(httpRequestOptions);
   if (+response.status === 200 && response.headers["content-type"]?.includes("application/json")) {
-    return widgetToApplication(response.body);
+    return jsonWidgetToApplicationTransform(response.body);
   }
 
   if (+response.status === 204 && !response.body) {
@@ -134,11 +155,13 @@ export async function read(client: WidgetsClientContext): Promise<Widget | void>
 }
 ```
 
-# Should handle a response with multiple content types
+---
 
-This test verifies that a response with multiple content types is correctly handled. The response can have a content type of `application/json+something` or the default `Widget` model, or return void.
+# **Handling a Response with Multiple Content Types**
 
-## TypeSpec
+This test verifies that a response with multiple content types is correctly handled. The response can be in JSON or XML format, both containing a `Widget` model.
+
+## **TypeSpec**
 
 ```tsp
 @service({
@@ -167,9 +190,12 @@ interface Widgets {
 }
 ```
 
-## TypeScript
+## **TypeScript**
 
-### Response
+### **Response Handling**
+
+This function ensures that the response is correctly processed based on its `content-type` header. It supports both JSON and XML responses, deserializing them into `Widget` instances.
+TODO: need to implement xml serialization
 
 ```ts src/api/widgetsClient/widgetsClientOperations.ts function read
 export async function read(client: WidgetsClientContext): Promise<Widget> {
@@ -181,11 +207,11 @@ export async function read(client: WidgetsClientContext): Promise<Widget> {
 
   const response = await client.path(path).get(httpRequestOptions);
   if (+response.status === 200 && response.headers["content-type"]?.includes("application/json")) {
-    return widgetToApplication(response.body);
+    return jsonWidgetToApplicationTransform(response.body);
   }
 
   if (+response.status === 200 && response.headers["content-type"]?.includes("application/xml")) {
-    return widgetToApplication(response.body);
+    return jsonWidgetToApplicationTransform(response.body);
   }
 
   throw new Error("Unhandled response");

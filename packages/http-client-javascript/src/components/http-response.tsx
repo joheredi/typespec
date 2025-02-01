@@ -1,8 +1,8 @@
 import { Children, code, mapJoin, Refkey } from "@alloy-js/core";
 import { isVoidType } from "@typespec/compiler";
 import { $ } from "@typespec/compiler/typekit";
-import * as ef from "@typespec/emitter-framework/typescript";
 import { ClientOperation } from "@typespec/http-client-library";
+import { JsonTransform } from "./transforms/json/json-transform.jsx";
 export interface HttpResponseProps {
   operation: ClientOperation;
   responseRefkey: Refkey;
@@ -39,7 +39,7 @@ export function HttpResponses(props: HttpResponsesProps) {
       if (body && (body.bodyKind === "single" || (type && !isVoidType(type)))) {
         expression =
           <>
-      return <ef.TypeTransformCall type={body.type} target="application" itemPath={["response", "body"]} />;
+      return <JsonTransform itemRef={"response.body"} target="application" type={body.type} />;
       </>;
       }
 

@@ -12,7 +12,7 @@ op foo(): Foo;
 
 ## TypeScript
 
-Should generate a model `Foo` and also a `fooToTransport` and `fooToApplication` functions that call the `recordSerializer` internally.
+Should generate a model `Foo` and also a `jsonFooToTransportTransform` and `jsonFooToApplicationTransform` functions that call the `recordSerializer` internally.
 
 ```ts src/models/models.ts interface Foo
 export interface Foo {
@@ -20,18 +20,18 @@ export interface Foo {
 }
 ```
 
-```ts src/models/serializers.ts function fooToTransport
-export function fooToTransport(item: Foo): any {
+```ts src/models/serializers.ts function jsonFooToTransportTransform
+export function jsonFooToTransportTransform(input_: Foo): any {
   return {
-    my_values: recordSerializer(item.myValues),
+    my_values: jsonRecordInt32ToTransportTransform(input_.myValues),
   };
 }
 ```
 
-```ts src/models/serializers.ts function fooToApplication
-export function fooToApplication(item: any): Foo {
+```ts src/models/serializers.ts function jsonFooToApplicationTransform
+export function jsonFooToApplicationTransform(input_: any): Foo {
   return {
-    myValues: recordSerializer(item.my_values),
+    myValues: jsonRecordInt32ToTransportTransform(input_.my_values),
   };
 }
 ```
@@ -54,7 +54,7 @@ op foo(): Foo | Bar;
 
 ## TypeScript
 
-Should generate models `Foo` and `Bar` and also a `fooToTransport`, `fooToApplication`, `barToTransport` and `barToApplication` functions that call the `recordSerializer` passing `barToTransport` or `barDeserialize` as the serialization callback.
+Should generate models `Foo` and `Bar` and also a `jsonFooToTransportTransform`, `jsonFooToApplicationTransform`, `barToTransport` and `barToApplication` functions that call the `recordSerializer` passing `barToTransport` or `barDeserialize` as the serialization callback.
 
 ```ts src/models/models.ts interface Foo
 export interface Foo {
@@ -68,18 +68,18 @@ export interface Bar {
 }
 ```
 
-```ts src/models/serializers.ts function fooToTransport
-export function fooToTransport(item: Foo): any {
+```ts src/models/serializers.ts function jsonFooToTransportTransform
+export function jsonFooToTransportTransform(input_: Foo): any {
   return {
-    my_values: recordSerializer(item.myValues, barToTransport),
+    my_values: jsonRecordBarToTransportTransform(input_.myValues),
   };
 }
 ```
 
-```ts src/models/serializers.ts function fooToApplication
-export function fooToApplication(item: any): Foo {
+```ts src/models/serializers.ts function jsonFooToApplicationTransform
+export function jsonFooToApplicationTransform(input_: any): Foo {
   return {
-    myValues: recordSerializer(item.my_values, barToApplication),
+    myValues: jsonRecordBarToTransportTransform(input_.my_values),
   };
 }
 ```

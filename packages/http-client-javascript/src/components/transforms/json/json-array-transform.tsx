@@ -1,0 +1,71 @@
+import * as ay from "@alloy-js/core";
+import * as ts from "@alloy-js/typescript";
+
+import { Model } from "@typespec/compiler";
+import { $ } from "@typespec/compiler/typekit";
+import { JsonTransform } from "./json-transform.jsx";
+
+export interface JsonArrayTransformProps {
+  itemRef: ay.Refkey | ay.Children;
+  type: Model;
+  target: "transport" | "application";
+}
+
+export function JsonArrayTransform(props: JsonArrayTransformProps) {
+  if (!$.array.is(props.type)) {
+    return null;
+  }
+
+  const elementType = $.array.getElementType(props.type);
+
+  return ay.code`
+    const _transformedArray = [];
+
+    for (const item of ${props.itemRef}) {
+      const transformedItem = ${<JsonTransform type={elementType} target={props.target} itemRef="item" />};
+      _transformedArray.push(transformedItem);
+    }
+
+    return _transformedArray;
+  `;
+}
+
+export function getJsonArrayTransformRefkey(type: Model) {
+  const elementType = $.array.getElementType(type);
+  return ay.refkey(elementType, "json_array_transform");
+}
+
+export interface JsonArrayTransformDeclarationProps {
+  type: Model;
+  target: "transport" | "application";
+}
+
+export function JsonArrayTransformDeclaration(props: JsonArrayTransformDeclarationProps) {
+  if (!$.array.is(props.type)) {
+    return null;
+  }
+
+  const elementType = $.array.getElementType(props.type);
+  const elementName =
+    "name" in elementType && typeof elementType.name === "string" ? elementType.name : "element";
+
+  const namePolicy = ts.useTSNamePolicy();
+  const transformName = namePolicy.getName(
+    `json_Array_${elementName}_to_${props.target}_transform`,
+    "function",
+  );
+
+  const itemType = ay.code`Array<${ay.refkey(elementType)}>`;
+  const returnType = props.target === "transport" ? "any" : itemType;
+  const inputType = props.target === "transport" ? itemType : "any";
+  const inputRef = ay.refkey();
+
+  const parameters: Record<string, ts.ParameterDescriptor> = {
+    items_: { type: inputType, refkey: inputRef },
+  };
+
+  const declarationRefkey = getJsonArrayTransformRefkey(props.type);
+  return <ts.FunctionDeclaration name={transformName} export returnType={returnType} parameters={parameters} refkey={declarationRefkey} >
+    <JsonArrayTransform {...props} itemRef={inputRef} />
+  </ts.FunctionDeclaration>;
+}

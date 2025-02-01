@@ -1,16 +1,16 @@
-import { Children, mapJoin } from "@alloy-js/core";
+import { Children, code, mapJoin, refkey } from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
 import { Model, ModelProperty } from "@typespec/compiler";
 import { $ } from "@typespec/compiler/typekit";
-import { ModelSerializers } from "./serializers.jsx";
+import { DataTransform } from "./transforms/data-transform.jsx";
 
 export interface HttpRequestParametersExpressionProps {
+  optionsParameter: ModelProperty;
   parameters?: Model;
   children?: Children;
 }
 
 export function HttpRequestParametersExpression(props: HttpRequestParametersExpressionProps) {
-  const namingPolicy = ts.useTSNamePolicy();
   const parameters: (ModelProperty | Children)[] = [];
 
   if (props.children || (Array.isArray(props.children) && props.children.length)) {
@@ -28,18 +28,16 @@ export function HttpRequestParametersExpression(props: HttpRequestParametersExpr
     return <ts.ObjectExpression />;
   }
 
+  const optionsParamRef = props.optionsParameter ? refkey(props.optionsParameter) : "options";
   const members = mapJoin(
     props.parameters.properties,
     (_parameterName, parameter) => {
       const options = $.modelProperty.getHttpParamOptions(parameter);
       const name = options?.name ? options.name : parameter.name;
-      const applicationName = namingPolicy.getName(parameter.name, "parameter");
-      const parameterPath = parameter.optional ? `options?.${applicationName}` : applicationName;
-      let value = parameterPath;
 
-      if(isConstantHeader(parameter)) {
-        value = <ts.ValueExpression jsValue={(parameter.type as any).value}  /> 
-      }
+      const input = parameter.optional ? code`${optionsParamRef}?.${name}` : refkey(parameter);
+
+      const value = <DataTransform type={parameter} itemRef={input} target="transport" />;
       return <ts.ObjectProperty name={JSON.stringify(name)} value={value} />;
     },
     { joiner: ",\n" },
@@ -50,17 +48,4 @@ export function HttpRequestParametersExpression(props: HttpRequestParametersExpr
   return <ts.ObjectExpression>
     {parameters}
   </ts.ObjectExpression>;
-}
-
-
-function isConstantHeader(modelProperty: ModelProperty) {
-  if (!$.modelProperty.isHttpHeader(modelProperty)) {
-    return false;
-  }
-
-  if ("value" in modelProperty.type && modelProperty.type.value !== undefined) {
-    return true;
-  }
-
-  return false;
 }

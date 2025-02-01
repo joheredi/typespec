@@ -36,8 +36,8 @@ export function ClientOperation(props: ClientOperationProps) {
   const returnType = $.httpOperation.getReturnType(props.operation.httpOperation);
   const responseRefkey = ay.refkey(props.operation, "http-response");
   const clientContextInterfaceRef = getClientcontextDeclarationRef(client);
-  const signatureParams = {
-    client: clientContextInterfaceRef,
+  const signatureParams: Record<string, ts.ParameterDescriptor> = {
+    client: { type: clientContextInterfaceRef, refkey: ay.refkey(client, "client") },
   };
   return <FunctionDeclaration export async type={props.operation.operation} returnType={<TypeExpression type={returnType} />} parametersMode="prepend" parameters={signatureParams}>
       <HttpRequest operation={props.operation} responseRefkey={responseRefkey} />

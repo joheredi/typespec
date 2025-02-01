@@ -56,8 +56,9 @@ HttpRequestOptions.Headers = function HttpRequestOptionsHeaders(
     contentType = <ts.ObjectProperty name='"content-type"' value={contentTypeValue} />;
   }
 
+  const optionsParam = props.operation.operation.parameters.properties.get("options")!;
   return <ts.ObjectProperty name="headers">
-      <HttpRequestParametersExpression parameters={headers}>
+      <HttpRequestParametersExpression parameters={headers} optionsParameter={optionsParam}>
         {contentType}
       </HttpRequestParametersExpression>,
   </ts.ObjectProperty>;

@@ -39,10 +39,10 @@ HttpRequest.Url = function HttpUrlDeclaration(props: HttpUrlProps) {
   const httpOperation = props.operation.httpOperation;
   const urlTemplate = httpOperation.uriTemplate;
   const urlParameters = $.httpRequest.getParameters(httpOperation, ["path", "query"]);
-
+  const optionsParameter = props.operation.operation.parameters.properties.get("options");
   return <>
     <ts.VarDeclaration name="path" refkey={props.refkey}>
-      <ts.Reference refkey={uriTemplateLib.parse} />({JSON.stringify(urlTemplate)}).expand({<HttpRequestParametersExpression parameters={urlParameters} />})
+      <ts.Reference refkey={uriTemplateLib.parse} />({JSON.stringify(urlTemplate)}).expand({<HttpRequestParametersExpression optionsParameter={optionsParameter!} parameters={urlParameters} />})
     </ts.VarDeclaration>
   </>;
 };

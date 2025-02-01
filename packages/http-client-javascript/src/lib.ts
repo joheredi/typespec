@@ -19,6 +19,12 @@ export const $lib = createTypeSpecLibrary({
     options: EmitterOptionsSchema,
   },
   diagnostics: {
+    "unknown-encoding": {
+      severity: "warning",
+      messages: {
+        default: "Unknown encoding",
+      },
+    },
     "mixed-part-nonpart": {
       severity: "warning",
       messages: {

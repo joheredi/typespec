@@ -30,7 +30,7 @@ export async function doThing(client: TestClientContext, bodyParam: RequestBody)
     headers: {
       "content-type": "multipart/form-data",
     },
-    body: doThingPayloadToTransport(bodyParam),
+    body: jsonDoThingPayloadToTransportTransform(bodyParam),
   };
 
   const response = await client.path(path).post(httpRequestOptions);
@@ -44,8 +44,8 @@ export async function doThing(client: TestClientContext, bodyParam: RequestBody)
 
 ## Serializer
 
-```ts src/models/serializers.ts function doThingPayloadToTransport
-export function doThingPayloadToTransport(payload: RequestBody) {
+```ts src/models/serializers.ts function jsonDoThingPayloadToTransportTransform
+export function jsonDoThingPayloadToTransportTransform(payload: RequestBody) {
   return [createFilePartDescriptor("basicFile", payload)];
 }
 ```
@@ -82,8 +82,8 @@ export interface RequestBody {
 
 ## Serializers
 
-```ts src/models/serializers.ts function doThingPayloadToTransport
-export function doThingPayloadToTransport(payload: RequestBody) {
+```ts src/models/serializers.ts function jsonDoThingPayloadToTransportTransform
+export function jsonDoThingPayloadToTransportTransform(payload: RequestBody) {
   return [createFilePartDescriptor("image", payload, "image/png")];
 }
 ```
@@ -112,8 +112,8 @@ export interface RequestBody {
 
 ## Serializer
 
-```ts src/models/serializers.ts function doThingPayloadToTransport
-export function doThingPayloadToTransport(payload: RequestBody) {
+```ts src/models/serializers.ts function jsonRequestBodyToTransportTransform
+export function jsonRequestBodyToTransportTransform(payload: RequestBody) {
   return [...payload.files.map((x: any) => createFilePartDescriptor("files", x))];
 }
 ```
@@ -128,7 +128,7 @@ export async function doThing(client: TestClientContext, bodyParam: RequestBody)
     headers: {
       "content-type": "multipart/form-data",
     },
-    body: doThingPayloadToTransport(bodyParam),
+    body: jsonRequestBodyToTransportTransform(bodyParam),
   };
 
   const response = await client.path(path).post(httpRequestOptions);

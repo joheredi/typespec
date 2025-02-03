@@ -36,7 +36,7 @@ export interface Foo {
 The generated transformation functions iterate over `int32[]` values, but since **no actual transformation occurs**, this code could be **optimized away**.
 
 ```ts src/models/serializers.ts function jsonArrayInt32ToTransportTransform
-export function jsonArrayInt32ToTransportTransform(items_: Array<Int32>): any {
+export function jsonArrayInt32ToTransportTransform(items_: Array<number>): any {
   const _transformedArray = [];
 
   for (const item of items_) {
@@ -86,7 +86,7 @@ export async function foo(client: ClientContext): Promise<Foo> {
 Again, the transformation logic is redundant for primitive types. Instead of generating a function, the deserializer could **use the array directly**.
 
 ```ts src/models/serializers.ts function jsonArrayInt32ToApplicationTransform
-export function jsonArrayInt32ToApplicationTransform(items_: any): Array<Int32> {
+export function jsonArrayInt32ToApplicationTransform(items_: any): Array<number> {
   const _transformedArray = [];
 
   for (const item of items_) {
@@ -105,7 +105,7 @@ Uses the same unnecessary transformation for `myValues`. Optimizing the pipeline
 ```ts src/models/serializers.ts function jsonFooToApplicationTransform
 export function jsonFooToApplicationTransform(input_: any): Foo {
   return {
-    myValues: jsonArrayInt32ToTransportTransform(input_.my_values),
+    myValues: jsonArrayInt32ToApplicationTransform(input_.my_values),
   };
 }
 ```
@@ -166,7 +166,7 @@ Similarly, the deserializer converts each `Bar` instance in `myValues` back into
 ```ts src/models/serializers.ts function jsonFooToApplicationTransform
 export function jsonFooToApplicationTransform(input_: any): Foo {
   return {
-    myValues: jsonArrayBarToTransportTransform(input_.my_values),
+    myValues: jsonArrayBarToApplicationTransform(input_.my_values),
   };
 }
 ```

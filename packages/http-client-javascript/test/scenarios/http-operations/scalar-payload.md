@@ -33,7 +33,7 @@ export async function create(client: WidgetsClientContext, count: number): Promi
     headers: {
       "content-type": "application/json",
     },
-    body: createPayloadToTransport(count),
+    body: count,
   };
 
   const response = await client.path(path).post(httpRequestOptions);

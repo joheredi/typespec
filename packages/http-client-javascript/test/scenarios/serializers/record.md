@@ -31,7 +31,7 @@ export function jsonFooToTransportTransform(input_: Foo): any {
 ```ts src/models/serializers.ts function jsonFooToApplicationTransform
 export function jsonFooToApplicationTransform(input_: any): Foo {
   return {
-    myValues: jsonRecordInt32ToTransportTransform(input_.my_values),
+    myValues: jsonRecordInt32ToApplicationTransform(input_.my_values),
   };
 }
 ```
@@ -79,7 +79,7 @@ export function jsonFooToTransportTransform(input_: Foo): any {
 ```ts src/models/serializers.ts function jsonFooToApplicationTransform
 export function jsonFooToApplicationTransform(input_: any): Foo {
   return {
-    myValues: jsonRecordBarToTransportTransform(input_.my_values),
+    myValues: jsonRecordBarToApplicationTransform(input_.my_values),
   };
 }
 ```

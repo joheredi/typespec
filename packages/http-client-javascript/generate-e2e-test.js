@@ -2,7 +2,7 @@
 
 import chalk from "chalk";
 import { execa } from "execa";
-import { rm } from "fs/promises";
+import { copyFile, mkdir, rm } from "fs/promises";
 import { globby } from "globby";
 import inquirer from "inquirer";
 import { dirname, join } from "path";
@@ -135,6 +135,10 @@ async function processFiles(files, options) {
         await rm(outputDir, { recursive: true, force: true });
       }
 
+      const specCopyPath = join(outputDir, "spec.tsp");
+      await mkdir(outputDir, { recursive: true });
+      await copyFile(fullPath, specCopyPath);
+
       await runCommand("npx", [
         "tsp",
         "compile",
@@ -144,6 +148,7 @@ async function processFiles(files, options) {
         "--output-dir",
         outputDir,
       ]);
+
       await runCommand("npx", [
         "babel",
         outputDir,
@@ -163,6 +168,7 @@ async function processFiles(files, options) {
       succeeded.push(relativePath);
     } catch {
       console.error(chalk.red(`Failed to process: ${relativePath}`));
+      console.error(chalk.yellow(`Spec: ${specCopyPath}`));
       failed.push(relativePath);
 
       if (interactive) {

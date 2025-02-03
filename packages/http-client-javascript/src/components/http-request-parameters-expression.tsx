@@ -1,6 +1,6 @@
 import { Children, code, mapJoin, refkey } from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
-import { Model, ModelProperty } from "@typespec/compiler";
+import { EncodeData, Model, ModelProperty } from "@typespec/compiler";
 import { $ } from "@typespec/compiler/typekit";
 import { JsonTransform } from "./transforms/json/json-transform.jsx";
 
@@ -32,13 +32,10 @@ export function HttpRequestParametersExpression(props: HttpRequestParametersExpr
   const members = mapJoin(
     props.parameters.properties,
     (_parameterName, parameter) => {
-      const options = $.modelProperty.getHttpParamOptions(parameter);
-      const name = options?.name ? options.name : parameter.name;
+      const input = parameter.optional ? code`${optionsParamRef}?` : null;
 
-      const input = parameter.optional ? code`${optionsParamRef}?.${name}` : refkey(parameter);
-
-      const value = <JsonTransform itemRef={input} type={parameter.type} target="transport" />;
-      return <ts.ObjectProperty name={JSON.stringify(name)} value={value} />;
+      const encoding = $.modelProperty.getEncoding(parameter) ?? getDefaultEncoding(parameter);
+      return <JsonTransform itemRef={input} type={parameter} target="transport" encoding={encoding}/>;
     },
     { joiner: ",\n" },
   );
@@ -48,4 +45,17 @@ export function HttpRequestParametersExpression(props: HttpRequestParametersExpr
   return <ts.ObjectExpression>
     {parameters}
   </ts.ObjectExpression>;
+}
+
+function getDefaultEncoding(prop: ModelProperty): EncodeData | undefined {
+  const type = prop.type;
+  if ($.scalar.isUtcDateTime(type) || $.scalar.extendsUtcDateTime(type)) {
+    return { type, encoding: "rfc3339" };
+  }
+
+  if ($.scalar.isBytes(type) || $.scalar.extendsBytes(type)) {
+    return { type, encoding: "base64url" };
+  }
+
+  return undefined;
 }

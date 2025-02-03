@@ -52,8 +52,8 @@ const scalarTransformerMap = defineScalarTransformerMap({
       switch (knownEncoding) {
         case "base64":
         case "base64url":
-          const bytesDecodeRef = getDecodeUint8ArrayRef();
-          return code`${bytesDecodeRef}(${itemRef})`;
+          const bytesEncodeRef = getEncodeUint8ArrayRef();
+          return code`${bytesEncodeRef}(${itemRef}, "${knownEncoding}")!`;
         default:
           reportDiagnostic($.program, { code: "unknown-encoding", target: encoding.type });
           return passthroughTransformer(itemRef);
@@ -67,8 +67,8 @@ const scalarTransformerMap = defineScalarTransformerMap({
       switch (knownEncoding) {
         case "base64":
         case "base64url":
-          const bytesEncodeRef = getEncodeUint8ArrayRef();
-          return code`${bytesEncodeRef}(${itemRef})`;
+          const bytesDecodeRef = getDecodeUint8ArrayRef();
+          return code`${bytesDecodeRef}(${itemRef})!`;
         default:
           reportDiagnostic($.program, { code: "unknown-encoding", target: encoding.type });
           return passthroughTransformer(itemRef);

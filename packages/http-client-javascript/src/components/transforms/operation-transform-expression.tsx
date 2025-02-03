@@ -1,14 +1,16 @@
 import * as ay from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
+import { Type } from "@typespec/compiler";
+import { $ } from "@typespec/compiler/typekit";
+import { HasName, TransformNamePolicyContext } from "@typespec/emitter-framework";
 import * as ef from "@typespec/emitter-framework/typescript";
-import { TypeTransformCall } from "@typespec/emitter-framework/typescript";
 import { HttpOperationBody, HttpOperationMultipartBody, HttpOperationPart } from "@typespec/http";
 import { ClientOperation } from "@typespec/http-client-library";
+import { reportDiagnostic } from "../../lib.js";
 import { getCreateFilePartDescriptorReference } from "../static-helpers/multipart-helpers.jsx";
-import {
-  getTransformDeclarationRef,
-  HttpPartExpressionProps,
-} from "./operation-transform-declaration.jsx";
+import { JsonTransform } from "./json/json-transform.jsx";
+import { HttpPartExpressionProps } from "./operation-transform-declaration.jsx";
+import { defaultTransportNameGetter } from "./transform-name-policy.js";
 
 export interface OperationTransformToTransportExpression {
   operation: ClientOperation;
@@ -17,24 +19,37 @@ export interface OperationTransformToTransportExpression {
 export function OperationTransformExpression(props: OperationTransformToTransportExpression) {
   const payload = props.operation.httpOperation.parameters.body;
 
+  // TODO: Handle content types other than application/json and multipart
+
   if (!payload) {
     return;
-  }
-
-  if (payload.property) {
-    const property = payload.property;
-    if (property.optional) {
-      const propertyPath = `options?.${property.name}`;
-      return <>{propertyPath} ? <ts.FunctionCallExpression refkey={getTransformDeclarationRef(props.operation)} args={[propertyPath]}/> : undefined </>;
-    }
-    return <ts.FunctionCallExpression refkey={getTransformDeclarationRef(props.operation)} args={[payload.property?.name]}/>;
   }
 
   if (payload.bodyKind === "multipart") {
     return <MultipartTransformExpression operation={props.operation} payload={payload} />;
   }
 
-  return <TypeTransformCall target="transport" type={payload.type} optionsBagName="options"/>;
+  const itemRef = payload.property ? "payload" : null;
+  const payloadType = payload.property ?? payload.type;
+  return <TransformNamePolicyContext.Provider value={{ getTransportName: defaultTransportNameGetter, getApplicationName: payloadApplicationNameGetter }}>
+      <JsonTransform itemRef={itemRef} target="transport" type={payloadType}  />
+  </TransformNamePolicyContext.Provider>;
+}
+
+function payloadApplicationNameGetter(type: HasName<Type>) {
+  if (typeof type.name !== "string") {
+    reportDiagnostic($.program, { code: "symbol-name-not-supported", target: type });
+    return "";
+  }
+
+  const namePolicy = ts.useTSNamePolicy();
+  let name = namePolicy.getName(type.name, "object-member-data");
+
+  if ($.modelProperty.is(type) && type.optional) {
+    name = `options?.${name}`;
+  }
+
+  return name;
 }
 
 export interface MultipartTransformExpressionProps {

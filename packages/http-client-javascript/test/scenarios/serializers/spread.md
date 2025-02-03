@@ -59,10 +59,8 @@ export async function spreadWithMultipleParameters(
     body: {
       requiredString: requiredString,
       optionalInt: options?.optionalInt,
-      requiredIntList: arraySerializer(requiredIntList),
-      optionalStringList: options?.optionalStringList
-        ? arraySerializer(options?.optionalStringList)
-        : options?.optionalStringList,
+      requiredIntList: jsonArrayInt32ToTransportTransform(requiredIntList),
+      optionalStringList: jsonArrayStringToTransportTransform(options?.optionalStringList),
     },
   };
 

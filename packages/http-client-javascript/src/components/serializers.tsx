@@ -1,16 +1,15 @@
 import * as ts from "@alloy-js/typescript";
 import {
-  ArraySerializer,
   DateDeserializer,
   DateRfc3339Serializer,
   DateRfc7231Deserializer,
   DateRfc7231Serializer,
   DateUnixTimestampDeserializer,
   DateUnixTimestampSerializer,
-  RecordSerializer,
 } from "@typespec/emitter-framework/typescript";
 import { useClientLibrary } from "@typespec/http-client-library";
 import { flattenClients } from "../utils/client-discovery.js";
+import { DecodeBase64, EncodeUint8Array } from "./static-helpers/bytes-encoding.jsx";
 import { JsonTransformDeclaration } from "./transforms/json/json-transform.jsx";
 import { TransformDeclaration } from "./transforms/operation-transform-declaration.jsx";
 export interface ModelSerializersProps {
@@ -23,8 +22,8 @@ export function ModelSerializers(props: ModelSerializersProps) {
   const flatClients = clientLibrary.topLevel.flatMap((c) => flattenClients(c));
   const operations = flatClients.flatMap((c) => c.operations);
   return <ts.SourceFile path={props.path ?? "serializers.ts"}>
-      <RecordSerializer />
-      <ArraySerializer />
+      <DecodeBase64 />
+      <EncodeUint8Array />
       <DateDeserializer />
       <DateRfc7231Deserializer />
       <DateRfc3339Serializer />

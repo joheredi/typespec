@@ -19,7 +19,7 @@ export function DateRfc3339Serializer() {
 export const DateRfc7231SerializerRefkey = refkey();
 export function DateRfc7231Serializer() {
   return (
-    <ts.FunctionDeclaration export name="DateRfc7231Serializer" returnType="string" refkey={DateRfc7231SerializerRefkey}>
+    <ts.FunctionDeclaration export name="DateRfc7231Serializer" returnType="string | undefined" refkey={DateRfc7231SerializerRefkey}>
       <ts.FunctionDeclaration.Parameters>date?: Date</ts.FunctionDeclaration.Parameters>
       {code`
         if (!date) {

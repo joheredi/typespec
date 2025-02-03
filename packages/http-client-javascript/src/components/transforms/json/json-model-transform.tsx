@@ -10,6 +10,7 @@ export interface JsonModelTransformProps {
   itemRef: ay.Refkey | ay.Children;
   type: Model;
   target: "transport" | "application";
+  applicationType?: Model;
 }
 
 export function JsonModelTransform(props: JsonModelTransformProps) {
@@ -23,13 +24,16 @@ export function JsonModelTransform(props: JsonModelTransformProps) {
   return <ts.ObjectExpression>
     {baseModelTransform}
     {ay.mapJoin(props.type.properties, (_, property) => {
-      return <JsonModelPropertyTransform itemRef={props.itemRef} type={property} target={props.target}/>;
+      return <JsonModelPropertyTransform itemRef={props.itemRef} type={property} target={props.target} />;
     }, {joiner: ",\n"})}
   </ts.ObjectExpression>;
 }
 
-export function getJsonModelTransformRefkey(type: Model) {
-  return ay.refkey(type, "json_model_transform");
+export function getJsonModelTransformRefkey(
+  type: Model,
+  target: "transport" | "application",
+): ay.Refkey {
+  return ay.refkey(type, "json_model_transform", target);
 }
 
 export interface JsonModelTransformDeclarationProps {
@@ -54,7 +58,7 @@ export function JsonModelTransformDeclaration(
     input_: { type: inputType, refkey: inputRef },
   };
 
-  const declarationRefkey = getJsonModelTransformRefkey(props.type);
+  const declarationRefkey = getJsonModelTransformRefkey(props.type, props.target);
   return <>
   <JsonTransformDiscriminatorDeclaration type={props.type} target={props.target} />
 

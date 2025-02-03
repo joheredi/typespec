@@ -66,6 +66,18 @@ export const $lib = createTypeSpecLibrary({
         default: "Unsupported non-discriminated union",
       },
     },
+    "no-name-type": {
+      severity: "warning",
+      messages: {
+        default: "Trying to get a name from a type that doesn't have a name",
+      },
+    },
+    "symbol-name-not-supported": {
+      severity: "error",
+      messages: {
+        default: "The transform namer doesn't support symbol names",
+      },
+    },
   },
 });
 

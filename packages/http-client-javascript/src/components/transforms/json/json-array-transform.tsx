@@ -1,5 +1,6 @@
 import * as ay from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
+import * as ef from "@typespec/emitter-framework/typescript";
 
 import { Model } from "@typespec/compiler";
 import { $ } from "@typespec/compiler/typekit";
@@ -30,9 +31,11 @@ export function JsonArrayTransform(props: JsonArrayTransformProps) {
   `;
 }
 
-export function getJsonArrayTransformRefkey(type: Model) {
-  const elementType = $.array.getElementType(type);
-  return ay.refkey(elementType, "json_array_transform");
+export function getJsonArrayTransformRefkey(
+  type: Model,
+  target: "transport" | "application",
+): ay.Refkey {
+  return ay.refkey(type, "json_array_transform", target);
 }
 
 export interface JsonArrayTransformDeclarationProps {
@@ -55,7 +58,7 @@ export function JsonArrayTransformDeclaration(props: JsonArrayTransformDeclarati
     "function",
   );
 
-  const itemType = ay.code`Array<${ay.refkey(elementType)}>`;
+  const itemType = ay.code`Array<${<ef.TypeExpression type={elementType} />}>`;
   const returnType = props.target === "transport" ? "any" : itemType;
   const inputType = props.target === "transport" ? itemType : "any";
   const inputRef = ay.refkey();
@@ -64,7 +67,7 @@ export function JsonArrayTransformDeclaration(props: JsonArrayTransformDeclarati
     items_: { type: inputType, refkey: inputRef },
   };
 
-  const declarationRefkey = getJsonArrayTransformRefkey(props.type);
+  const declarationRefkey = getJsonArrayTransformRefkey(props.type, props.target);
   return <ts.FunctionDeclaration name={transformName} export returnType={returnType} parameters={parameters} refkey={declarationRefkey} >
     <JsonArrayTransform {...props} itemRef={inputRef} />
   </ts.FunctionDeclaration>;

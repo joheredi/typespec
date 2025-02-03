@@ -297,7 +297,7 @@ defineKit<TypekitExtension>({
     },
     isUserDefined(type) {
       return getLocationContext(this.program, type).type === "project";
-    }
+    },
   },
 });
 

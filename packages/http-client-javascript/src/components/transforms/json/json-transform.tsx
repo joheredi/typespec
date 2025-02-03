@@ -1,6 +1,5 @@
 import * as ay from "@alloy-js/core";
-
-import { Type } from "@typespec/compiler";
+import { EncodeData, Type } from "@typespec/compiler";
 import { $ } from "@typespec/compiler/typekit";
 import { ScalarDataTransform } from "../data-transform.jsx";
 import {
@@ -28,12 +27,13 @@ import {
 export interface JsonTransformProps {
   itemRef: ay.Refkey | ay.Children;
   type: Type;
+  encoding?: EncodeData;
   target: "transport" | "application";
 }
 
 export function JsonTransform(props: JsonTransformProps) {
   const type = props.type;
-  const declaredTransform = getTransformReference(type);
+  const declaredTransform = getTransformReference(type, props.target);
 
   if (declaredTransform) {
     return ay.code`${declaredTransform}(${props.itemRef})`;
@@ -42,21 +42,25 @@ export function JsonTransform(props: JsonTransformProps) {
   switch (type.kind) {
     case "Model": {
       if ($.array.is(type)) {
-        return <JsonArrayTransform {...{...props, type: type}} />;
+        return <JsonArrayTransform type={type} itemRef={props.itemRef} target={props.target} />;
       }
 
       if ($.record.is(type)) {
-        return <JsonRecordTransform {...{...props, type}} />;
+        return <JsonRecordTransform type={type} itemRef={props.itemRef} target={props.target} />;
       }
 
-      return <JsonModelTransform {...{...props, type}} />;
+      return <JsonModelTransform type={type} itemRef={props.itemRef} target={props.target} />;
     }
     case "Union":
-      return <JsonUnionTransform {...{...props, type}} />;
-    case "ModelProperty":
-      return <JsonModelPropertyTransform {...{...props, type}} />;
-    case "Scalar":
-      return <ScalarDataTransform {...{...props, type}} />;
+      return <JsonUnionTransform type={type} itemRef={props.itemRef} target={props.target} />;
+    case "ModelProperty": {
+      const encoding = $.modelProperty.getEncoding(type) ?? props.encoding;
+      return <JsonModelPropertyTransform type={type} itemRef={props.itemRef} target={props.target} encoding={encoding} />;
+    }
+    case "Scalar": {
+      const encoding = $.scalar.getEncoding(type) ?? props.encoding;
+      return <ScalarDataTransform type={type} itemRef={props.itemRef} target={props.target} encoding={encoding}/>;
+    }
     default:
       return props.itemRef;
   }
@@ -89,20 +93,23 @@ export function JsonTransformDeclaration(props: JsonTransformDeclarationProps) {
   }
 }
 
-function getTransformReference(type: Type) {
+function getTransformReference(
+  type: Type,
+  target: "transport" | "application",
+): ay.Refkey | undefined {
   if (type.kind === "Model" && Boolean(type.name)) {
     if ($.array.is(type)) {
-      return getJsonArrayTransformRefkey(type);
+      return getJsonArrayTransformRefkey(type, target);
     }
 
     if ($.record.is(type)) {
-      return getJsonRecordTransformRefkey(type);
+      return getJsonRecordTransformRefkey(type, target);
     }
-    return getJsonModelTransformRefkey(type);
+    return getJsonModelTransformRefkey(type, target);
   }
 
   if (type.kind === "Union" && Boolean(type.name)) {
-    return getJsonUnionTransformRefkey(type);
+    return getJsonUnionTransformRefkey(type, target);
   }
 
   return undefined;

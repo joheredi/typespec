@@ -132,7 +132,7 @@ export async function read(client: WidgetsClientContext, count: number): Promise
     headers: {
       "content-type": "application/json",
     },
-    body: readPayloadToTransport(count),
+    body: count,
   };
 
   const response = await client.path(path).get(httpRequestOptions);

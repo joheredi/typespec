@@ -1,5 +1,6 @@
 import * as ay from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
+import * as ef from "@typespec/emitter-framework/typescript";
 
 import { Model } from "@typespec/compiler";
 import { $ } from "@typespec/compiler/typekit";
@@ -30,8 +31,11 @@ export function JsonRecordTransform(props: JsonRecordTransformProps) {
   `;
 }
 
-export function getJsonRecordTransformRefkey(type: Model) {
-  return ay.refkey(type, "json_record_transform");
+export function getJsonRecordTransformRefkey(
+  type: Model,
+  target: "transport" | "application",
+): ay.Refkey {
+  return ay.refkey(type, "json_record_transform", target);
 }
 
 export interface JsonRecordTransformDeclarationProps {
@@ -54,7 +58,7 @@ export function JsonRecordTransformDeclaration(props: JsonRecordTransformDeclara
     "function",
   );
 
-  const itemType = ay.code`Record<string, ${ay.refkey(props.type)}>`;
+  const itemType = ay.code`Record<string, ${<ef.TypeExpression type={elementType} />}>`;
   const returnType = props.target === "transport" ? "any" : itemType;
   const inputType = props.target === "transport" ? itemType : "any";
   const inputRef = ay.refkey();
@@ -63,7 +67,7 @@ export function JsonRecordTransformDeclaration(props: JsonRecordTransformDeclara
     items_: { type: inputType, refkey: inputRef },
   };
 
-  const declarationRefkey = getJsonRecordTransformRefkey(props.type);
+  const declarationRefkey = getJsonRecordTransformRefkey(props.type, props.target);
   return <ts.FunctionDeclaration name={transformName} export returnType={returnType} parameters={parameters} refkey={declarationRefkey} >
     <JsonRecordTransform {...props} itemRef={inputRef} />
   </ts.FunctionDeclaration>;

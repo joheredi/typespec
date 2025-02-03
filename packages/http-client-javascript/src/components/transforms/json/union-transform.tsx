@@ -33,8 +33,11 @@ export function JsonUnionTransform(props: JsonUnionTransformProps) {
   return <JsonTransform {...props} type={variantType} />;
 }
 
-export function getJsonUnionTransformRefkey(type: Union) {
-  return ay.refkey(type, "json_union_transform");
+export function getJsonUnionTransformRefkey(
+  type: Union,
+  target: "transport" | "application",
+): ay.Refkey {
+  return ay.refkey(type, "json_union_transform", target);
 }
 export interface JsonUnionTransformDeclarationProps {
   type: Union;
@@ -57,7 +60,7 @@ export function JsonUnionTransformDeclaration(props: JsonUnionTransformDeclarati
     input_: { type: inputType, refkey: inputRef },
   };
 
-  const declarationRefkey = getJsonUnionTransformRefkey(props.type);
+  const declarationRefkey = getJsonUnionTransformRefkey(props.type, props.target);
   return <ts.FunctionDeclaration name={transformName} export returnType={returnType} parameters={parameters} refkey={declarationRefkey} >
     <JsonUnionTransform {...props} itemRef={inputRef} />
   </ts.FunctionDeclaration>;

@@ -89,7 +89,7 @@ For a `SeaGull` instance, the serializer should extend the base transformation p
 ```ts src/models/serializers.ts function jsonSeaGullToTransportTransform
 export function jsonSeaGullToTransportTransform(input_: SeaGull): any {
   return {
-    ...jsonBirdToApplicationTransform(input_),
+    ...jsonBirdToTransportTransform(input_),
     kind: input_.kind,
   };
 }
@@ -101,7 +101,7 @@ Similarly, the serializer for a `Sparrow` instance should build upon the base Bi
 ```ts src/models/serializers.ts function jsonSparrowToTransportTransform
 export function jsonSparrowToTransportTransform(input_: Sparrow): any {
   return {
-    ...jsonBirdToApplicationTransform(input_),
+    ...jsonBirdToTransportTransform(input_),
     kind: input_.kind,
   };
 }
@@ -113,7 +113,7 @@ This function should transform a `Goose` instance by reusing the base Bird trans
 ```ts src/models/serializers.ts function jsonGooseToTransportTransform
 export function jsonGooseToTransportTransform(input_: Goose): any {
   return {
-    ...jsonBirdToApplicationTransform(input_),
+    ...jsonBirdToTransportTransform(input_),
     kind: input_.kind,
   };
 }
@@ -130,11 +130,11 @@ The serializer for an `Eagle` instance is more complex due to additional propert
 ```ts src/models/serializers.ts function jsonEagleToTransportTransform
 export function jsonEagleToTransportTransform(input_: Eagle): any {
   return {
-    ...jsonBirdToApplicationTransform(input_),
+    ...jsonBirdToTransportTransform(input_),
     kind: input_.kind,
     friends: jsonArrayBirdToTransportTransform(input_.friends),
     hate: jsonRecordBirdToTransportTransform(input_.hate),
-    partner: jsonBirdToApplicationTransform(input_.partner),
+    partner: jsonBirdToTransportTransform(input_.partner),
   };
 }
 ```

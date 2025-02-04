@@ -127,6 +127,7 @@ async function processFiles(files, options) {
     const { fullPath, relativePath } = files[i];
     console.log(chalk.blue(`Processing: ${relativePath}`));
     const outputDir = join("test", "e2e", "generated", dirname(relativePath));
+    const specCopyPath = join(outputDir, "spec.tsp");
 
     try {
       // Clear the target directory if it exists
@@ -135,7 +136,6 @@ async function processFiles(files, options) {
         await rm(outputDir, { recursive: true, force: true });
       }
 
-      const specCopyPath = join(outputDir, "spec.tsp");
       await mkdir(outputDir, { recursive: true });
       await copyFile(fullPath, specCopyPath);
 

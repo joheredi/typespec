@@ -1,0 +1,52 @@
+# Should handle operations with string union input
+
+## Typespec
+
+```tsp
+@service({
+  title: "Test Service",
+})
+namespace Test;
+union ServerExtensibleEnum {
+  string,
+  EnumValue1: "value1",
+}
+
+@post
+op unionEnumName(@body body: ServerExtensibleEnum): NoContentResponse;
+```
+
+## Typescript
+
+```ts src/models/models.ts type ServerExtensibleEnum
+export type ServerExtensibleEnum = string | "value1";
+```
+
+```ts src/api/testClientOperations.ts function unionEnumName
+export async function unionEnumName(
+  client: TestClientContext,
+  body: ServerExtensibleEnum,
+): Promise<void> {
+  const path = parse("/").expand({});
+
+  const httpRequestOptions = {
+    headers: {
+      "content-type": "application/json",
+    },
+    body: jsonServerExtensibleEnumToTransportTransform(body),
+  };
+
+  const response = await client.path(path).post(httpRequestOptions);
+  if (+response.status === 204 && !response.body) {
+    return;
+  }
+
+  throw new Error("Unhandled response");
+}
+```
+
+```ts src/models/serializers.ts function jsonServerExtensibleEnumToTransportTransform
+export function jsonServerExtensibleEnumToTransportTransform(input_: ServerExtensibleEnum): any {
+  return input_;
+}
+```

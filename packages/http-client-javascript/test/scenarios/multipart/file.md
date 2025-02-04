@@ -30,7 +30,7 @@ export async function doThing(client: TestClientContext, bodyParam: RequestBody)
     headers: {
       "content-type": "multipart/form-data",
     },
-    body: jsonDoThingPayloadToTransportTransform(bodyParam),
+    body: [createFilePartDescriptor("basicFile", bodyParam.basicFile)],
   };
 
   const response = await client.path(path).post(httpRequestOptions);
@@ -42,15 +42,7 @@ export async function doThing(client: TestClientContext, bodyParam: RequestBody)
 }
 ```
 
-## Serializer
-
-```ts src/models/serializers.ts function jsonDoThingPayloadToTransportTransform
-export function jsonDoThingPayloadToTransportTransform(payload: RequestBody) {
-  return [createFilePartDescriptor("basicFile", payload)];
-}
-```
-
-# Default content type
+# With part content type
 
 ```tsp
 namespace Test;
@@ -80,11 +72,25 @@ export interface RequestBody {
 }
 ```
 
-## Serializers
+## Operation
 
-```ts src/models/serializers.ts function jsonDoThingPayloadToTransportTransform
-export function jsonDoThingPayloadToTransportTransform(payload: RequestBody) {
-  return [createFilePartDescriptor("image", payload, "image/png")];
+```ts src/api/testClientOperations.ts function doThing
+export async function doThing(client: TestClientContext, bodyParam: RequestBody): Promise<void> {
+  const path = parse("/").expand({});
+
+  const httpRequestOptions = {
+    headers: {
+      "content-type": "multipart/form-data",
+    },
+    body: [createFilePartDescriptor("image", bodyParam.image, "image/png")],
+  };
+
+  const response = await client.path(path).post(httpRequestOptions);
+  if (+response.status === 204 && !response.body) {
+    return;
+  }
+
+  throw new Error("Unhandled response");
 }
 ```
 
@@ -110,14 +116,6 @@ export interface RequestBody {
 }
 ```
 
-## Serializer
-
-```ts src/models/serializers.ts function jsonRequestBodyToTransportTransform
-export function jsonRequestBodyToTransportTransform(payload: RequestBody) {
-  return [...payload.files.map((x: any) => createFilePartDescriptor("files", x))];
-}
-```
-
 ## Operation
 
 ```ts src/api/testClientOperations.ts function doThing
@@ -128,7 +126,7 @@ export async function doThing(client: TestClientContext, bodyParam: RequestBody)
     headers: {
       "content-type": "multipart/form-data",
     },
-    body: jsonRequestBodyToTransportTransform(bodyParam),
+    body: [...bodyParam.files.map((files: any) => createFilePartDescriptor("files", files))],
   };
 
   const response = await client.path(path).post(httpRequestOptions);

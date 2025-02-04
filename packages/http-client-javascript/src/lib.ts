@@ -78,6 +78,18 @@ export const $lib = createTypeSpecLibrary({
         default: "The transform namer doesn't support symbol names",
       },
     },
+    "unsupported-content-type": {
+      severity: "warning",
+      messages: {
+        default: "Unsupported content type. Falling back to json",
+      },
+    },
+    "missing-http-parts": {
+      severity: "warning",
+      messages: {
+        default: "The operation is defined as a Multipart operation but has no parts",
+      },
+    },
   },
 });
 

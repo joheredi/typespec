@@ -1,6 +1,6 @@
 import * as ay from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
-import { Type, Union } from "@typespec/compiler";
+import { Union } from "@typespec/compiler";
 import { $ } from "@typespec/compiler/typekit";
 import { JsonTransformDiscriminator } from "./json-transform-discriminator.jsx";
 import { JsonTransform } from "./json-transform.jsx";
@@ -18,19 +18,8 @@ export function JsonUnionTransform(props: JsonUnionTransformProps) {
   }
 
   const variantType = props.type.variants.values().next().value!.type;
-  let variantKind: Type["kind"] = variantType.kind;
-  for (const [_name, variant] of props.type.variants) {
-    if (!variantType) {
-      variantKind = variant.type.kind;
-      continue;
-    }
-
-    if (variantKind !== variant.type.kind) {
-      throw new Error("Union with multiple variant types is not supported");
-    }
-  }
-
-  return <JsonTransform {...props} type={variantType} />;
+  // TODO: Handle non-discriminated unions
+  return <> return <JsonTransform {...props} type={variantType} /> </>;
 }
 
 export function getJsonUnionTransformRefkey(

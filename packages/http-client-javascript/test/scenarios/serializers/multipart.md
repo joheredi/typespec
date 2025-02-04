@@ -36,8 +36,25 @@ export interface FileWithHttpPartSpecificContentTypeRequest {
 }
 ```
 
-```ts src/models/serializers.ts function createPayloadToTransport
-export function createPayloadToTransport(payload: FileWithHttpPartSpecificContentTypeRequest) {
-  return [createFilePartDescriptor("profileImage", payload, "image/jpg")];
+```ts src/api/testClientOperations.ts function create
+export async function create(
+  client: TestClientContext,
+  body: FileWithHttpPartSpecificContentTypeRequest,
+): Promise<void> {
+  const path = parse("/").expand({});
+
+  const httpRequestOptions = {
+    headers: {
+      "content-type": "multipart/form-data",
+    },
+    body: [createFilePartDescriptor("profileImage", body.profileImage, "image/jpg")],
+  };
+
+  const response = await client.path(path).post(httpRequestOptions);
+  if (+response.status === 204 && !response.body) {
+    return;
+  }
+
+  throw new Error("Unhandled response");
 }
 ```

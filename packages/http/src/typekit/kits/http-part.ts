@@ -1,6 +1,7 @@
 import { Type } from "@typespec/compiler";
 import { defineKit } from "@typespec/compiler/typekit";
 import { getHttpPart, HttpPart } from "../../private.decorators.js";
+import { HttpOperationPart } from "../../types.js";
 
 export interface HttpPartKit {
   /**
@@ -18,6 +19,16 @@ export interface HttpPartKit {
    * @param type HttpPart model to unpack
    */
   unpack(type: Type): Type;
+  /**
+   * Check if the part is an array.
+   * @param part HttpPart to check
+   */
+  isArray(part: HttpOperationPart): boolean;
+  /**
+   * Check if the part is a file.
+   * @param part HttpPart to check
+   */
+  isFile(part: HttpOperationPart): boolean;
 }
 
 export interface TypekitExtension {
@@ -42,6 +53,12 @@ defineKit<TypekitExtension>({
         return part.type;
       }
       return type;
+    },
+    isArray(type) {
+      return type.multi;
+    },
+    isFile(part: HttpOperationPart) {
+      return part.filename !== undefined;
     },
   },
 });

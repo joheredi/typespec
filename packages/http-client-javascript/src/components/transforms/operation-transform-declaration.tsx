@@ -1,9 +1,8 @@
 import * as ay from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
 import * as ef from "@typespec/emitter-framework/typescript";
-import { HttpOperationBody, HttpOperationMultipartBody, HttpOperationPart } from "@typespec/http";
+import { HttpOperationBody } from "@typespec/http";
 import { ClientOperation } from "@typespec/http-client-library";
-import { MultipartTransformExpression } from "./operation-transform-expression.jsx";
 export interface TransformDeclarationProps {
   operation: ClientOperation;
   refkey?: ay.Refkey;
@@ -57,32 +56,8 @@ function TransformToTransportDeclaration(props: TransformToTransportDeclarationP
   const name = namePolicy.getName(`${props.operation.name}_payload_to_transport`, "function");
 
   if (requestPayload.bodyKind === "multipart") {
-    return <MultipartTransformDeclaration operation={props.operation} payload={requestPayload} refkey={props.refkey} name={name} />;
+    return null;
   }
 
   return <SingleBodyTransformDeclaration operation={props.operation} payload={requestPayload} refkey={props.refkey} name={name} />;
-}
-
-export interface MultipartTransformDeclarationProps {
-  name: string;
-  operation: ClientOperation;
-  payload: HttpOperationMultipartBody;
-  refkey: ay.Refkey;
-}
-
-export function MultipartTransformDeclaration(props: MultipartTransformDeclarationProps) {
-  const inputRef = ay.refkey(props.payload, "property");
-  const payloadParameter: ts.ParameterDescriptor = {
-    type: <ef.TypeExpression type={props.payload.type} />,
-    refkey: inputRef,
-  };
-
-  return <ts.FunctionDeclaration export name={props.name} parameters={{payload: payloadParameter}} refkey={props.refkey}>
-    return <MultipartTransformExpression operation={props.operation} payload={props.payload} />;
-  </ts.FunctionDeclaration>;
-}
-
-export interface HttpPartExpressionProps {
-  part: HttpOperationPart;
-  inputRef: ay.Refkey;
 }

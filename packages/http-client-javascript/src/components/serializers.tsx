@@ -32,7 +32,7 @@ export function ModelSerializers(props: ModelSerializersProps) {
       <DateUnixTimestampDeserializer />
       {operations.map(o => <TransformDeclaration operation={o} />)}
       {dataTypes
-        .filter((m) => m.kind === "Model")
+        .filter((m) => m.kind === "Model" || m.kind === "Union")
         .map((type) => (
           <>
             <JsonTransformDeclaration type={type} target="transport" />

@@ -1,0 +1,33 @@
+import * as ay from "@alloy-js/core";
+import * as ts from "@alloy-js/typescript";
+import { EmitContext } from "@typespec/compiler";
+import { OperationsDirectory } from "./components/client-directory.jsx";
+import { Client } from "./components/client.jsx";
+import { Models } from "./components/models.js";
+import { Output } from "./components/output.jsx";
+import { ModelSerializers } from "./components/serializers.js";
+import { MultipartHelpers } from "./components/static-helpers/multipart-helpers.jsx";
+import { JsClientEmitterOptions } from "./lib.js";
+
+export async function $onEmit(context: EmitContext<JsClientEmitterOptions>) {
+  const packageName = context.options["package-name"] ?? "test-package";
+  return <Output>
+        <ts.PackageDirectory name={packageName} version="1.0.0" path="." scripts={{ "build": "tsc" }}>
+          <ay.SourceDirectory path="src">
+            <ts.BarrelFile export="." />
+            <Client/>
+            <ay.SourceDirectory path="models">
+              <ts.BarrelFile export="models"/>
+              <Models />
+              <ModelSerializers />
+            </ay.SourceDirectory>
+            <ay.SourceDirectory path="api">
+                <OperationsDirectory />
+            </ay.SourceDirectory>
+            <ay.SourceDirectory path="helpers">
+              <MultipartHelpers />
+            </ay.SourceDirectory>
+          </ay.SourceDirectory>
+        </ts.PackageDirectory>
+    </Output>;
+}

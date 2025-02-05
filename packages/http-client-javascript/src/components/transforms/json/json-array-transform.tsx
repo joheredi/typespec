@@ -20,10 +20,14 @@ export function JsonArrayTransform(props: JsonArrayTransformProps) {
   const elementType = $.array.getElementType(props.type);
 
   return ay.code`
+    if(!${props.itemRef}) {
+      return [];
+    }
+    
     const _transformedArray = [];
 
     for (const item of ${props.itemRef}) {
-      const transformedItem = ${<JsonTransform type={elementType} target={props.target} itemRef="item" />};
+      const transformedItem = ${(<JsonTransform type={elementType} target={props.target} itemRef="item" />)};
       _transformedArray.push(transformedItem);
     }
 
@@ -58,17 +62,25 @@ export function JsonArrayTransformDeclaration(props: JsonArrayTransformDeclarati
     "function",
   );
 
-  const itemType = ay.code`Array<${<ef.TypeExpression type={elementType} />}>`;
+  const itemType = ay.code`Array<${(<ef.TypeExpression type={elementType} />)}>`;
   const returnType = props.target === "transport" ? "any" : itemType;
   const inputType = props.target === "transport" ? itemType : "any";
   const inputRef = ay.refkey();
 
   const parameters: Record<string, ts.ParameterDescriptor> = {
-    items_: { type: inputType, refkey: inputRef },
+    items_: { type: inputType, refkey: inputRef, optional: true },
   };
 
   const declarationRefkey = getJsonArrayTransformRefkey(props.type, props.target);
-  return <ts.FunctionDeclaration name={transformName} export returnType={returnType} parameters={parameters} refkey={declarationRefkey} >
-    <JsonArrayTransform {...props} itemRef={inputRef} />
-  </ts.FunctionDeclaration>;
+  return (
+    <ts.FunctionDeclaration
+      name={transformName}
+      export
+      returnType={returnType}
+      parameters={parameters}
+      refkey={declarationRefkey}
+    >
+      <JsonArrayTransform {...props} itemRef={inputRef} />
+    </ts.FunctionDeclaration>
+  );
 }

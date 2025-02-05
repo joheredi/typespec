@@ -19,7 +19,7 @@ export function JsonUnionTransform(props: JsonUnionTransformProps) {
 
   const variantType = props.type.variants.values().next().value!.type;
   // TODO: Handle non-discriminated unions
-  return <> return <JsonTransform {...props} type={variantType} /> </>;
+  return <JsonTransform {...props} type={variantType} />;
 }
 
 export function getJsonUnionTransformRefkey(
@@ -51,6 +51,6 @@ export function JsonUnionTransformDeclaration(props: JsonUnionTransformDeclarati
 
   const declarationRefkey = getJsonUnionTransformRefkey(props.type, props.target);
   return <ts.FunctionDeclaration name={transformName} export returnType={returnType} parameters={parameters} refkey={declarationRefkey} >
-    <JsonUnionTransform {...props} itemRef={inputRef} />
+    return <JsonUnionTransform {...props} itemRef={inputRef} />
   </ts.FunctionDeclaration>;
 }

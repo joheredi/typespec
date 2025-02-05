@@ -3,6 +3,7 @@ import * as ts from "@alloy-js/typescript";
 import * as ef from "@typespec/emitter-framework/typescript";
 import { HttpOperationBody } from "@typespec/http";
 import { ClientOperation } from "@typespec/http-client-library";
+import { JsonTransform } from "./json/json-transform.jsx";
 export interface TransformDeclarationProps {
   operation: ClientOperation;
   refkey?: ay.Refkey;
@@ -37,7 +38,7 @@ export function SingleBodyTransformDeclaration(props: SingleBodyTransformDeclara
   };
 
   return <ts.FunctionDeclaration export name={props.name} parameters={{payload: payloadParameter}} refkey={props.refkey}>
-    return <ef.TypeTransformCall target="transport" type={props.payload.type} optionsBagName="options" itemPath={["payload"]} />;
+    return <JsonTransform itemRef={inputRef} target="transport" type={props.payload.type} />;
   </ts.FunctionDeclaration>;
 }
 

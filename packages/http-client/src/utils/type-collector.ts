@@ -6,10 +6,6 @@ export function collectDataTypes(type: Type, dataTypes: Set<Model | Union | Enum
     type,
     {
       model(model) {
-        if ($.array.is(model) || $.record.is(model)) {
-          return;
-        }
-
         if ($.httpPart.is(model)) {
           const partType = $.httpPart.unpack(model);
           // Need recursive call to collect data types from the part type as the semantic walker

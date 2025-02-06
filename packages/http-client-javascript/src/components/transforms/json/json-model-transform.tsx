@@ -17,7 +17,7 @@ export interface JsonModelTransformProps {
 
 export function JsonModelTransform(props: JsonModelTransformProps) {
   // Need to skip never properties
-  const properties = Array.from(props.type.properties.values()).filter(p => !$.type.isNever(p.type))
+  const properties = Array.from($.model.getProperties(props.type).values()).filter(p => !$.type.isNever(p.type))
 
   return <ts.ObjectExpression>
     <JsonModelBaseTransform itemRef={props.itemRef} target={props.target} type={props.type}/>

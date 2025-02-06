@@ -4,46 +4,31 @@ import * as ts from "@alloy-js/typescript";
 import { Model } from "@typespec/compiler";
 import { JsonModelPropertyTransform } from "./json-model-property-transform.jsx";
 import { JsonTransformDiscriminatorDeclaration } from "./json-transform-discriminator.jsx";
-import { JsonTransform } from "./json-transform.jsx";
 import { $ } from "@typespec/compiler/experimental/typekit";
-import { getJsonRecordTransformRefkey, JsonRecordTransformDeclaration } from "./json-record-transform.jsx";
+import { JsonRecordTransformDeclaration } from "./json-record-transform.jsx";
+import { JsonAdditionalPropertiesTransform } from "./json-model-additional-properties-transform.jsx";
+import { JsonModelBaseTransform } from "./json-model-base-transform.jsx";
 
 export interface JsonModelTransformProps {
   itemRef: ay.Refkey | ay.Children;
   type: Model;
   target: "transport" | "application";
-  applicationType?: Model;
 }
 
 export function JsonModelTransform(props: JsonModelTransformProps) {
-  const baseModel = props.type.baseModel;
-
-  const baseTransforms: ay.Children[] = [];
-
-  if (baseModel) {
-    baseTransforms.push(<>...<JsonTransform {...props} type={baseModel} />,</>)
-  }
-
-  const spreadType = $.model.getSpreadType(props.type)
-
-  if(spreadType && $.model.is(spreadType) && $.record.is(spreadType)) {
-    const additionaPropsRefkey = getJsonRecordTransformRefkey(spreadType, props.target);
-    baseTransforms.push(<>additionalProperties: <ts.ObjectExpression>
-      ...{additionaPropsRefkey}({props.itemRef}.additionalProperties)
-      </ts.ObjectExpression>,</>)
-
-  }
-
   // Need to skip never properties
   const properties = Array.from(props.type.properties.values()).filter(p => !$.type.isNever(p.type))
 
   return <ts.ObjectExpression>
-    {baseTransforms}
+    <JsonModelBaseTransform itemRef={props.itemRef} target={props.target} type={props.type}/>
+    <JsonAdditionalPropertiesTransform itemRef={props.itemRef} target={props.target} type={props.type} />
     {ay.mapJoin(properties, (property) => {
       return <JsonModelPropertyTransform itemRef={props.itemRef} type={property} target={props.target} />;
     }, {joiner: ",\n"})}
   </ts.ObjectExpression>;
 }
+
+
 
 export function getJsonModelTransformRefkey(
   type: Model,

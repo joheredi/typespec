@@ -78,6 +78,7 @@ export function jsonDogToTransportTransform(input_?: Dog): any {
 
   return {
     ...jsonPetToTransportTransform(input_),
+
     color: input_.color,
   }!;
 }
@@ -93,6 +94,7 @@ export function jsonDogToApplicationTransform(input_?: any): Dog {
 
   return {
     ...jsonPetToApplicationTransform(input_),
+
     color: input_.color,
   }!;
 }

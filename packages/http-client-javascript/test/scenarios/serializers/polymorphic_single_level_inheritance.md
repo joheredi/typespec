@@ -101,6 +101,7 @@ export function jsonSeaGullToTransportTransform(input_?: SeaGull): any {
 
   return {
     ...jsonBirdToTransportTransform(input_),
+
     kind: input_.kind,
   }!;
 }
@@ -117,6 +118,7 @@ export function jsonSparrowToTransportTransform(input_?: Sparrow): any {
 
   return {
     ...jsonBirdToTransportTransform(input_),
+
     kind: input_.kind,
   }!;
 }
@@ -133,6 +135,7 @@ export function jsonGooseToTransportTransform(input_?: Goose): any {
 
   return {
     ...jsonBirdToTransportTransform(input_),
+
     kind: input_.kind,
   }!;
 }
@@ -154,6 +157,7 @@ export function jsonEagleToTransportTransform(input_?: Eagle): any {
 
   return {
     ...jsonBirdToTransportTransform(input_),
+
     kind: input_.kind,
     friends: jsonArrayBirdToTransportTransform(input_.friends),
     hate: jsonRecordBirdToTransportTransform(input_.hate),

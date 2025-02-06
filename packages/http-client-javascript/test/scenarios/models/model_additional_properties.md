@@ -49,11 +49,26 @@ export function jsonDogToTransportTransform(input_?: Dog): any {
   }
 
   return {
-    additionalProperties: {
-      ...jsonRecordExtraFeatureToTransportTransform(
-        input_.additionalProperties,
-      ),
-    },
+    ...jsonRecordExtraFeatureToTransportTransform(
+      ({ id, name, color, ...additionalProperties }) => additionalProperties,
+    )(input_.additionalProperties),
+    id: input_.id,
+    name: input_.name,
+    color: input_.color,
+  }!;
+}
+```
+
+## Deserializer
+
+```ts src/models/serializers.ts function jsonDogToApplicationTransform
+export function jsonDogToApplicationTransform(input_?: any): Dog {
+  if (!input_) {
+    return input_ as any;
+  }
+
+  return {
+    additionalProperties: jsonRecordExtraFeatureToApplicationTransform(input_),
     id: input_.id,
     name: input_.name,
     color: input_.color,

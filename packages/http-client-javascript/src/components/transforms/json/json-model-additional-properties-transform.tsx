@@ -29,7 +29,7 @@ export function JsonAdditionalPropertiesTransform(props: JsonAdditionalPropertie
 
   const itemRef = ay.code`${props.itemRef}.additionalProperties`;
   const destructuredProperties = ay.mapJoin(props.type.properties, (name) => name, {joiner: ",", ender: ","})
-  const inlineDestructure = ay.code`(({${destructuredProperties} ...additionalProperties}) => additionalProperties)(${itemRef})`
+  const inlineDestructure = ay.code`(({${destructuredProperties} ...additionalProperties}: any) => additionalProperties)(${itemRef})`
   return <>
           ...{getJsonRecordTransformRefkey(additionalProperties, props.target)}{inlineDestructure},
   </>

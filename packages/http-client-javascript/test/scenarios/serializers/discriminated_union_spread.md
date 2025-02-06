@@ -50,7 +50,7 @@ export function jsonSpreadRecordForDiscriminatedUnionToTransportTransform(
 
   return {
     ...jsonRecordWidgetDataToTransportTransform(
-      ({ name, ...additionalProperties }) => additionalProperties,
+      ({ name, ...additionalProperties }: any) => additionalProperties,
     )(input_.additionalProperties),
     name: input_.name,
   }!;

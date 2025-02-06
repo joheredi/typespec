@@ -46,7 +46,12 @@ export async function unionEnumName(
 ```
 
 ```ts src/models/serializers.ts function jsonServerExtensibleEnumToTransportTransform
-export function jsonServerExtensibleEnumToTransportTransform(input_: ServerExtensibleEnum): any {
+export function jsonServerExtensibleEnumToTransportTransform(
+  input_?: ServerExtensibleEnum,
+): any {
+  if (!input_) {
+    return input_ as any;
+  }
   return input_;
 }
 ```

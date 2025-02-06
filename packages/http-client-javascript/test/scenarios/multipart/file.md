@@ -23,7 +23,10 @@ export interface RequestBody {
 ## Operations
 
 ```ts src/api/testClientOperations.ts function doThing
-export async function doThing(client: TestClientContext, bodyParam: RequestBody): Promise<void> {
+export async function doThing(
+  client: TestClientContext,
+  bodyParam: RequestBody,
+): Promise<void> {
   const path = parse("/").expand({});
 
   const httpRequestOptions = {
@@ -75,7 +78,10 @@ export interface RequestBody {
 ## Operation
 
 ```ts src/api/testClientOperations.ts function doThing
-export async function doThing(client: TestClientContext, bodyParam: RequestBody): Promise<void> {
+export async function doThing(
+  client: TestClientContext,
+  bodyParam: RequestBody,
+): Promise<void> {
   const path = parse("/").expand({});
 
   const httpRequestOptions = {
@@ -119,14 +125,21 @@ export interface RequestBody {
 ## Operation
 
 ```ts src/api/testClientOperations.ts function doThing
-export async function doThing(client: TestClientContext, bodyParam: RequestBody): Promise<void> {
+export async function doThing(
+  client: TestClientContext,
+  bodyParam: RequestBody,
+): Promise<void> {
   const path = parse("/").expand({});
 
   const httpRequestOptions = {
     headers: {
       "content-type": "multipart/form-data",
     },
-    body: [...bodyParam.files.map((files: any) => createFilePartDescriptor("files", files))],
+    body: [
+      ...bodyParam.files.map((files: any) =>
+        createFilePartDescriptor("files", files),
+      ),
+    ],
   };
 
   const response = await client.path(path).post(httpRequestOptions);

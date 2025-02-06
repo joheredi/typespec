@@ -15,7 +15,10 @@ export interface ClientContext extends Client {}
 ```
 
 ```ts src/api/clientContext.ts function createClientContext
-export function createClientContext(endpoint: string, options?: ClientOptions): ClientContext {
+export function createClientContext(
+  endpoint: string,
+  options?: ClientOptions,
+): ClientContext {
   return getClient(endpoint, {
     ...options,
   });

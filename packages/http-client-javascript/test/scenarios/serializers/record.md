@@ -21,18 +21,26 @@ export interface Foo {
 ```
 
 ```ts src/models/serializers.ts function jsonFooToTransportTransform
-export function jsonFooToTransportTransform(input_: Foo): any {
+export function jsonFooToTransportTransform(input_?: Foo): any {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
     my_values: jsonRecordInt32ToTransportTransform(input_.myValues),
-  };
+  }!;
 }
 ```
 
 ```ts src/models/serializers.ts function jsonFooToApplicationTransform
-export function jsonFooToApplicationTransform(input_: any): Foo {
+export function jsonFooToApplicationTransform(input_?: any): Foo {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
     myValues: jsonRecordInt32ToApplicationTransform(input_.my_values),
-  };
+  }!;
 }
 ```
 
@@ -69,17 +77,25 @@ export interface Bar {
 ```
 
 ```ts src/models/serializers.ts function jsonFooToTransportTransform
-export function jsonFooToTransportTransform(input_: Foo): any {
+export function jsonFooToTransportTransform(input_?: Foo): any {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
     my_values: jsonRecordBarToTransportTransform(input_.myValues),
-  };
+  }!;
 }
 ```
 
 ```ts src/models/serializers.ts function jsonFooToApplicationTransform
-export function jsonFooToApplicationTransform(input_: any): Foo {
+export function jsonFooToApplicationTransform(input_?: any): Foo {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
     myValues: jsonRecordBarToApplicationTransform(input_.my_values),
-  };
+  }!;
 }
 ```

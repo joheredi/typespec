@@ -30,11 +30,15 @@ export interface Foo {
 This function should correctly transform a Foo instance into a transport-friendly format, ensuring all properties are properly mapped.
 
 ```ts src/models/serializers.ts function jsonFooToTransportTransform
-export function jsonFooToTransportTransform(input_: Foo): any {
+export function jsonFooToTransportTransform(input_?: Foo): any {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
     name: input_.name,
     age: input_.age,
-  };
+  }!;
 }
 ```
 
@@ -43,11 +47,15 @@ export function jsonFooToTransportTransform(input_: Foo): any {
 This function should correctly reconstruct a Foo instance from a transport-friendly representation, ensuring all properties are properly mapped back.
 
 ```ts src/models/serializers.ts function jsonFooToApplicationTransform
-export function jsonFooToApplicationTransform(input_: any): Foo {
+export function jsonFooToApplicationTransform(input_?: any): Foo {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
     name: input_.name,
     age: input_.age,
-  };
+  }!;
 }
 ```
 
@@ -77,12 +85,16 @@ op foo(): Foo | Bar;
 This function should transform Foo into a transport-friendly format while ensuring that the bar property is serialized using the jsonBarToTransportTransform function.
 
 ```ts src/models/serializers.ts function jsonFooToTransportTransform
-export function jsonFooToTransportTransform(input_: Foo): any {
+export function jsonFooToTransportTransform(input_?: Foo): any {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
     name: input_.name,
     age: input_.age,
     bar: jsonBarToTransportTransform(input_.bar),
-  };
+  }!;
 }
 ```
 
@@ -91,9 +103,13 @@ export function jsonFooToTransportTransform(input_: Foo): any {
 This function should transform a Bar instance into its transport format, correctly mapping its properties.
 
 ```ts src/models/serializers.ts function jsonBarToTransportTransform
-export function jsonBarToTransportTransform(input_: Bar): any {
+export function jsonBarToTransportTransform(input_?: Bar): any {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
     address: input_.address,
-  };
+  }!;
 }
 ```

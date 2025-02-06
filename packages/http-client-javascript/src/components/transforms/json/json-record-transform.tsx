@@ -19,11 +19,12 @@ export function JsonRecordTransform(props: JsonRecordTransformProps) {
 
   const elementType = $.record.getElementType(props.type);
 
+  // TODO: Do we need to cast?
   return ay.code`
     const _transformedRecord: any = {};
 
-    for (const [key, value] of Object.entries(${props.itemRef})) {
-      const transformedItem = ${<JsonTransform type={elementType} target={props.target} itemRef="value" />};
+    for (const [key, value] of Object.entries(${props.itemRef} ?? {})) {
+      const transformedItem = ${(<JsonTransform type={elementType} target={props.target} itemRef="value as any" />)};
       _transformedRecord[key] = transformedItem;
     }
 
@@ -58,17 +59,25 @@ export function JsonRecordTransformDeclaration(props: JsonRecordTransformDeclara
     "function",
   );
 
-  const itemType = ay.code`Record<string, ${<ef.TypeExpression type={elementType} />}>`;
+  const itemType = ay.code`Record<string, any>`;
   const returnType = props.target === "transport" ? "any" : itemType;
   const inputType = props.target === "transport" ? itemType : "any";
   const inputRef = ay.refkey();
 
   const parameters: Record<string, ts.ParameterDescriptor> = {
-    items_: { type: inputType, refkey: inputRef },
+    items_: { type: inputType, refkey: inputRef, optional: true },
   };
 
   const declarationRefkey = getJsonRecordTransformRefkey(props.type, props.target);
-  return <ts.FunctionDeclaration name={transformName} export returnType={returnType} parameters={parameters} refkey={declarationRefkey} >
-    <JsonRecordTransform {...props} itemRef={inputRef} />
-  </ts.FunctionDeclaration>;
+  return (
+    <ts.FunctionDeclaration
+      name={transformName}
+      export
+      returnType={returnType}
+      parameters={parameters}
+      refkey={declarationRefkey}
+    >
+      <JsonRecordTransform {...props} itemRef={inputRef} />
+    </ts.FunctionDeclaration>
+  );
 }

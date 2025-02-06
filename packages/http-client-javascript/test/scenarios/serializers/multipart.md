@@ -47,7 +47,9 @@ export async function create(
     headers: {
       "content-type": "multipart/form-data",
     },
-    body: [createFilePartDescriptor("profileImage", body.profileImage, "image/jpg")],
+    body: [
+      createFilePartDescriptor("profileImage", body.profileImage, "image/jpg"),
+    ],
   };
 
   const response = await client.path(path).post(httpRequestOptions);

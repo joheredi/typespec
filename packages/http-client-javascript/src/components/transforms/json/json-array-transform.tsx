@@ -20,18 +20,14 @@ export function JsonArrayTransform(props: JsonArrayTransformProps) {
   const elementType = $.array.getElementType(props.type);
 
   return ay.code`
-    if(!${props.itemRef}) {
-      return [];
-    }
-    
     const _transformedArray = [];
 
-    for (const item of ${props.itemRef}) {
-      const transformedItem = ${(<JsonTransform type={elementType} target={props.target} itemRef="item" />)};
+    for (const item of ${props.itemRef} ?? []) {
+      const transformedItem = ${(<JsonTransform type={elementType} target={props.target} itemRef="item as any" />)};
       _transformedArray.push(transformedItem);
     }
 
-    return _transformedArray;
+    return _transformedArray as any;
   `;
 }
 

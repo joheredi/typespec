@@ -25,10 +25,21 @@ export function SimplePartTransform(props: SimplePartTransformProps) {
     });
   }
 
-  return <ts.ObjectExpression>
-  <ts.ObjectProperty name="name" jsValue={partName} />,
-  <ts.ObjectProperty name="body" value={<JsonTransform itemRef={partRef} target="transport" type={props.part.body.property ?? props.part.body.type} />} />,
-  </ts.ObjectExpression>;
+  return (
+    <ts.ObjectExpression>
+      <ts.ObjectProperty name="name" jsValue={partName} />,
+      <ts.ObjectProperty
+        name="body"
+        value={
+          <JsonTransform
+            itemRef={partRef}
+            target="transport"
+            type={props.part.body.property ?? props.part.body.type}
+          />
+        }
+      />,
+    </ts.ObjectExpression>
+  );
 }
 
 function getPartRef(itemRef: ay.Children, partName: string) {

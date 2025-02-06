@@ -18,7 +18,10 @@ op defaultEncoding(
 ## TypeScript
 
 ```ts src/api/testClientOperations.ts function defaultEncoding
-export async function defaultEncoding(client: TestClientContext, value: Date): Promise<void> {
+export async function defaultEncoding(
+  client: TestClientContext,
+  value: Date,
+): Promise<void> {
   const path = parse("/default{?value}").expand({
     value: dateRfc3339Serializer(value),
   });
@@ -100,7 +103,10 @@ op get(
 ## TypeScript
 
 ```ts src/api/testClientOperations.ts function get
-export async function get(client: TestClientContext, value: Date): Promise<void> {
+export async function get(
+  client: TestClientContext,
+  value: Date,
+): Promise<void> {
   const path = parse("/default{?value}").expand({
     value: dateRfc3339Serializer(value),
   });
@@ -139,7 +145,10 @@ op get(
 ## TypeScript
 
 ```ts src/api/testClientOperations.ts function get
-export async function get(client: TestClientContext, value: Date): Promise<void> {
+export async function get(
+  client: TestClientContext,
+  value: Date,
+): Promise<void> {
   const path = parse("/default{?value}").expand({
     value: dateRfc7231Serializer(value),
   });
@@ -178,7 +187,10 @@ op get(
 ## TypeScript
 
 ```ts src/api/testClientOperations.ts function get
-export async function get(client: TestClientContext, value: Date): Promise<void> {
+export async function get(
+  client: TestClientContext,
+  value: Date,
+): Promise<void> {
   const path = parse("/default{?value}").expand({
     value: dateUnixTimestampSerializer(value),
   });

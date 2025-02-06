@@ -72,11 +72,15 @@ interface Widgets {
 This function converts the received JSON response into a `Widget` instance.
 
 ```ts src/models/serializers.ts function jsonWidgetToApplicationTransform
-export function jsonWidgetToApplicationTransform(input_: any): Widget {
+export function jsonWidgetToApplicationTransform(input_?: any): Widget {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
     name: input_.name,
     age: input_.age,
-  };
+  }!;
 }
 ```
 
@@ -93,8 +97,11 @@ export async function read(client: WidgetsClientContext): Promise<Widget> {
   };
 
   const response = await client.path(path).get(httpRequestOptions);
-  if (+response.status === 200 && response.headers["content-type"]?.includes("application/json")) {
-    return jsonWidgetToApplicationTransform(response.body);
+  if (
+    +response.status === 200 &&
+    response.headers["content-type"]?.includes("application/json")
+  ) {
+    return jsonWidgetToApplicationTransform(response.body)!;
   }
 
   throw new Error("Unhandled response");
@@ -135,7 +142,9 @@ interface Widgets {
 The function determines the response type based on the status code. If `200`, it deserializes a `Widget`; if `204`, it returns `void`.
 
 ```ts src/api/widgetsClient/widgetsClientOperations.ts function read
-export async function read(client: WidgetsClientContext): Promise<Widget | void> {
+export async function read(
+  client: WidgetsClientContext,
+): Promise<Widget | void> {
   const path = parse("/widgets").expand({});
 
   const httpRequestOptions = {
@@ -143,8 +152,11 @@ export async function read(client: WidgetsClientContext): Promise<Widget | void>
   };
 
   const response = await client.path(path).get(httpRequestOptions);
-  if (+response.status === 200 && response.headers["content-type"]?.includes("application/json")) {
-    return jsonWidgetToApplicationTransform(response.body);
+  if (
+    +response.status === 200 &&
+    response.headers["content-type"]?.includes("application/json")
+  ) {
+    return jsonWidgetToApplicationTransform(response.body)!;
   }
 
   if (+response.status === 204 && !response.body) {
@@ -206,12 +218,18 @@ export async function read(client: WidgetsClientContext): Promise<Widget> {
   };
 
   const response = await client.path(path).get(httpRequestOptions);
-  if (+response.status === 200 && response.headers["content-type"]?.includes("application/json")) {
-    return jsonWidgetToApplicationTransform(response.body);
+  if (
+    +response.status === 200 &&
+    response.headers["content-type"]?.includes("application/json")
+  ) {
+    return jsonWidgetToApplicationTransform(response.body)!;
   }
 
-  if (+response.status === 200 && response.headers["content-type"]?.includes("application/xml")) {
-    return jsonWidgetToApplicationTransform(response.body);
+  if (
+    +response.status === 200 &&
+    response.headers["content-type"]?.includes("application/xml")
+  ) {
+    return jsonWidgetToApplicationTransform(response.body)!;
   }
 
   throw new Error("Unhandled response");

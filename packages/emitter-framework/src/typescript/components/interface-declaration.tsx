@@ -106,7 +106,9 @@ function getExtendsType(type: Model | Interface): Children | undefined {
   if(spreadType) {
     // When extending a record we need to override the element type to be unknown to avoid type errors
     if($.record.is(spreadType)) {
-      extending.push(recordExtends);
+      // Here we are in the additional properties land.
+      // Instead of extending we need to create an envelope property
+      // do nothing here.
     } else {
       extending.push(<TypeExpression type={spreadType} />);
     }
@@ -123,6 +125,10 @@ function membersFromType(type: Model | Interface) {
   let typeMembers: RekeyableMap<string, ModelProperty | Operation> | undefined;
   if ($.model.is(type)) {
     typeMembers = $.model.getProperties(type);
+    const spread = $.model.getSpreadType(type);
+    if(spread && $.model.is(spread) && $.record.is(spread)) {
+      typeMembers.set("additionalProperties", $.modelProperty.create({name: "additionalProperties", optional: true, type: spread}));
+    }
   } else {
     typeMembers = createRekeyableMap(type.operations)
   }

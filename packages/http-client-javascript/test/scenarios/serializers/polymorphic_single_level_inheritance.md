@@ -49,25 +49,28 @@ op getModel(): Bird;
 This function should select the appropriate transport transformation based on the `kind` property of the `Bird` instance. It checks for specific kinds ("seagull", "sparrow", "goose", "eagle") and delegates to the corresponding transform. If the kind is unknown, it logs a warning and returns a fallback value.
 
 ```ts src/models/serializers.ts function jsonBirdToTransportDiscriminator
-export function jsonBirdToTransportDiscriminator(input_: Bird): any {
-  if (input_.kind === "seagull") {
-    return jsonSeaGullToTransportTransform(input_);
+export function jsonBirdToTransportDiscriminator(input_?: Bird): any {
+  if (!input_) {
+    return input_ as any;
+  }
+  const discriminatorValue = input_.kind;
+  if (discriminatorValue === "seagull") {
+    return jsonSeaGullToTransportTransform(input_ as any)!;
   }
 
-  if (input_.kind === "sparrow") {
-    return jsonSparrowToTransportTransform(input_);
+  if (discriminatorValue === "sparrow") {
+    return jsonSparrowToTransportTransform(input_ as any)!;
   }
 
-  if (input_.kind === "goose") {
-    return jsonGooseToTransportTransform(input_);
+  if (discriminatorValue === "goose") {
+    return jsonGooseToTransportTransform(input_ as any)!;
   }
 
-  if (input_.kind === "eagle") {
-    return jsonEagleToTransportTransform(input_);
+  if (discriminatorValue === "eagle") {
+    return jsonEagleToTransportTransform(input_ as any)!;
   }
-
-  console.warn(`Received unknown kind: $[object Object]`);
-  return item as any;
+  console.warn(`Received unknown kind: ` + discriminatorValue);
+  return input_ as any;
 }
 ```
 
@@ -75,11 +78,15 @@ export function jsonBirdToTransportDiscriminator(input_: Bird): any {
 This function should transform a basic `Bird` instance by mapping its core properties (`kind` and `wingspan`) to the transport format.
 
 ```ts src/models/serializers.ts function jsonBirdToTransportTransform
-export function jsonBirdToTransportTransform(input_: Bird): any {
+export function jsonBirdToTransportTransform(input_?: Bird): any {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
     kind: input_.kind,
     wingspan: input_.wingspan,
-  };
+  }!;
 }
 ```
 
@@ -87,11 +94,15 @@ export function jsonBirdToTransportTransform(input_: Bird): any {
 For a `SeaGull` instance, the serializer should extend the base transformation provided by `jsonBirdToApplicationTransform` and then explicitly include all properties from SeaGull in this case it is just the `kind` .
 
 ```ts src/models/serializers.ts function jsonSeaGullToTransportTransform
-export function jsonSeaGullToTransportTransform(input_: SeaGull): any {
+export function jsonSeaGullToTransportTransform(input_?: SeaGull): any {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
     ...jsonBirdToTransportTransform(input_),
     kind: input_.kind,
-  };
+  }!;
 }
 ```
 
@@ -99,11 +110,15 @@ export function jsonSeaGullToTransportTransform(input_: SeaGull): any {
 Similarly, the serializer for a `Sparrow` instance should build upon the base Bird transformation and add the `kind` property accordingly.
 
 ```ts src/models/serializers.ts function jsonSparrowToTransportTransform
-export function jsonSparrowToTransportTransform(input_: Sparrow): any {
+export function jsonSparrowToTransportTransform(input_?: Sparrow): any {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
     ...jsonBirdToTransportTransform(input_),
     kind: input_.kind,
-  };
+  }!;
 }
 ```
 
@@ -111,11 +126,15 @@ export function jsonSparrowToTransportTransform(input_: Sparrow): any {
 This function should transform a `Goose` instance by reusing the base Bird transformation and explicitly setting the `kind` property.
 
 ```ts src/models/serializers.ts function jsonGooseToTransportTransform
-export function jsonGooseToTransportTransform(input_: Goose): any {
+export function jsonGooseToTransportTransform(input_?: Goose): any {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
     ...jsonBirdToTransportTransform(input_),
     kind: input_.kind,
-  };
+  }!;
 }
 ```
 
@@ -128,13 +147,17 @@ The serializer for an `Eagle` instance is more complex due to additional propert
 - Transform the `partner` property (a single `Bird` instance) using `jsonBirdToApplicationTransform`.
 
 ```ts src/models/serializers.ts function jsonEagleToTransportTransform
-export function jsonEagleToTransportTransform(input_: Eagle): any {
+export function jsonEagleToTransportTransform(input_?: Eagle): any {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
     ...jsonBirdToTransportTransform(input_),
     kind: input_.kind,
     friends: jsonArrayBirdToTransportTransform(input_.friends),
     hate: jsonRecordBirdToTransportTransform(input_.hate),
     partner: jsonBirdToTransportTransform(input_.partner),
-  };
+  }!;
 }
 ```

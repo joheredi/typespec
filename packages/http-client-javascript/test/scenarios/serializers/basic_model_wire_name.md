@@ -24,19 +24,27 @@ export interface Foo {
 ```
 
 ```ts src/models/serializers.ts function jsonFooToTransportTransform
-export function jsonFooToTransportTransform(input_: Foo): any {
+export function jsonFooToTransportTransform(input_?: Foo): any {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
     element_name: input_.elementName,
     age: input_.age,
-  };
+  }!;
 }
 ```
 
 ```ts src/models/serializers.ts function jsonFooToApplicationTransform
-export function jsonFooToApplicationTransform(input_: any): Foo {
+export function jsonFooToApplicationTransform(input_?: any): Foo {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
     elementName: input_.element_name,
     age: input_.age,
-  };
+  }!;
 }
 ```

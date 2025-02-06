@@ -2,7 +2,7 @@ import * as ay from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
 import { Union } from "@typespec/compiler";
 import { $ } from "@typespec/compiler/experimental/typekit";
-import { JsonTransformDiscriminator } from "./json-transform-discriminator.jsx";
+import { getJsonTransformDiscriminatorRefkey, JsonTransformDiscriminator, JsonTransformDiscriminatorDeclaration } from "./json-transform-discriminator.jsx";
 import { JsonTransform } from "./json-transform.jsx";
 
 export interface JsonUnionTransformProps {
@@ -12,12 +12,21 @@ export interface JsonUnionTransformProps {
 }
 
 export function JsonUnionTransform(props: JsonUnionTransformProps) {
+
+
+
   const discriminator = $.type.getDiscriminator(props.type);
   if (discriminator) {
-    return <JsonTransformDiscriminator {...props} discriminator={discriminator}/>;
+    // return <JsonTransformDiscriminator {...props} discriminator={discriminator}/>;
+    return <>{getJsonTransformDiscriminatorRefkey(props.type)}({props.itemRef})</>
   }
 
   const variantType = props.type.variants.values().next().value!.type;
+
+  if(!$.union.isExtensible(props.type)) {
+    return props.itemRef
+  }
+
   // TODO: Handle non-discriminated unions
   return <JsonTransform {...props} type={variantType} />;
 }
@@ -46,11 +55,19 @@ export function JsonUnionTransformDeclaration(props: JsonUnionTransformDeclarati
   const inputRef = ay.refkey();
 
   const parameters: Record<string, ts.ParameterDescriptor> = {
-    input_: { type: inputType, refkey: inputRef },
+    input_: { type: inputType, refkey: inputRef, optional: true },
   };
 
   const declarationRefkey = getJsonUnionTransformRefkey(props.type, props.target);
-  return <ts.FunctionDeclaration name={transformName} export returnType={returnType} parameters={parameters} refkey={declarationRefkey} >
+  return <>
+  <JsonTransformDiscriminatorDeclaration target={props.target} type={props.type} />
+  <ts.FunctionDeclaration name={transformName} export returnType={returnType} parameters={parameters} refkey={declarationRefkey} >
+    {ay.code`
+    if(!${inputRef}) {
+      return ${inputRef} as any;
+    }
+    `}
     return <JsonUnionTransform {...props} itemRef={inputRef} />
-  </ts.FunctionDeclaration>;
+  </ts.FunctionDeclaration>
+  </>;
 }

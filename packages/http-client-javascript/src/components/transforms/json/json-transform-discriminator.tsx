@@ -16,26 +16,30 @@ export function JsonTransformDiscriminator(props: JsonTransformDiscriminatorProp
 
   const discriminatorRef = ay.code`${props.itemRef}.${props.discriminator.propertyName}`;
 
+  // Need to cast to make sure that the general types which usually have a broader
+  // type in the discriminator are compatible.
+  const itemRef = ay.code`${props.itemRef} as any`;
   const discriminatingCases = ay.mapJoin(
     discriminatedUnion.variants,
     (name, variant) => {
       return ay.code`
-    if( ${discriminatorRef} === ${JSON.stringify(name)}) {
-      return ${<JsonTransform type={variant.type} target={props.target} itemRef={props.itemRef}/>}
+    if( discriminatorValue === ${JSON.stringify(name)}) {
+      return ${(<JsonTransform type={variant.type} target={props.target} itemRef={itemRef} />)}!
     }
     `;
     },
     { joiner: "\n\n" },
   );
 
-  return <>
-    {discriminatingCases}
-
+  return (
     <>
-      console.warn(`Received unknown kind: ${{discriminatorRef}}`); 
-      return item as any;
+      const discriminatorValue = {discriminatorRef};
+      {discriminatingCases}
+      <>
+      console.warn(`Received unknown kind: ` + discriminatorValue); 
+      return {itemRef}</>
     </>
-  </>;
+  );
 }
 
 export function getJsonTransformDiscriminatorRefkey(type: Union | Model) {
@@ -67,10 +71,23 @@ export function JsonTransformDiscriminatorDeclaration(
   const inputRef = ay.refkey();
 
   const parameters: Record<string, ts.ParameterDescriptor> = {
-    input_: { type: inputType, refkey: inputRef },
+    input_: { type: inputType, refkey: inputRef, optional: true },
   };
 
-  return <ts.FunctionDeclaration name={transformName} export returnType={returnType} parameters={parameters}>
-    <JsonTransformDiscriminator {...props} itemRef={inputRef} discriminator={discriminator} />
-  </ts.FunctionDeclaration>;
+  return (
+    <ts.FunctionDeclaration
+      name={transformName}
+      export
+      returnType={returnType}
+      parameters={parameters}
+      refkey={getJsonTransformDiscriminatorRefkey(props.type)}
+    >
+      {ay.code`
+    if(!${inputRef}) {
+      return ${inputRef} as any;
+    }
+    `}
+      <JsonTransformDiscriminator {...props} itemRef={inputRef} discriminator={discriminator} />
+    </ts.FunctionDeclaration>
+  );
 }

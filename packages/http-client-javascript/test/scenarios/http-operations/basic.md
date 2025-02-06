@@ -59,12 +59,16 @@ export interface Widget {
 A serializer function, `jsonWidgetToTransportTransform`, is generated to transform the `Widget` model into its transport format. It converts TypeScript-friendly property names (`totalWeight`) back to their wire format (`total_weight`).
 
 ```ts src/models/serializers.ts function jsonWidgetToTransportTransform
-export function jsonWidgetToTransportTransform(input_: Widget): any {
+export function jsonWidgetToTransportTransform(input_?: Widget): any {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
     id: input_.id,
     total_weight: input_.totalWeight,
     color: input_.color,
-  };
+  }!;
 }
 ```
 
@@ -106,8 +110,11 @@ export async function foo(client: TestClientContext): Promise<Widget> {
   };
 
   const response = await client.path(path).get(httpRequestOptions);
-  if (+response.status === 200 && response.headers["content-type"]?.includes("application/json")) {
-    return jsonWidgetToApplicationTransform(response.body);
+  if (
+    +response.status === 200 &&
+    response.headers["content-type"]?.includes("application/json")
+  ) {
+    return jsonWidgetToApplicationTransform(response.body)!;
   }
 
   throw new Error("Unhandled response");

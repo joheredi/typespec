@@ -10,11 +10,13 @@ export interface HttpResponseProps {
 }
 
 export function HttpResponse(props: HttpResponseProps) {
-  return <>
-    <HttpResponses operation={props.operation} />
-    
-    {code`throw new Error("Unhandled response");`}  
-  </>;
+  return (
+    <>
+      <HttpResponses operation={props.operation} />
+
+      {code`throw new Error("Unhandled response");`}
+    </>
+  );
 }
 
 export interface HttpResponsesProps {
@@ -37,10 +39,11 @@ export function HttpResponses(props: HttpResponsesProps) {
         : " && !response.body";
 
       if (body && (body.bodyKind === "single" || (type && !isVoidType(type)))) {
-        expression =
+        expression = (
           <>
-      return <JsonTransform itemRef={"response.body"} target="application" type={body.type} />;
-      </>;
+            return <JsonTransform itemRef={"response.body"} target="application" type={body.type} />!;
+          </>
+        );
       }
 
       if ($.httpResponse.statusCode.isSingle(statusCode)) {

@@ -18,7 +18,10 @@ op defaultEncoding(
 ## TypeScript
 
 ```ts src/api/testClientOperations.ts function defaultEncoding
-export async function defaultEncoding(client: TestClientContext, value: Date): Promise<void> {
+export async function defaultEncoding(
+  client: TestClientContext,
+  value: Date,
+): Promise<void> {
   const path = parse("/default").expand({});
 
   const httpRequestOptions = {
@@ -100,7 +103,10 @@ op get(
 ## TypeScript
 
 ```ts src/api/testClientOperations.ts function get
-export async function get(client: TestClientContext, value: Date): Promise<void> {
+export async function get(
+  client: TestClientContext,
+  value: Date,
+): Promise<void> {
   const path = parse("/default").expand({});
 
   const httpRequestOptions = {
@@ -139,7 +145,10 @@ op get(
 ## TypeScript
 
 ```ts src/api/testClientOperations.ts function get
-export async function get(client: TestClientContext, value: Date): Promise<void> {
+export async function get(
+  client: TestClientContext,
+  value: Date,
+): Promise<void> {
   const path = parse("/default").expand({});
 
   const httpRequestOptions = {
@@ -178,7 +187,10 @@ op get(
 ## TypeScript
 
 ```ts src/api/testClientOperations.ts function get
-export async function get(client: TestClientContext, value: Date): Promise<void> {
+export async function get(
+  client: TestClientContext,
+  value: Date,
+): Promise<void> {
   const path = parse("/default").expand({});
 
   const httpRequestOptions = {

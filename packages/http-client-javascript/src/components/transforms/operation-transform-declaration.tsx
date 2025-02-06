@@ -38,7 +38,7 @@ export function SingleBodyTransformDeclaration(props: SingleBodyTransformDeclara
   };
 
   return <ts.FunctionDeclaration export name={props.name} parameters={{payload: payloadParameter}} refkey={props.refkey}>
-    return <JsonTransform itemRef={inputRef} target="transport" type={props.payload.type} />;
+    return <JsonTransform itemRef={inputRef} target="transport" type={props.payload.type} />!;
   </ts.FunctionDeclaration>;
 }
 

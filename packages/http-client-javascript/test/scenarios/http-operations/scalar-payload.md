@@ -26,7 +26,10 @@ interface Widgets {
 It should generate an operation that sends the body as number. Since the body is an explicit property, a serializer function for the operation is created
 
 ```ts src/api/widgetsClient/widgetsClientOperations.ts function create
-export async function create(client: WidgetsClientContext, count: number): Promise<void> {
+export async function create(
+  client: WidgetsClientContext,
+  count: number,
+): Promise<void> {
   const path = parse("/widgets").expand({});
 
   const httpRequestOptions = {
@@ -51,6 +54,6 @@ The correct serializer function is created, since this is a number payload, no a
 
 ```ts src/models/serializers.ts function createPayloadToTransport
 export function createPayloadToTransport(payload: number) {
-  return payload;
+  return payload!;
 }
 ```

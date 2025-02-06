@@ -61,9 +61,9 @@ export const $lib = createTypeSpecLibrary({
         "Key credential in query or cookie is not implemented. Falling back to not sending auth details with the requests",
     },
     "unsupported-nondiscriminated-union": {
-      severity: "error",
+      severity: "warning",
       messages: {
-        default: "Unsupported non-discriminated union",
+        default: "Unsupported non-discriminated union, skipping deserializer",
       },
     },
     "no-name-type": {

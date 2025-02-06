@@ -27,7 +27,10 @@ export interface Foo {
 ## Operations
 
 ```ts src/api/testClientOperations.ts function doThing
-export async function doThing(client: TestClientContext, bodyParam: Foo): Promise<void> {
+export async function doThing(
+  client: TestClientContext,
+  bodyParam: Foo,
+): Promise<void> {
   const path = parse("/").expand({});
 
   const httpRequestOptions = {

@@ -21,7 +21,7 @@ export function Models(props: ModelsProps) {
               {getFileTypeReference()}
             </ts.TypeDeclaration>
           }
-            return $.array.is(type) || $.record.is(type) ? null : <ef.TypeDeclaration export type={type} />
+          return $.array.is(type) || $.record.is(type) ? null : <ef.TypeDeclaration export type={type} />
         },
         { joiner: "\n\n" }
       )}

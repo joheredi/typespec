@@ -202,7 +202,7 @@ const scalarTransformerMap = defineScalarTransformerMap({
             target: encoding?.type ?? NoTarget,
           });
       }
-      return code`${decodingFnRef}(${itemRef})`;
+      return code`${decodingFnRef}(${itemRef})!`;
     },
   },
 

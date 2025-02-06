@@ -36,19 +36,17 @@ export interface Foo {
 The generated transformation functions iterate over `int32[]` values, but since **no actual transformation occurs**, this code could be **optimized away**.
 
 ```ts src/models/serializers.ts function jsonArrayInt32ToTransportTransform
-export function jsonArrayInt32ToTransportTransform(items_?: Array<number>): any {
-  if (!items_) {
-    return [];
-  }
-
+export function jsonArrayInt32ToTransportTransform(
+  items_?: Array<number>,
+): any {
   const _transformedArray = [];
 
-  for (const item of items_) {
-    const transformedItem = item;
+  for (const item of items_ ?? []) {
+    const transformedItem = item as any;
     _transformedArray.push(transformedItem);
   }
 
-  return _transformedArray;
+  return _transformedArray as any;
 }
 ```
 
@@ -57,10 +55,14 @@ export function jsonArrayInt32ToTransportTransform(items_?: Array<number>): any 
 Uses `jsonArrayInt32ToTransportTransform` for `myValues`, though this could be optimized by **directly passing the array** instead of applying a redundant transformation function.
 
 ```ts src/models/serializers.ts function jsonFooToTransportTransform
-export function jsonFooToTransportTransform(input_: Foo): any {
+export function jsonFooToTransportTransform(input_?: Foo): any {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
     my_values: jsonArrayInt32ToTransportTransform(input_.myValues),
-  };
+  }!;
 }
 ```
 
@@ -77,8 +79,11 @@ export async function foo(client: ClientContext): Promise<Foo> {
   };
 
   const response = await client.path(path).get(httpRequestOptions);
-  if (+response.status === 200 && response.headers["content-type"]?.includes("application/json")) {
-    return jsonFooToApplicationTransform(response.body);
+  if (
+    +response.status === 200 &&
+    response.headers["content-type"]?.includes("application/json")
+  ) {
+    return jsonFooToApplicationTransform(response.body)!;
   }
 
   throw new Error("Unhandled response");
@@ -90,19 +95,17 @@ export async function foo(client: ClientContext): Promise<Foo> {
 Again, the transformation logic is redundant for primitive types. Instead of generating a function, the deserializer could **use the array directly**.
 
 ```ts src/models/serializers.ts function jsonArrayInt32ToApplicationTransform
-export function jsonArrayInt32ToApplicationTransform(items_?: any): Array<number> {
-  if (!items_) {
-    return [];
-  }
-
+export function jsonArrayInt32ToApplicationTransform(
+  items_?: any,
+): Array<number> {
   const _transformedArray = [];
 
-  for (const item of items_) {
-    const transformedItem = item;
+  for (const item of items_ ?? []) {
+    const transformedItem = item as any;
     _transformedArray.push(transformedItem);
   }
 
-  return _transformedArray;
+  return _transformedArray as any;
 }
 ```
 
@@ -111,10 +114,14 @@ export function jsonArrayInt32ToApplicationTransform(items_?: any): Array<number
 Uses the same unnecessary transformation for `myValues`. Optimizing the pipeline could **eliminate this step** for primitive arrays.
 
 ```ts src/models/serializers.ts function jsonFooToApplicationTransform
-export function jsonFooToApplicationTransform(input_: any): Foo {
+export function jsonFooToApplicationTransform(input_?: any): Foo {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
     myValues: jsonArrayInt32ToApplicationTransform(input_.my_values),
-  };
+  }!;
 }
 ```
 
@@ -160,10 +167,14 @@ export interface Bar {
 Uses `jsonArrayBarToTransportTransform` to serialize each `Bar` instance inside `myValues`, ensuring proper transformation of complex objects.
 
 ```ts src/models/serializers.ts function jsonFooToTransportTransform
-export function jsonFooToTransportTransform(input_: Foo): any {
+export function jsonFooToTransportTransform(input_?: Foo): any {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
     my_values: jsonArrayBarToTransportTransform(input_.myValues),
-  };
+  }!;
 }
 ```
 
@@ -172,9 +183,13 @@ export function jsonFooToTransportTransform(input_: Foo): any {
 Similarly, the deserializer converts each `Bar` instance in `myValues` back into an application model using `jsonArrayBarToApplicationTransform`.
 
 ```ts src/models/serializers.ts function jsonFooToApplicationTransform
-export function jsonFooToApplicationTransform(input_: any): Foo {
+export function jsonFooToApplicationTransform(input_?: any): Foo {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
     myValues: jsonArrayBarToApplicationTransform(input_.my_values),
-  };
+  }!;
 }
 ```

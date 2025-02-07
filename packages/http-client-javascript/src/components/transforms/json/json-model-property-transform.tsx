@@ -1,6 +1,6 @@
 import * as ay from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
-import { EncodeData, ModelProperty } from "@typespec/compiler";
+import { EncodeData, ModelProperty, Type } from "@typespec/compiler";
 import { $ } from "@typespec/compiler/experimental/typekit";
 import { ScalarDataTransform } from "../data-transform.jsx";
 import { useTransformNamePolicy } from "../transform-name-policy.js";
@@ -16,7 +16,7 @@ export interface JsonModelPropertyTransformProps {
 export function JsonModelPropertyTransform(props: JsonModelPropertyTransformProps): ay.Component {
   const transformNamer = useTransformNamePolicy();
   const encoding = $.modelProperty.getEncoding(props.type) ?? props.encoding;
-  const propertyValueType = props.type.type;
+  const propertyValueType = unpackProperty(props.type);
 
   const transportName = transformNamer.getTransportName(props.type);
   const applicationName = transformNamer.getApplicationName(props.type);
@@ -42,4 +42,13 @@ export function JsonModelPropertyTransform(props: JsonModelPropertyTransformProp
   }
 
   return <ts.ObjectProperty name={JSON.stringify(targetName)} value={propertyValue} />;
+}
+
+function unpackProperty(modelProperty: ModelProperty): Type {
+  const type = $.httpPart.unpack(modelProperty.type) ?? modelProperty.type 
+  if($.modelProperty.is(type)) {
+    return unpackProperty(type);
+  }
+
+  return type
 }

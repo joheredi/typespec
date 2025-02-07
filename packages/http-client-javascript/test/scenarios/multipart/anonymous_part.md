@@ -1,0 +1,52 @@
+# Should handle an http part with anonymous model
+
+```tsp
+@service
+namespace Test;
+
+op foo(
+  @header contentType: "multipart/form-data",
+  @multipartBody body: {
+    temperature: HttpPart<{
+      @body body: float64;
+      @header contentType: "text/plain";
+    }>;
+  },
+): NoContentResponse;
+
+```
+
+## Operation
+
+```ts src/api/testClientOperations.ts function foo
+export async function foo(
+  client: TestClientContext,
+  body: {
+    temperature: {
+      body: number;
+      contentType: "text/plain";
+    };
+  },
+): Promise<void> {
+  const path = parse("/").expand({});
+
+  const httpRequestOptions = {
+    headers: {
+      "content-type": "multipart/form-data",
+    },
+    body: [
+      {
+        name: "temperature",
+        body: body.temperature,
+      },
+    ],
+  };
+
+  const response = await client.path(path).post(httpRequestOptions);
+  if (+response.status === 204 && !response.body) {
+    return;
+  }
+
+  throw new Error("Unhandled response");
+}
+```

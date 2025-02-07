@@ -1,0 +1,43 @@
+# Should handle a model that has a property of type ModelProperty
+
+```tsp
+@service
+namespace Test;
+model Request {
+  id: string;
+  profileImage: bytes;
+}
+
+  @post
+  @route("/foo")
+  op foo(
+    profileImage: Request.profileImage,
+  ): NoContentResponse;
+```
+
+## Operation
+
+```ts src/api/testClientOperations.ts function foo
+export async function foo(
+  client: TestClientContext,
+  profileImage: Uint8Array,
+): Promise<void> {
+  const path = parse("/foo").expand({});
+
+  const httpRequestOptions = {
+    headers: {
+      "content-type": "application/json",
+    },
+    body: {
+      profileImage: profileImage,
+    },
+  };
+
+  const response = await client.path(path).post(httpRequestOptions);
+  if (+response.status === 204 && !response.body) {
+    return;
+  }
+
+  throw new Error("Unhandled response");
+}
+```

@@ -32,7 +32,7 @@ export interface JsonTransformProps {
 }
 
 export function JsonTransform(props: JsonTransformProps) {
-  const type = props.type;
+  const type = $.httpPart.unpack(props.type) ?? props.type;
   const declaredTransform = getTransformReference(type, props.target);
 
   if (declaredTransform) {

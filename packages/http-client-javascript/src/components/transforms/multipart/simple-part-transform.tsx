@@ -34,7 +34,7 @@ export function SimplePartTransform(props: SimplePartTransformProps) {
           <JsonTransform
             itemRef={partRef}
             target="transport"
-            type={props.part.body.property ?? props.part.body.type}
+            type={props.part.body.type}
           />
         }
       />,

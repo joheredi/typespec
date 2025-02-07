@@ -50,7 +50,8 @@ export function jsonDogToTransportTransform(input_?: Dog): any {
 
   return {
     ...jsonRecordExtraFeatureToTransportTransform(
-      ({ id, name, color, ...additionalProperties }: any) => additionalProperties,
+      ({ id, name, color, ...additionalProperties }: any) =>
+        additionalProperties,
     )(input_.additionalProperties),
     id: input_.id,
     name: input_.name,

@@ -14,12 +14,15 @@ model Foo {
 ## Operation
 
 ```ts src/api/testClientOperations.ts function foo
-export async function foo(client: TestClientContext): Promise<Foo> {
+export async function foo(
+  client: TestClientContext,
+  options?: FooOptions,
+): Promise<Foo> {
   const path = parse("/").expand({});
 
   const httpRequestOptions = {
     headers: {
-      accept: "application/xml",
+      accept: options?.accept ?? "application/xml",
     },
   };
 

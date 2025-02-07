@@ -1,9 +1,9 @@
 import * as ay from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
-import { ModelProperty } from "@typespec/compiler";
+import { ModelProperty, Value } from "@typespec/compiler";
 import { $ } from "@typespec/compiler/experimental/typekit";
 import { buildParameterDescriptor } from "@typespec/emitter-framework/typescript";
-import { HttpAuth } from "@typespec/http";
+import { HttpAuth, HttpProperty } from "@typespec/http";
 import * as cl from "@typespec/http-client";
 import { getClientContextOptionsRef } from "../components/client-context/client-context-options.jsx";
 import { httpRuntimeTemplateLib } from "../components/external-packages/ts-http-runtime.js";
@@ -74,5 +74,44 @@ function getCredentialType(scheme: HttpAuth) {
       return httpRuntimeTemplateLib.TokenCredential;
     default:
       return null;
+  }
+}
+
+/**
+ * Checks if a parameter has a default value. Only honors default values for content-type.
+ * @param property Property to check
+ * @returns whether the property has a default value
+ */
+export function hasDefaultValue(property: HttpProperty): boolean {
+  return getDefaultValue(property) !== undefined;
+}
+
+export function getDefaultValue(property: HttpProperty): string | number | boolean | undefined {
+  if (property.property.defaultValue) {
+    if ("value" in property.property.defaultValue) {
+      return getValue(property.property.defaultValue);
+    }
+  }
+
+  if ("value" in property.property.type && property.property.type.value !== undefined) {
+    return JSON.stringify(property.property.type.value);
+  }
+
+  return undefined;
+}
+
+function getValue(value: Value | undefined) {
+  if (!value) {
+    return undefined;
+  }
+  switch (value.valueKind) {
+    case "StringValue":
+      return `"${value.value}"`;
+    case "NumericValue":
+      return value.value.asNumber() ?? undefined;
+    case "BooleanValue":
+      return value.value;
+    default:
+      return undefined;
   }
 }

@@ -11,3 +11,4 @@ export * from "./scalar.js";
 export * from "./type.js";
 export * from "./union-variant.js";
 export * from "./union.js";
+export * from "./value.js";

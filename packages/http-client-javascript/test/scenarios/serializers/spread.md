@@ -38,14 +38,11 @@ When spreading a model an anonymous model created in the type graph, the emitted
 ```ts src/api/testClientOperations.ts function spreadWithMultipleParameters
 export async function spreadWithMultipleParameters(
   client: TestClientContext,
-  xMsTestHeader: string,
   id: string,
+  xMsTestHeader: string,
   requiredString: string,
   requiredIntList: Array<number>,
-  options?: {
-    optionalInt?: number;
-    optionalStringList?: Array<string>;
-  },
+  options?: SpreadWithMultipleParametersOptions,
 ): Promise<void> {
   const path = parse("/{id}").expand({
     id: id,
@@ -53,7 +50,6 @@ export async function spreadWithMultipleParameters(
 
   const httpRequestOptions = {
     headers: {
-      "content-type": "application/json",
       "x-ms-test-header": xMsTestHeader,
     },
     body: {

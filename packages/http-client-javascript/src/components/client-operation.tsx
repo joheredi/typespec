@@ -6,6 +6,8 @@ import * as cl from "@typespec/http-client";
 import { getClientcontextDeclarationRef } from "./client-context/client-context-declaration.jsx";
 import { HttpRequest } from "./http-request.jsx";
 import { HttpResponse } from "./http-response.jsx";
+import { OperationOptionsDeclaration } from "./operation-options.jsx";
+import { getOperationParameters } from "./operation-parameters.jsx";
 
 export interface ClientOperationsProps {
   client: cl.Client;
@@ -36,11 +38,15 @@ export function ClientOperation(props: ClientOperationProps) {
   const returnType = $.httpOperation.getReturnType(props.operation.httpOperation);
   const responseRefkey = ay.refkey(props.operation, "http-response");
   const clientContextInterfaceRef = getClientcontextDeclarationRef(client);
-  const signatureParams: Record<string, ts.ParameterDescriptor> = {
+  const signatureParams: Record<string, ts.ParameterDescriptor | ay.Children> = {
     client: { type: clientContextInterfaceRef, refkey: ay.refkey(client, "client") },
+    ...getOperationParameters(props.operation.httpOperation),
   };
-  return <FunctionDeclaration export async type={props.operation.operation} returnType={<TypeExpression type={returnType} />} parametersMode="prepend" parameters={signatureParams}>
+  return <>
+  <OperationOptionsDeclaration operation={props.operation.httpOperation} />
+  <FunctionDeclaration export async type={props.operation.operation} returnType={<TypeExpression type={returnType} />} parametersMode="replace" parameters={signatureParams}>
       <HttpRequest operation={props.operation} responseRefkey={responseRefkey} />
       <HttpResponse operation={props.operation} responseRefkey={responseRefkey} />
     </FunctionDeclaration>;
+    </>;
 }

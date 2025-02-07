@@ -1,4 +1,3 @@
-import { createFilePartDescriptor } from "../helpers/multipart-helpers.js";
 import {
   File,
   FileAttachmentMultipartRequest,
@@ -8,247 +7,461 @@ import {
   ToDoItemMultipartRequest,
   TodoItemPatch,
   TodoLabelRecord,
+  TodoLabels,
   TodoPage,
   User,
 } from "./models.js";
 
-export function recordSerializer(
-  record: Record<string, any>,
-  convertFn?: (item: any) => any,
-): Record<string, any> {
-  const output: Record<string, any> = {};
+export function decodeBase64(value: string): Uint8Array | undefined {
+  if (!value) {
+    return undefined;
+  }
+  // Normalize Base64URL to Base64
+  const base64 = value
+    .replace(/-/g, "+")
+    .replace(/_/g, "/")
+    .padEnd(value.length + ((4 - (value.length % 4)) % 4), "=");
 
-  for (const key in record) {
-    if (Object.prototype.hasOwnProperty.call(record, key)) {
-      const item = record[key];
-      output[key] = convertFn ? convertFn(item) : item;
-    }
+  return new Uint8Array(Buffer.from(base64, "base64"));
+}
+export function encodeUint8Array(
+  value: Uint8Array | undefined,
+  encoding: BufferEncoding,
+): string | undefined {
+  if (!value) {
+    return undefined;
+  }
+  return Buffer.from(value).toString(encoding);
+}
+export function dateDeserializer(date?: string): Date | undefined {
+  if (!date) {
+    return undefined;
   }
 
-  return output;
+  return new Date(date);
 }
-export function arraySerializer(items: any[], convertFn?: (item: any) => any): any[] {
-  const output: any[] = [];
-
-  for (const item of items) {
-    if (convertFn) {
-      output.push(convertFn(item));
-    } else {
-      output.push(item);
-    }
+export function dateRfc7231Deserializer(date?: string): Date | undefined {
+  if (!date) {
+    return undefined;
   }
 
-  return output;
-}
-export function dateDeserializer(date: string): Date {
   return new Date(date);
 }
-export function dateRfc7231Deserializer(date: string): Date {
-  return new Date(date);
-}
-export function dateRfc3339Serializer(date: Date): string {
+export function dateRfc3339Serializer(date?: Date): string | undefined {
+  if (!date) {
+    return undefined;
+  }
+
   return date.toISOString();
 }
-export function dateRfc7231Serializer(date: Date): string {
+export function dateRfc7231Serializer(date?: Date): string | undefined {
+  if (!date) {
+    return undefined;
+  }
+
   return date.toUTCString();
 }
-export function dateUnixTimestampSerializer(date: Date): number {
-  return date.getTime();
+export function dateUnixTimestampSerializer(date?: Date): number | undefined {
+  if (!date) {
+    return undefined;
+  }
+
+  return Math.floor(date.getTime() / 1000);
 }
-export function dateUnixTimestampDeserializer(date: number): Date {
+export function dateUnixTimestampDeserializer(date?: number): Date | undefined {
+  if (!date) {
+    return undefined;
+  }
+
   return new Date(date * 1000);
 }
-export function createFormPayloadToTransport(payload: ToDoItemMultipartRequest) {
-  return [
-    {
-      name: "item",
-      body: {
-        title: payload.item.title,
-        assignedTo: payload.item.assignedTo,
-        description: payload.item.description,
-        status: payload.item.status,
-        labels: payload.item.labels,
-        _dummy: payload.item._dummy,
-      },
-    },
-    ...(payload.attachments ?? []).map((x: any) => createFilePartDescriptor("attachments", x)),
-  ];
-}
 export function updatePayloadToTransport(payload: TodoItemPatch) {
-  return updatePayloadToTransport(payload);
+  return jsonTodoItemPatchToTransportTransform(payload)!;
 }
 export function createJsonAttachmentPayloadToTransport(payload: TodoAttachment) {
-  return createJsonAttachmentPayloadToTransport(payload);
-}
-export function createFileAttachmentPayloadToTransport(payload: FileAttachmentMultipartRequest) {
-  return [createFilePartDescriptor("contents", payload)];
+  return jsonTodoAttachmentToTransportTransform(payload)!;
 }
 export function createPayloadToTransport(payload: User) {
-  return createPayloadToTransport(payload);
+  return jsonUserToTransportTransform(payload)!;
 }
-export function userToTransport(item: User): any {
+
+export function jsonUserToTransportTransform(input_?: User): any {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
-    id: item.id,
-    username: item.username,
-    email: item.email,
-    password: item.password,
-    validated: item.validated,
-  };
+    id: input_.id,
+    username: input_.username,
+    email: input_.email,
+    password: input_.password,
+    validated: input_.validated,
+  }!;
 }
-export function userToApplication(item: any): User {
+
+export function jsonUserToApplicationTransform(input_?: any): User {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
-    id: item.id,
-    username: item.username,
-    email: item.email,
-    password: item.password,
-    validated: item.validated,
-  };
+    id: input_.id,
+    username: input_.username,
+    email: input_.email,
+    password: input_.password,
+    validated: input_.validated,
+  }!;
 }
-export function pageToTransport(item: Page): any {
+
+export function jsonPageToTransportTransform(input_?: Page): any {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
-    items: arraySerializer(item.items, createJsonAttachmentPayloadToTransport),
-  };
+    items: jsonArrayTodoAttachmentToTransportTransform(input_.items),
+  }!;
 }
-export function pageToApplication(item: any): Page {
+
+export function jsonPageToApplicationTransform(input_?: any): Page {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
-    items: arraySerializer(item.items, todoAttachmentToApplication),
-  };
+    items: jsonArrayTodoAttachmentToApplicationTransform(input_.items),
+  }!;
 }
-export function todoAttachmentToTransport(item: TodoAttachment): any {
+export function jsonArrayTodoAttachmentToTransportTransform(items_?: Array<TodoAttachment>): any {
+  const _transformedArray = [];
+
+  for (const item of items_ ?? []) {
+    const transformedItem = jsonTodoAttachmentToTransportTransform(item as any);
+    _transformedArray.push(transformedItem);
+  }
+
+  return _transformedArray as any;
+}
+export function jsonArrayTodoAttachmentToApplicationTransform(items_?: any): Array<TodoAttachment> {
+  const _transformedArray = [];
+
+  for (const item of items_ ?? []) {
+    const transformedItem = jsonTodoAttachmentToApplicationTransform(item as any);
+    _transformedArray.push(transformedItem);
+  }
+
+  return _transformedArray as any;
+}
+
+export function jsonTodoAttachmentToTransportTransform(input_?: TodoAttachment): any {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
-    filename: item.filename,
-    mediaType: item.mediaType,
-    contents: item.contents,
-  };
+    filename: input_.filename,
+    mediaType: input_.mediaType,
+    contents: input_.contents,
+  }!;
 }
-export function todoAttachmentToApplication(item: any): TodoAttachment {
+
+export function jsonTodoAttachmentToApplicationTransform(input_?: any): TodoAttachment {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
-    filename: item.filename,
-    mediaType: item.mediaType,
-    contents: item.contents,
-  };
+    filename: input_.filename,
+    mediaType: input_.mediaType,
+    contents: input_.contents,
+  }!;
 }
-export function fileAttachmentMultipartRequestToTransport(
-  item: FileAttachmentMultipartRequest,
+
+export function jsonFileAttachmentMultipartRequestToTransportTransform(
+  input_?: FileAttachmentMultipartRequest,
 ): any {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
-    contents: fileToTransport(item.contents),
-  };
+    contents: jsonFileToTransportTransform(input_.contents),
+  }!;
 }
-export function fileAttachmentMultipartRequestToApplication(
-  item: any,
+
+export function jsonFileAttachmentMultipartRequestToApplicationTransform(
+  input_?: any,
 ): FileAttachmentMultipartRequest {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
-    contents: fileToApplication(item.contents),
-  };
+    contents: jsonFileToApplicationTransform(input_.contents),
+  }!;
 }
-export function fileToTransport(item: File): any {
+
+export function jsonFileToTransportTransform(input_?: File): any {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
-    contentType: item.contentType,
-    filename: item.filename,
-    contents: item.contents,
-  };
+    contentType: input_.contentType,
+    filename: input_.filename,
+    contents: input_.contents,
+  }!;
 }
-export function fileToApplication(item: any): File {
+
+export function jsonFileToApplicationTransform(input_?: any): File {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
-    contentType: item.contentType,
-    filename: item.filename,
-    contents: item.contents,
-  };
+    contentType: input_.contentType,
+    filename: input_.filename,
+    contents: input_.contents,
+  }!;
 }
-export function todoPageToTransport(item: TodoPage): any {
+
+export function jsonTodoPageToTransportTransform(input_?: TodoPage): any {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
-    items: arraySerializer(item.items, todoItemToTransport),
-    pageSize: item.pageSize,
-    totalSize: item.totalSize,
-    limit: item.limit,
-    offset: item.offset,
-    prevLink: item.prevLink,
-    nextLink: item.nextLink,
-  };
+    items: jsonArrayTodoItemToTransportTransform(input_.items),
+    pageSize: input_.pageSize,
+    totalSize: input_.totalSize,
+    limit: input_.limit,
+    offset: input_.offset,
+    prevLink: input_.prevLink,
+    nextLink: input_.nextLink,
+  }!;
 }
-export function todoPageToApplication(item: any): TodoPage {
+
+export function jsonTodoPageToApplicationTransform(input_?: any): TodoPage {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
-    items: arraySerializer(item.items, todoItemToApplication),
-    pageSize: item.pageSize,
-    totalSize: item.totalSize,
-    limit: item.limit,
-    offset: item.offset,
-    prevLink: item.prevLink,
-    nextLink: item.nextLink,
-  };
+    items: jsonArrayTodoItemToApplicationTransform(input_.items),
+    pageSize: input_.pageSize,
+    totalSize: input_.totalSize,
+    limit: input_.limit,
+    offset: input_.offset,
+    prevLink: input_.prevLink,
+    nextLink: input_.nextLink,
+  }!;
 }
-export function todoItemToTransport(item: TodoItem): any {
-  return {
-    id: item.id,
-    title: item.title,
-    createdBy: item.createdBy,
-    assignedTo: item.assignedTo,
-    description: item.description,
-    status: item.status,
-    createdAt: dateRfc3339Serializer(item.createdAt),
-    updatedAt: dateRfc3339Serializer(item.updatedAt),
-    completedAt: item.completedAt ? dateRfc3339Serializer(item.completedAt) : item.completedAt,
-    labels: item.labels,
-    _dummy: item._dummy,
-  };
+export function jsonArrayTodoItemToTransportTransform(items_?: Array<TodoItem>): any {
+  const _transformedArray = [];
+
+  for (const item of items_ ?? []) {
+    const transformedItem = jsonTodoItemToTransportTransform(item as any);
+    _transformedArray.push(transformedItem);
+  }
+
+  return _transformedArray as any;
 }
-export function todoItemToApplication(item: any): TodoItem {
-  return {
-    id: item.id,
-    title: item.title,
-    createdBy: item.createdBy,
-    assignedTo: item.assignedTo,
-    description: item.description,
-    status: item.status,
-    createdAt: dateDeserializer(item.createdAt),
-    updatedAt: dateDeserializer(item.updatedAt),
-    completedAt: item.completedAt ? dateDeserializer(item.completedAt) : item.completedAt,
-    labels: item.labels,
-    _dummy: item._dummy,
-  };
+export function jsonArrayTodoItemToApplicationTransform(items_?: any): Array<TodoItem> {
+  const _transformedArray = [];
+
+  for (const item of items_ ?? []) {
+    const transformedItem = jsonTodoItemToApplicationTransform(item as any);
+    _transformedArray.push(transformedItem);
+  }
+
+  return _transformedArray as any;
 }
-export function todoLabelRecordToTransport(item: TodoLabelRecord): any {
+
+export function jsonTodoItemToTransportTransform(input_?: TodoItem): any {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
-    name: item.name,
-    color: item.color,
-  };
+    id: input_.id,
+    title: input_.title,
+    createdBy: input_.createdBy,
+    assignedTo: input_.assignedTo,
+    description: input_.description,
+    status: input_.status,
+    createdAt: dateRfc3339Serializer(input_.createdAt),
+    updatedAt: dateRfc3339Serializer(input_.updatedAt),
+    completedAt: dateRfc3339Serializer(input_.completedAt),
+    labels: jsonTodoLabelsToTransportTransform(input_.labels),
+    _dummy: input_._dummy,
+  }!;
 }
-export function todoLabelRecordToApplication(item: any): TodoLabelRecord {
+
+export function jsonTodoItemToApplicationTransform(input_?: any): TodoItem {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
-    name: item.name,
-    color: item.color,
-  };
+    id: input_.id,
+    title: input_.title,
+    createdBy: input_.createdBy,
+    assignedTo: input_.assignedTo,
+    description: input_.description,
+    status: input_.status,
+    createdAt: dateDeserializer(input_.createdAt)!,
+    updatedAt: dateDeserializer(input_.updatedAt)!,
+    completedAt: dateDeserializer(input_.completedAt)!,
+    labels: jsonTodoLabelsToApplicationTransform(input_.labels),
+    _dummy: input_._dummy,
+  }!;
 }
-export function toDoItemMultipartRequestToTransport(item: ToDoItemMultipartRequest): any {
-  return {
-    item: todoItemToTransport(item.item),
-    attachments: item.attachments
-      ? arraySerializer(item.attachments, fileToTransport)
-      : item.attachments,
-  };
+export function jsonTodoLabelsToTransportTransform(input_?: TodoLabels): any {
+  if (!input_) {
+    return input_ as any;
+  }
+  return input_;
 }
-export function toDoItemMultipartRequestToApplication(item: any): ToDoItemMultipartRequest {
-  return {
-    item: todoItemToApplication(item.item),
-    attachments: item.attachments
-      ? arraySerializer(item.attachments, fileToApplication)
-      : item.attachments,
-  };
+
+export function jsonTodoLabelsToApplicationTransform(input_?: any): TodoLabels {
+  if (!input_) {
+    return input_ as any;
+  }
+  return input_;
 }
-export function todoItemPatchToTransport(item: TodoItemPatch): any {
-  return {
-    title: item.title,
-    assignedTo: item.assignedTo,
-    description: item.description,
-    status: item.status,
-  };
+export function jsonArrayStringToTransportTransform(items_?: Array<string>): any {
+  const _transformedArray = [];
+
+  for (const item of items_ ?? []) {
+    const transformedItem = item as any;
+    _transformedArray.push(transformedItem);
+  }
+
+  return _transformedArray as any;
 }
-export function todoItemPatchToApplication(item: any): TodoItemPatch {
+export function jsonArrayStringToApplicationTransform(items_?: any): Array<string> {
+  const _transformedArray = [];
+
+  for (const item of items_ ?? []) {
+    const transformedItem = item as any;
+    _transformedArray.push(transformedItem);
+  }
+
+  return _transformedArray as any;
+}
+
+export function jsonTodoLabelRecordToTransportTransform(input_?: TodoLabelRecord): any {
+  if (!input_) {
+    return input_ as any;
+  }
+
   return {
-    title: item.title,
-    assignedTo: item.assignedTo,
-    description: item.description,
-    status: item.status,
-  };
+    name: input_.name,
+    color: input_.color,
+  }!;
+}
+
+export function jsonTodoLabelRecordToApplicationTransform(input_?: any): TodoLabelRecord {
+  if (!input_) {
+    return input_ as any;
+  }
+
+  return {
+    name: input_.name,
+    color: input_.color,
+  }!;
+}
+export function jsonArrayTodoLabelRecordToTransportTransform(items_?: Array<TodoLabelRecord>): any {
+  const _transformedArray = [];
+
+  for (const item of items_ ?? []) {
+    const transformedItem = jsonTodoLabelRecordToTransportTransform(item as any);
+    _transformedArray.push(transformedItem);
+  }
+
+  return _transformedArray as any;
+}
+export function jsonArrayTodoLabelRecordToApplicationTransform(
+  items_?: any,
+): Array<TodoLabelRecord> {
+  const _transformedArray = [];
+
+  for (const item of items_ ?? []) {
+    const transformedItem = jsonTodoLabelRecordToApplicationTransform(item as any);
+    _transformedArray.push(transformedItem);
+  }
+
+  return _transformedArray as any;
+}
+
+export function jsonToDoItemMultipartRequestToTransportTransform(
+  input_?: ToDoItemMultipartRequest,
+): any {
+  if (!input_) {
+    return input_ as any;
+  }
+
+  return {
+    item: jsonTodoItemToTransportTransform(input_.item),
+    attachments: jsonArrayHttpPartToTransportTransform(input_.attachments),
+  }!;
+}
+
+export function jsonToDoItemMultipartRequestToApplicationTransform(
+  input_?: any,
+): ToDoItemMultipartRequest {
+  if (!input_) {
+    return input_ as any;
+  }
+
+  return {
+    item: jsonTodoItemToApplicationTransform(input_.item),
+    attachments: jsonArrayHttpPartToApplicationTransform(input_.attachments),
+  }!;
+}
+export function jsonArrayHttpPartToTransportTransform(items_?: Array<File>): any {
+  const _transformedArray = [];
+
+  for (const item of items_ ?? []) {
+    const transformedItem = jsonFileToTransportTransform(item as any);
+    _transformedArray.push(transformedItem);
+  }
+
+  return _transformedArray as any;
+}
+export function jsonArrayHttpPartToApplicationTransform(items_?: any): Array<File> {
+  const _transformedArray = [];
+
+  for (const item of items_ ?? []) {
+    const transformedItem = jsonFileToApplicationTransform(item as any);
+    _transformedArray.push(transformedItem);
+  }
+
+  return _transformedArray as any;
+}
+
+export function jsonTodoItemPatchToTransportTransform(input_?: TodoItemPatch): any {
+  if (!input_) {
+    return input_ as any;
+  }
+
+  return {
+    title: input_.title,
+    assignedTo: input_.assignedTo,
+    description: input_.description,
+    status: input_.status,
+  }!;
+}
+
+export function jsonTodoItemPatchToApplicationTransform(input_?: any): TodoItemPatch {
+  if (!input_) {
+    return input_ as any;
+  }
+
+  return {
+    title: input_.title,
+    assignedTo: input_.assignedTo,
+    description: input_.description,
+    status: input_.status,
+  }!;
 }

@@ -1,13 +1,19 @@
 import { parse } from "uri-template";
+import { OperationOptions } from "../../../helpers/interfaces.js";
+import { createFilePartDescriptor } from "../../../helpers/multipart-helpers.js";
 import { FileAttachmentMultipartRequest, Page, TodoAttachment } from "../../../models/models.js";
 import {
-  createFileAttachmentPayloadToTransport,
-  pageToApplication,
-  todoAttachmentToTransport,
+  jsonPageToApplicationTransform,
+  jsonTodoAttachmentToTransportTransform,
 } from "../../../models/serializers.js";
 import { AttachmentsClientContext } from "./attachmentsClientContext.js";
 
-export async function list(client: AttachmentsClientContext, itemId: number): Promise<Page> {
+export interface ListOptions extends OperationOptions {}
+export async function list(
+  client: AttachmentsClientContext,
+  itemId: number,
+  options?: ListOptions,
+): Promise<Page> {
   const path = parse("/items/{itemId}/attachments").expand({
     itemId: itemId,
   });
@@ -18,15 +24,19 @@ export async function list(client: AttachmentsClientContext, itemId: number): Pr
 
   const response = await client.path(path).get(httpRequestOptions);
   if (+response.status === 200 && response.headers["content-type"]?.includes("application/json")) {
-    return pageToApplication(response.body);
+    return jsonPageToApplicationTransform(response.body)!;
   }
 
   throw new Error("Unhandled response");
+}
+export interface CreateJsonAttachmentOptions extends OperationOptions {
+  contentType?: "application/json";
 }
 export async function createJsonAttachment(
   client: AttachmentsClientContext,
   itemId: number,
   contents: TodoAttachment,
+  options?: CreateJsonAttachmentOptions,
 ): Promise<void> {
   const path = parse("/items/{itemId}/attachments").expand({
     itemId: itemId,
@@ -34,9 +44,9 @@ export async function createJsonAttachment(
 
   const httpRequestOptions = {
     headers: {
-      "content-type": "application/json",
+      "content-type": options?.contentType ?? "application/json",
     },
-    body: todoAttachmentToTransport(contents),
+    body: jsonTodoAttachmentToTransportTransform(contents),
   };
 
   const response = await client.path(path).post(httpRequestOptions);
@@ -46,10 +56,14 @@ export async function createJsonAttachment(
 
   throw new Error("Unhandled response");
 }
+export interface CreateFileAttachmentOptions extends OperationOptions {
+  contentType?: "multipart/form-data";
+}
 export async function createFileAttachment(
   client: AttachmentsClientContext,
   itemId: number,
   body: FileAttachmentMultipartRequest,
+  options?: CreateFileAttachmentOptions,
 ): Promise<void> {
   const path = parse("/items/{itemId}/attachments").expand({
     itemId: itemId,
@@ -57,9 +71,9 @@ export async function createFileAttachment(
 
   const httpRequestOptions = {
     headers: {
-      "content-type": "multipart/form-data",
+      "content-type": options?.contentType ?? "multipart/form-data",
     },
-    body: createFileAttachmentPayloadToTransport(body),
+    body: [createFilePartDescriptor("contents", body.contents)],
   };
 
   const response = await client.path(path).post(httpRequestOptions);

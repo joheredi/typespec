@@ -26,6 +26,7 @@ op imageJpegContentType(
 export async function imageJpegContentType(
   client: TestClientContext,
   body: FileWithHttpPartSpecificContentTypeRequest,
+  options?: ImageJpegContentTypeOptions,
 ): Promise<void> {
   const path = parse(
     "/check-filename-and-specific-content-type-with-httppart",
@@ -33,7 +34,7 @@ export async function imageJpegContentType(
 
   const httpRequestOptions = {
     headers: {
-      "content-type": "multipart/form-data",
+      contentType: options?.contentType ?? "multipart/form-data",
     },
     body: [
       createFilePartDescriptor("profileImage", body.profileImage, "image/jpg"),

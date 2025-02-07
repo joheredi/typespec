@@ -27,5 +27,5 @@ export type MyUtcDate = Date;
 
 export type MyIsoDate = Date;
 
-export type MyUnixDate = number;
+export type MyUnixDate = Date;
 ```

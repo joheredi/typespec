@@ -6,6 +6,7 @@ import { Client } from "./components/client.jsx";
 import { Models } from "./components/models.js";
 import { Output } from "./components/output.jsx";
 import { ModelSerializers } from "./components/serializers.js";
+import { Interfaces } from "./components/static-helpers/interfaces.jsx";
 import { MultipartHelpers } from "./components/static-helpers/multipart-helpers.jsx";
 import { JsClientEmitterOptions } from "./lib.js";
 
@@ -25,6 +26,7 @@ export async function $onEmit(context: EmitContext<JsClientEmitterOptions>) {
                 <OperationsDirectory />
             </ay.SourceDirectory>
             <ay.SourceDirectory path="helpers">
+              <Interfaces />
               <MultipartHelpers />
             </ay.SourceDirectory>
           </ay.SourceDirectory>

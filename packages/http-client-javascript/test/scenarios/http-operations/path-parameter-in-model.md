@@ -34,6 +34,7 @@ It should generate an operation that places the path parameter in the url templa
 export async function read(
   client: WidgetsClientContext,
   id: string,
+  options?: ReadOptions,
 ): Promise<void> {
   const path = parse("/widgets/{id}").expand({
     id: id,

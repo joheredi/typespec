@@ -10,6 +10,9 @@ import {
   createAttachmentsClientContext,
 } from "./api/todoItemsClient/attachmentsClient/attachmentsClientContext.js";
 import {
+  CreateFileAttachmentOptions,
+  CreateJsonAttachmentOptions,
+  ListOptions as ListOptions_2,
   createFileAttachment,
   createJsonAttachment,
   list as list_2,
@@ -20,6 +23,12 @@ import {
   createTodoItemsClientContext,
 } from "./api/todoItemsClient/todoItemsClientContext.js";
 import {
+  CreateFormOptions,
+  CreateJsonOptions,
+  DeleteOptions,
+  GetOptions,
+  ListOptions,
+  UpdateOptions,
   createForm,
   createJson,
   delete_,
@@ -32,7 +41,7 @@ import {
   UsersClientOptions,
   createUsersClientContext,
 } from "./api/usersClient/usersClientContext.js";
-import { create } from "./api/usersClient/usersClientOperations.js";
+import { CreateOptions, create } from "./api/usersClient/usersClientOperations.js";
 import {
   FileAttachmentMultipartRequest,
   ToDoItemMultipartRequest,
@@ -57,28 +66,28 @@ export class TodoItemsClient {
     this.#context = createTodoItemsClientContext(endpoint, credential, options);
     this.attachmentsClient = new AttachmentsClient(endpoint, credential, options);
   }
-  async list(options?: { limit?: number; offset?: number }) {
+  async list(options?: ListOptions) {
     return list(this.#context, options);
   }
   async createJson(
+    title: string,
+    status: "NotStarted" | "InProgress" | "Completed",
     item: TodoItem,
-    options?: {
-      attachments?: Array<TodoAttachment>;
-    },
+    options?: CreateJsonOptions,
   ) {
-    return createJson(this.#context, item, options);
+    return createJson(this.#context, title, status, item, options);
   }
-  async createForm(body: ToDoItemMultipartRequest) {
-    return createForm(this.#context, body);
+  async createForm(body: ToDoItemMultipartRequest, options?: CreateFormOptions) {
+    return createForm(this.#context, body, options);
   }
-  async get(id: number) {
-    return get(this.#context, id);
+  async get(id: number, options?: GetOptions) {
+    return get(this.#context, id, options);
   }
-  async update(id: number, patch: TodoItemPatch) {
-    return update(this.#context, id, patch);
+  async update(id: number, patch: TodoItemPatch, options?: UpdateOptions) {
+    return update(this.#context, id, patch, options);
   }
-  async delete_(id: number) {
-    return delete_(this.#context, id);
+  async delete_(id: number, options?: DeleteOptions) {
+    return delete_(this.#context, id, options);
   }
 }
 
@@ -88,14 +97,22 @@ export class AttachmentsClient {
   constructor(endpoint: string, credential: KeyCredential, options?: AttachmentsClientOptions) {
     this.#context = createAttachmentsClientContext(endpoint, credential, options);
   }
-  async list(itemId: number) {
-    return list_2(this.#context, itemId);
+  async list(itemId: number, options?: ListOptions_2) {
+    return list_2(this.#context, itemId, options);
   }
-  async createJsonAttachment(itemId: number, contents: TodoAttachment) {
-    return createJsonAttachment(this.#context, itemId, contents);
+  async createJsonAttachment(
+    itemId: number,
+    contents: TodoAttachment,
+    options?: CreateJsonAttachmentOptions,
+  ) {
+    return createJsonAttachment(this.#context, itemId, contents, options);
   }
-  async createFileAttachment(itemId: number, body: FileAttachmentMultipartRequest) {
-    return createFileAttachment(this.#context, itemId, body);
+  async createFileAttachment(
+    itemId: number,
+    body: FileAttachmentMultipartRequest,
+    options?: CreateFileAttachmentOptions,
+  ) {
+    return createFileAttachment(this.#context, itemId, body, options);
   }
 }
 
@@ -105,7 +122,7 @@ export class UsersClient {
   constructor(endpoint: string, options?: UsersClientOptions) {
     this.#context = createUsersClientContext(endpoint, options);
   }
-  async create(user: User) {
-    return create(this.#context, user);
+  async create(user: User, options?: CreateOptions) {
+    return create(this.#context, user, options);
   }
 }

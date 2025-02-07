@@ -22,7 +22,10 @@ interface Widgets {
 ### Request
 
 ```ts src/api/widgetsClient/widgetsClientOperations.ts function read
-export async function read(client: WidgetsClientContext): Promise<void> {
+export async function read(
+  client: WidgetsClientContext,
+  options?: ReadOptions,
+): Promise<void> {
   const path = parse("/widgets").expand({});
 
   const httpRequestOptions = {
@@ -72,10 +75,11 @@ interface Widgets {
 ```ts src/api/widgetsClient/widgetsClientOperations.ts function read
 export async function read(
   client: WidgetsClientContext,
-  foo: string,
-  etag: string,
   id: string,
+  etag: string,
+  foo: string,
   name: string,
+  options?: ReadOptions,
 ): Promise<void> {
   const path = parse("/widgets/{id}{?foo}").expand({
     id: id,
@@ -84,7 +88,6 @@ export async function read(
 
   const httpRequestOptions = {
     headers: {
-      "content-type": "application/json",
       etag: etag,
     },
     body: {
@@ -128,13 +131,12 @@ interface Widgets {
 export async function read(
   client: WidgetsClientContext,
   count: number,
+  options?: ReadOptions,
 ): Promise<void> {
   const path = parse("/widgets").expand({});
 
   const httpRequestOptions = {
-    headers: {
-      "content-type": "application/json",
-    },
+    headers: {},
     body: count,
   };
 

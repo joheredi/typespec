@@ -21,6 +21,7 @@ op defaultEncoding(
 export async function defaultEncoding(
   client: TestClientContext,
   value: Uint8Array,
+  options?: DefaultEncodingOptions,
 ): Promise<void> {
   const path = parse("/default").expand({});
 
@@ -61,9 +62,7 @@ op defaultEncoding(
 ```ts src/api/testClientOperations.ts function defaultEncoding
 export async function defaultEncoding(
   client: TestClientContext,
-  options?: {
-    value?: Uint8Array;
-  },
+  options?: DefaultEncodingOptions,
 ): Promise<void> {
   const path = parse("/default").expand({});
 
@@ -106,6 +105,7 @@ op get(
 export async function get(
   client: TestClientContext,
   value: Uint8Array,
+  options?: GetOptions,
 ): Promise<void> {
   const path = parse("/default").expand({});
 

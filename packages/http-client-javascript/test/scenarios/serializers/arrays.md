@@ -71,7 +71,10 @@ export function jsonFooToTransportTransform(input_?: Foo): any {
 Handles the API request, expecting a `Widget` response and applying the correct deserialization function.
 
 ```ts src/api/clientOperations.ts function foo
-export async function foo(client: ClientContext): Promise<Foo> {
+export async function foo(
+  client: ClientContext,
+  options?: FooOptions,
+): Promise<Foo> {
   const path = parse("/").expand({});
 
   const httpRequestOptions = {

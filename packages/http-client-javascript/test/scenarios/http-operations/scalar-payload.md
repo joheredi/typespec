@@ -29,13 +29,12 @@ It should generate an operation that sends the body as number. Since the body is
 export async function create(
   client: WidgetsClientContext,
   count: number,
+  options?: CreateOptions,
 ): Promise<void> {
   const path = parse("/widgets").expand({});
 
   const httpRequestOptions = {
-    headers: {
-      "content-type": "application/json",
-    },
+    headers: {},
     body: count,
   };
 

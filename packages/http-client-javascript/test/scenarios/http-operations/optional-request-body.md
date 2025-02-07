@@ -21,16 +21,12 @@ op omit(@body body?: BodyModel): NoContentResponse;
 ```ts src/api/testClientOperations.ts function set
 export async function set(
   client: TestClientContext,
-  options?: {
-    body?: BodyModel;
-  },
+  options?: SetOptions,
 ): Promise<void> {
   const path = parse("/set").expand({});
 
   const httpRequestOptions = {
-    headers: {
-      "content-type": "application/json",
-    },
+    headers: {},
     body: jsonBodyModelToTransportTransform(options?.body),
   };
 

@@ -124,6 +124,7 @@ const jsxFilesConfig = tsEslint.config({
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
   },
+  ignores: ["packages/http-client-javascript/**/*/*.tsx"],
 });
 
 export const TypeSpecCommonEslintConfigs = [

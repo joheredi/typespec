@@ -27,12 +27,13 @@ export async function foo(
       contentType: "text/plain";
     };
   },
+  options?: FooOptions,
 ): Promise<void> {
   const path = parse("/").expand({});
 
   const httpRequestOptions = {
     headers: {
-      "content-type": "multipart/form-data",
+      contentType: options?.contentType ?? "multipart/form-data",
     },
     body: [
       {

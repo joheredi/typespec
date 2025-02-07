@@ -21,6 +21,7 @@ op defaultEncoding(
 export async function defaultEncoding(
   client: TestClientContext,
   value: Date,
+  options?: DefaultEncodingOptions,
 ): Promise<void> {
   const path = parse("/default{?value}").expand({
     value: dateRfc3339Serializer(value),
@@ -61,9 +62,7 @@ op defaultEncoding(
 ```ts src/api/testClientOperations.ts function defaultEncoding
 export async function defaultEncoding(
   client: TestClientContext,
-  options?: {
-    value?: Date;
-  },
+  options?: DefaultEncodingOptions,
 ): Promise<void> {
   const path = parse("/default{?value}").expand({
     value: dateRfc3339Serializer(options?.value),
@@ -106,6 +105,7 @@ op get(
 export async function get(
   client: TestClientContext,
   value: Date,
+  options?: GetOptions,
 ): Promise<void> {
   const path = parse("/default{?value}").expand({
     value: dateRfc3339Serializer(value),
@@ -148,6 +148,7 @@ op get(
 export async function get(
   client: TestClientContext,
   value: Date,
+  options?: GetOptions,
 ): Promise<void> {
   const path = parse("/default{?value}").expand({
     value: dateRfc7231Serializer(value),
@@ -190,6 +191,7 @@ op get(
 export async function get(
   client: TestClientContext,
   value: Date,
+  options?: GetOptions,
 ): Promise<void> {
   const path = parse("/default{?value}").expand({
     value: dateUnixTimestampSerializer(value),

@@ -33,16 +33,12 @@ export async function foo(
   id: string,
   totalWeight: number,
   color: "red" | "blue",
-  options?: {
-    isRequired?: boolean;
-  },
+  options?: FooOptions,
 ): Promise<void> {
   const path = parse("/").expand({});
 
   const httpRequestOptions = {
-    headers: {
-      "content-type": "application/json",
-    },
+    headers: {},
     body: {
       id: id,
       total_weight: totalWeight,

@@ -32,10 +32,11 @@ It should generate an operation placing the parameters in the right place. The p
 ```ts src/api/widgetsClient/widgetsClientOperations.ts function read
 export async function read(
   client: WidgetsClientContext,
-  foo: string,
-  etag: string,
   id: string,
+  etag: string,
+  foo: string,
   name: string,
+  options?: ReadOptions,
 ): Promise<void> {
   const path = parse("/widgets/{id}{?foo}").expand({
     id: id,
@@ -44,7 +45,6 @@ export async function read(
 
   const httpRequestOptions = {
     headers: {
-      "content-type": "application/json",
       etag: etag,
     },
     body: {
@@ -72,8 +72,14 @@ export class WidgetsClient {
   constructor(endpoint: string, options?: WidgetsClientOptions) {
     this.#context = createWidgetsClientContext(endpoint, options);
   }
-  async read(foo: string, etag: string, id: string, name: string) {
-    return read(this.#context, foo, etag, id, name);
+  async read(
+    id: string,
+    etag: string,
+    foo: string,
+    name: string,
+    options?: ReadOptions,
+  ) {
+    return read(this.#context, id, etag, foo, name, options);
   }
 }
 ```

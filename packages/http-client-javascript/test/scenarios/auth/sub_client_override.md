@@ -44,8 +44,8 @@ export class TestClient {
   ) {
     this.#context = createTestClientContext(endpoint, credential, options);
   }
-  async valid() {
-    return valid(this.#context);
+  async valid(options?: ValidOptions) {
+    return valid(this.#context, options);
   }
 }
 ```
@@ -59,8 +59,8 @@ export class SubClient {
   constructor(endpoint: string, options?: SubClientOptions) {
     this.#context = createSubClientContext(endpoint, options);
   }
-  async put() {
-    return put(this.#context);
+  async put(options?: PutOptions) {
+    return put(this.#context, options);
   }
 }
 ```

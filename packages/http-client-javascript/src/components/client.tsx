@@ -9,6 +9,7 @@ import { flattenClients } from "../utils/client-discovery.js";
 import { buildClientParameters } from "../utils/parameters.jsx";
 import { getClientcontextDeclarationRef } from "./client-context/client-context-declaration.jsx";
 import { getClientContextFactoryRef } from "./client-context/client-context-factory.jsx";
+import { getOperationParameters } from "./operation-parameters.jsx";
 
 export interface ClientProps {}
 
@@ -54,10 +55,12 @@ export function ClientClass(props: ClientClassProps) {
       <SubClientClassField client={subClient} />
     ), { joiner: "\n" })}
     <ClientConstructor client={props.client} />
-    {ay.mapJoin(operations, ({operation: op}) => {
-      const args = [...op.parameters.properties.values()].map(p => ay.refkey(p));
-      return <ClassMethod async type={op} returnType={null}>
-          return <ts.FunctionCallExpression refkey={ay.refkey(op)} args={[contextMemberRef, ...args]}/>;
+    {ay.mapJoin(operations, (op) => {
+      const parameters = getOperationParameters(op.httpOperation);
+      const args = (Object.keys(parameters)).map((p) => p);
+
+      return <ClassMethod async type={op.operation} parameters={parameters} returnType={null} parametersMode="replace">
+          return <ts.FunctionCallExpression refkey={ay.refkey(op.operation)} args={[contextMemberRef, ...args]}/>;
       </ClassMethod>
     })}
   </ClassDeclaration>;

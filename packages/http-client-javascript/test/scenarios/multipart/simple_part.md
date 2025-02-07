@@ -30,12 +30,13 @@ export interface Foo {
 export async function doThing(
   client: TestClientContext,
   bodyParam: Foo,
+  options?: DoThingOptions,
 ): Promise<void> {
   const path = parse("/").expand({});
 
   const httpRequestOptions = {
     headers: {
-      "content-type": "multipart/form-data",
+      contentType: options?.contentType ?? "multipart/form-data",
     },
     body: [
       {

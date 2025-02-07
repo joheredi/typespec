@@ -1,11 +1,14 @@
 import { parse } from "uri-template";
+import { OperationOptions } from "../../helpers/interfaces.js";
 import { User } from "../../models/models.js";
-import { userToTransport } from "../../models/serializers.js";
+import { jsonUserToTransportTransform } from "../../models/serializers.js";
 import { UsersClientContext } from "./usersClientContext.js";
 
+export interface CreateOptions extends OperationOptions {}
 export async function create(
   client: UsersClientContext,
   user: User,
+  options?: CreateOptions,
 ): Promise<{
   id: number;
   username: string;
@@ -18,7 +21,7 @@ export async function create(
     headers: {
       "content-type": "application/json",
     },
-    body: userToTransport(user),
+    body: jsonUserToTransportTransform(user),
   };
 
   const response = await client.path(path).post(httpRequestOptions);
@@ -28,7 +31,7 @@ export async function create(
       username: response.body.username,
       email: response.body.email,
       token: response.body.token,
-    };
+    }!;
   }
 
   throw new Error("Unhandled response");

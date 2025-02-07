@@ -1,14 +1,16 @@
-import { Children, code, mapJoin, refkey } from "@alloy-js/core";
+import * as ay from "@alloy-js/core";
+import { Children, mapJoin } from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
-import { EncodeData, Model, ModelProperty } from "@typespec/compiler";
+import { EncodeData, ModelProperty } from "@typespec/compiler";
 import { $ } from "@typespec/compiler/experimental/typekit";
-import { JsonTransform } from "./transforms/json/json-transform.jsx";
-import { isConstantHeader } from "../utils/operations.js";
 import { useTransformNamePolicy } from "@typespec/emitter-framework";
+import { HttpProperty } from "@typespec/http";
+import { getDefaultValue } from "../utils/parameters.jsx";
+import { JsonTransform } from "./transforms/json/json-transform.jsx";
 
 export interface HttpRequestParametersExpressionProps {
-  optionsParameter: ModelProperty;
-  parameters?: Model;
+  optionsParameter: ay.Children;
+  parameters?: HttpProperty[];
   children?: Children;
 }
 
@@ -31,21 +33,28 @@ export function HttpRequestParametersExpression(props: HttpRequestParametersExpr
     return <ts.ObjectExpression />;
   }
 
-  const optionsParamRef = props.optionsParameter ? refkey(props.optionsParameter) : "options";
+  const optionsParamRef = props.optionsParameter ?? "options";
   const members = mapJoin(
-    props.parameters.properties,
-    (_parameterName, parameter) => {
+    props.parameters,
+    (httpProperty) => {
+      const parameter = httpProperty.property;
 
-      const input = parameter.optional ? code`${optionsParamRef}?` : null;
-      const defaultValue = (parameter.type as any).value
+      const defaultValue = getDefaultValue(httpProperty);
 
-      if(defaultValue) {
+      if (defaultValue) {
+        const headerRef: ay.Children = transformNamer.getApplicationName(parameter);
+
+        const itemRef = ay.code`${optionsParamRef}?.${headerRef}`;
+        const defaultAssignment = defaultValue ? ` ?? ${defaultValue}` : "";
+        const headerValue = <>{itemRef}{defaultAssignment}</>;
         const name = transformNamer.getTransportName(parameter);
-        return <ts.ObjectProperty name={name}><ts.ValueExpression jsValue={defaultValue} /></ts.ObjectProperty>
+        const headerAssignment = <ts.ObjectProperty name={`"${name}"`} value={headerValue} />;
+        return headerAssignment;
       }
 
+      const itemRef: ay.Children = parameter.optional ? ay.code`${optionsParamRef}?` : null;
       const encoding = $.modelProperty.getEncoding(parameter) ?? getDefaultEncoding(parameter);
-      return <JsonTransform itemRef={input} type={parameter} target="transport" encoding={encoding}/>;
+      return <JsonTransform itemRef={itemRef} type={parameter} target="transport" encoding={encoding}/>;
     },
     { joiner: ",\n" },
   );
@@ -55,16 +64,6 @@ export function HttpRequestParametersExpression(props: HttpRequestParametersExpr
   return <ts.ObjectExpression>
     {parameters}
   </ts.ObjectExpression>;
-}
-
-function getDefaultValue(modelProperty: ModelProperty) {
-  const defaultValue = modelProperty.defaultValue;
-
-  if(defaultValue?.valueKind === "StringValue") {
-    return defaultValue.value;
-  }
-
-  return undefined
 }
 
 function getDefaultEncoding(prop: ModelProperty): EncodeData | undefined {

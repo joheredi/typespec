@@ -1,11 +1,11 @@
 import { Children, code, refkey, Refkey } from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
 import { Reference } from "@alloy-js/typescript";
-import { $ } from "@typespec/compiler/experimental/typekit";
 import { ClientOperation } from "@typespec/http-client";
 import { uriTemplateLib } from "./external-packages/uri-template.js";
 import { HttpRequestOptions } from "./http-request-options.js";
 import { HttpRequestParametersExpression } from "./http-request-parameters-expression.js";
+import { getOperationOptionsParameterRefkey } from "./operation-parameters.jsx";
 
 export interface HttpRequestProps {
   operation: ClientOperation;
@@ -38,11 +38,13 @@ export interface HttpUrlProps {
 HttpRequest.Url = function HttpUrlDeclaration(props: HttpUrlProps) {
   const httpOperation = props.operation.httpOperation;
   const urlTemplate = httpOperation.uriTemplate;
-  const urlParameters = $.httpRequest.getParameters(httpOperation, ["path", "query"]);
-  const optionsParameter = props.operation.operation.parameters.properties.get("options");
+  const urlParameters = httpOperation.parameters.properties.filter(
+    (p) => p.kind === "path" || p.kind === "query",
+  );
+  const optionsParameter = getOperationOptionsParameterRefkey(props.operation.httpOperation);
   return <>
     <ts.VarDeclaration name="path" refkey={props.refkey}>
-      <ts.Reference refkey={uriTemplateLib.parse} />({JSON.stringify(urlTemplate)}).expand({<HttpRequestParametersExpression optionsParameter={optionsParameter!} parameters={urlParameters} />})
+      {uriTemplateLib.parse}({JSON.stringify(urlTemplate)}).expand({<HttpRequestParametersExpression optionsParameter={optionsParameter!} parameters={urlParameters} />})
     </ts.VarDeclaration>
   </>;
 };

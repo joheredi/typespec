@@ -23,7 +23,7 @@ op foo(): Widget;
 A class named `TestClient` is generated, encapsulating API operations. It includes a single method, `foo`, which internally calls the corresponding operation function.
 
 ```ts src/testClient.ts
-import { foo } from "./api/testClientOperations.js";
+import { FooOptions, foo } from "./api/testClientOperations.js";
 import {
   TestClientContext,
   TestClientOptions,
@@ -36,8 +36,8 @@ export class TestClient {
   constructor(endpoint: string, options?: TestClientOptions) {
     this.#context = createTestClientContext(endpoint, options);
   }
-  async foo() {
-    return foo(this.#context);
+  async foo(options?: FooOptions) {
+    return foo(this.#context, options);
   }
 }
 ```
@@ -102,7 +102,10 @@ A function named `foo` is generated to handle the HTTP request. It prepares the 
 - If the response status code is unexpected, an exception is thrown.
 
 ```ts src/api/testClientOperations.ts function foo
-export async function foo(client: TestClientContext): Promise<Widget> {
+export async function foo(
+  client: TestClientContext,
+  options?: FooOptions,
+): Promise<Widget> {
   const path = parse("/").expand({});
 
   const httpRequestOptions = {

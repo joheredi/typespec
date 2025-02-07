@@ -1,6 +1,6 @@
-# Should generate a basic http operation
+# Should generate a client structure that has a root client with a nested client
 
-This is a simple get operation with no request payload or parameters and a simple model return.
+This specs nests namespace > namespace > interface
 
 ## TypeSpec
 
@@ -50,11 +50,17 @@ import {
   createDemoServiceClientContext,
 } from "./api/demoServiceClientContext.js";
 import {
+  ListOptions,
   list,
+  ReadOptions,
   read,
+  CreateOptions,
   create,
+  UpdateOptions,
   update,
+  DeleteOptions,
   delete_,
+  AnalyzeOptions,
   analyze,
 } from "./api/widgetsClient/widgetsClientOperations.js";
 import {
@@ -78,23 +84,23 @@ export class WidgetsClient {
   constructor(endpoint: string, options?: WidgetsClientOptions) {
     this.#context = createWidgetsClientContext(endpoint, options);
   }
-  async list() {
-    return list(this.#context);
+  async list(options?: ListOptions) {
+    return list(this.#context, options);
   }
-  async read(id: string) {
-    return read(this.#context, id);
+  async read(id: string, options?: ReadOptions) {
+    return read(this.#context, id, options);
   }
-  async create(weight: number, color: "red" | "blue") {
-    return create(this.#context, weight, color);
+  async create(weight: number, color: "red" | "blue", options?: CreateOptions) {
+    return create(this.#context, weight, color, options);
   }
-  async update(id: string, weight: number, color: "red" | "blue") {
-    return update(this.#context, id, weight, color);
+  async update(id: string, weight: number, color: "red" | "blue", options?: UpdateOptions) {
+    return update(this.#context, id, weight, color, options);
   }
-  async delete_(id: string) {
-    return delete_(this.#context, id);
+  async delete_(id: string, options?: DeleteOptions) {
+    return delete_(this.#context, id, options);
   }
-  async analyze(id: string) {
-    return analyze(this.#context, id);
+  async analyze(id: string, options?: AnalyzeOptions) {
+    return analyze(this.#context, id, options);
   }
 }
 ```

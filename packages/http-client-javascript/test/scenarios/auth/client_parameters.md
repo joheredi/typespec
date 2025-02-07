@@ -36,8 +36,8 @@ export class TestClient {
   ) {
     this.#context = createTestClientContext(endpoint, credential, options);
   }
-  async valid() {
-    return valid(this.#context);
+  async valid(options?: ValidOptions) {
+    return valid(this.#context, options);
   }
 }
 ```

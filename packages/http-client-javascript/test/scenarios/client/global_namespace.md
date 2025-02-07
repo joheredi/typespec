@@ -1,5 +1,7 @@
 # Client from the global namespace
 
+This tests that the emitter can handle a spec that has no top-level namespace defined
+
 ## TypeSpec
 
 ```tsp
@@ -15,10 +17,7 @@ export interface ClientContext extends Client {}
 ```
 
 ```ts src/api/clientContext.ts function createClientContext
-export function createClientContext(
-  endpoint: string,
-  options?: ClientOptions,
-): ClientContext {
+export function createClientContext(endpoint: string, options?: ClientOptions): ClientContext {
   return getClient(endpoint, {
     ...options,
   });
@@ -34,8 +33,8 @@ export class Client {
   constructor(endpoint: string, options?: ClientOptions) {
     this.#context = createClientContext(endpoint, options);
   }
-  async foo() {
-    return foo(this.#context);
+  async foo(options?: FooOptions) {
+    return foo(this.#context, options);
   }
 }
 ```
@@ -43,7 +42,7 @@ export class Client {
 It should generate an operation for foo
 
 ```ts src/api/clientOperations.ts function foo
-export async function foo(client: ClientContext): Promise<void> {
+export async function foo(client: ClientContext, options?: FooOptions): Promise<void> {
   const path = parse("/").expand({});
 
   const httpRequestOptions = {

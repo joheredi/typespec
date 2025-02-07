@@ -26,13 +26,12 @@ export type ServerExtensibleEnum = string | "value1";
 export async function unionEnumName(
   client: TestClientContext,
   body: ServerExtensibleEnum,
+  options?: UnionEnumNameOptions,
 ): Promise<void> {
   const path = parse("/").expand({});
 
   const httpRequestOptions = {
-    headers: {
-      "content-type": "application/json",
-    },
+    headers: {},
     body: jsonServerExtensibleEnumToTransportTransform(body),
   };
 

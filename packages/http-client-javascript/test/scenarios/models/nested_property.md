@@ -21,13 +21,12 @@ model Request {
 export async function foo(
   client: TestClientContext,
   profileImage: Uint8Array,
+  options?: FooOptions,
 ): Promise<void> {
   const path = parse("/foo").expand({});
 
   const httpRequestOptions = {
-    headers: {
-      "content-type": "application/json",
-    },
+    headers: {},
     body: {
       profileImage: profileImage,
     },

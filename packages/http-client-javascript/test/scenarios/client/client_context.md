@@ -1,4 +1,4 @@
-# Should generate a client with complex structure
+# Should generate a client context factory for a simple client
 
 ## TypeSpec
 

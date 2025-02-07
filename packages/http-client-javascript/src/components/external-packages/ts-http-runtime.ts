@@ -12,6 +12,7 @@ export const httpRuntimeTemplateLib = createPackage({
         "KeyCredential",
         "TokenCredential",
         "isKeyCredential",
+        "PathUncheckedResponse",
       ],
     },
   },

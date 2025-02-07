@@ -26,12 +26,13 @@ export interface RequestBody {
 export async function doThing(
   client: TestClientContext,
   bodyParam: RequestBody,
+  options?: DoThingOptions,
 ): Promise<void> {
   const path = parse("/").expand({});
 
   const httpRequestOptions = {
     headers: {
-      "content-type": "multipart/form-data",
+      contentType: options?.contentType ?? "multipart/form-data",
     },
     body: [createFilePartDescriptor("basicFile", bodyParam.basicFile)],
   };
@@ -81,12 +82,13 @@ export interface RequestBody {
 export async function doThing(
   client: TestClientContext,
   bodyParam: RequestBody,
+  options?: DoThingOptions,
 ): Promise<void> {
   const path = parse("/").expand({});
 
   const httpRequestOptions = {
     headers: {
-      "content-type": "multipart/form-data",
+      contentType: options?.contentType ?? "multipart/form-data",
     },
     body: [createFilePartDescriptor("image", bodyParam.image, "image/png")],
   };
@@ -128,12 +130,13 @@ export interface RequestBody {
 export async function doThing(
   client: TestClientContext,
   bodyParam: RequestBody,
+  options?: DoThingOptions,
 ): Promise<void> {
   const path = parse("/").expand({});
 
   const httpRequestOptions = {
     headers: {
-      "content-type": "multipart/form-data",
+      contentType: options?.contentType ?? "multipart/form-data",
     },
     body: [
       ...bodyParam.files.map((files: any) =>

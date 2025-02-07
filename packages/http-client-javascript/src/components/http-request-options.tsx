@@ -1,9 +1,8 @@
 import { Children, code, Refkey } from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
-import { StringLiteral } from "@typespec/compiler";
-import { $ } from "@typespec/compiler/experimental/typekit";
 import { ClientOperation } from "@typespec/http-client";
 import { HttpRequestParametersExpression } from "./http-request-parameters-expression.jsx";
+import { getOperationOptionsParameterRefkey } from "./operation-parameters.jsx";
 import { OperationTransformExpression } from "./transforms/operation-transform-expression.jsx";
 
 export interface HttpRequestOptionsProps {
@@ -31,36 +30,30 @@ HttpRequestOptions.Headers = function HttpRequestOptionsHeaders(
 ) {
   // Extract the header request parameters from the operation
   const httpOperation = props.operation.httpOperation;
-  const headers = $.httpRequest.getParameters(httpOperation, "header");
+  const headers = httpOperation.parameters.properties.filter(
+    (p) => p.kind === "header" || p.kind === "contentType",
+  );
 
-  // Prepare the default content type, to use in case no explicit content type is provided
-  let contentType = $.httpRequest.getBodyParameters(httpOperation) ? (
-    <ts.ObjectProperty name='"content-type"' value='"application/json"' />
-  ) : null;
+  // Todo: Do we need to assume or trust what http gives us?
+  // If we need to add this we also need to make sure it is added
+  // to the operation parameters.
 
-  // Extract the content type property from the header request parameters, if available
-  const contentTypeProperty = $.httpRequest
-    .getParameters(httpOperation, "contentType")
-    ?.properties.get("contentType");
+  // if (!headers.find((p) => p.kind === "contentType")) {
+  //   headers.push({
+  //     kind: "contentType",
+  //     path: ["content-type"],
+  //     property: $.modelProperty.create({
+  //       name: "content-type",
+  //       type: $.builtin.string,
+  //       defaultValue: $.value.createString("application/json"),
+  //       optional: true,
+  //     }),
+  //   });
+  // }
 
-  // If the content type property is available, use it to set the content type header.
-  if (contentTypeProperty) {
-    let contentTypePath = "contentType";
-    const contentTypeLiteral = (contentTypeProperty.type as StringLiteral).value;
-    // When there is a content type literal, use it as the content type value
-    const contentTypeValue = contentTypeLiteral ? `"${contentTypeLiteral}"` : contentTypePath;
-    contentTypePath = contentTypeProperty.optional
-      ? `options.${contentTypePath}`
-      : contentTypeValue;
-    // Override the default content type
-    contentType = <ts.ObjectProperty name='"content-type"' value={contentTypeValue} />;
-  }
-
-  const optionsParam = props.operation.operation.parameters.properties.get("options")!;
+  const optionsParam = getOperationOptionsParameterRefkey(props.operation.httpOperation);
   return <ts.ObjectProperty name="headers">
-      <HttpRequestParametersExpression parameters={headers} optionsParameter={optionsParam}>
-        {contentType}
-      </HttpRequestParametersExpression>,
+      <HttpRequestParametersExpression parameters={headers} optionsParameter={optionsParam} />,
   </ts.ObjectProperty>;
 };
 

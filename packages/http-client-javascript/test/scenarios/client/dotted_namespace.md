@@ -2,7 +2,7 @@
 
 ## Spec
 
-A dotted namespace where only the last part has stuff
+A dotted namespace where only the last part has content. The leading namespaces have no operations and a single sub namespace
 
 ```tsp
 @service({
@@ -23,8 +23,8 @@ export class BazClient {
   constructor(endpoint: string, options?: BazClientOptions) {
     this.#context = createBazClientContext(endpoint, options);
   }
-  async get() {
-    return get(this.#context);
+  async get(options?: GetOptions) {
+    return get(this.#context, options);
   }
 }
 ```

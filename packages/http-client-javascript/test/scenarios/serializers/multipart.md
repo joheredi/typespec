@@ -40,12 +40,13 @@ export interface FileWithHttpPartSpecificContentTypeRequest {
 export async function create(
   client: TestClientContext,
   body: FileWithHttpPartSpecificContentTypeRequest,
+  options?: CreateOptions,
 ): Promise<void> {
   const path = parse("/").expand({});
 
   const httpRequestOptions = {
     headers: {
-      "content-type": "multipart/form-data",
+      contentType: options?.contentType ?? "multipart/form-data",
     },
     body: [
       createFilePartDescriptor("profileImage", body.profileImage, "image/jpg"),

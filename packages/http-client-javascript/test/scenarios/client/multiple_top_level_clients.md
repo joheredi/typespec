@@ -1,5 +1,7 @@
 # Emits multiple top level clients
 
+Verifies that the emitter can handle correctly when there are 2 root namespaces, translating these into 2 separatec lients
+
 ## TypeSpec
 
 ```tsp
@@ -26,7 +28,7 @@ namespace Bar {
 It should generate a client for Foo with a single operation as defined in the spec
 
 ```ts src/fooClient.ts
-import { get } from "./api/fooClientOperations.js";
+import { GetOptions, get } from "./api/fooClientOperations.js";
 import {
   FooClientContext,
   FooClientOptions,
@@ -39,8 +41,8 @@ export class FooClient {
   constructor(endpoint: string, options?: FooClientOptions) {
     this.#context = createFooClientContext(endpoint, options);
   }
-  async get() {
-    return get(this.#context);
+  async get(options?: GetOptions) {
+    return get(this.#context, options);
   }
 }
 ```
@@ -49,7 +51,7 @@ It should generate a client for Bar with `create` and `get` operations as define
 
 ```ts src/barClient.ts
 import { BarItem } from "./models/models.js";
-import { get, create } from "./api/barClientOperations.js";
+import { GetOptions, get, CreateOptions, create } from "./api/barClientOperations.js";
 import {
   BarClientContext,
   BarClientOptions,
@@ -62,11 +64,11 @@ export class BarClient {
   constructor(endpoint: string, options?: BarClientOptions) {
     this.#context = createBarClientContext(endpoint, options);
   }
-  async get() {
-    return get(this.#context);
+  async get(options?: GetOptions) {
+    return get(this.#context, options);
   }
-  async create(foo: BarItem) {
-    return create(this.#context, foo);
+  async create(title: string, foo: BarItem, options?: CreateOptions) {
+    return create(this.#context, title, foo, options);
   }
 }
 ```

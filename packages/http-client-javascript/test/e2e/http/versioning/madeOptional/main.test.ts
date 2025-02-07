@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { MadeOptionalClient } from "../../../generated/http/versioning/madeOptional/http-client-javascript/src/index.js";
+import { MadeOptionalClient } from "../../../generated/versioning/madeOptional/src/index.js";
 
 describe("Versioning.MadeOptional", () => {
   const endpoint = "http://localhost:3000";

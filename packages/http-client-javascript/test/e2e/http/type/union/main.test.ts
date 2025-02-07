@@ -12,7 +12,7 @@ import {
   StringExtensibleNamedClient,
   StringsOnlyClient,
   Ud,
-} from "../../../generated/http/type/union/http-client-javascript/src/index.js";
+} from "../../../generated/type/union/src/index.js";
 
 describe("Type.Union", () => {
   describe("StringsOnlyClient", () => {

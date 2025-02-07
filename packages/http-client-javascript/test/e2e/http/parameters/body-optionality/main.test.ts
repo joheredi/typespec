@@ -2,7 +2,7 @@ import { describe, it } from "vitest";
 import {
   BodyOptionalityClient,
   OptionalExplicitClient,
-} from "../../../generated/http/parameters/body-optionality/http-client-javascript/src/index.js";
+} from "../../../generated/parameters/body-optionality/src/index.js";
 
 describe("Parameters.BodyOptionality", () => {
   const client = new BodyOptionalityClient("http://localhost:3000", {

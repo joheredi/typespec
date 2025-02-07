@@ -1,5 +1,5 @@
 import { describe, it } from "vitest";
-import { NotVersionedClient } from "../../../../generated/http/server/versions/not-versioned/http-client-javascript/src/index.js";
+import { NotVersionedClient } from "../../../../generated/server/versions/not-versioned/src/index.js";
 
 describe("Server.Versions.NotVersioned", () => {
   const client = new NotVersionedClient("http://localhost:3000", { allowInsecureConnection: true });

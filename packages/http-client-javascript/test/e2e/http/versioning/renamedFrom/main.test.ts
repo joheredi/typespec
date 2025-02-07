@@ -3,7 +3,7 @@ import {
   NewEnum,
   NewInterfaceClient,
   RenamedFromClient,
-} from "../../../generated/http/versioning/renamedFrom/http-client-javascript/src/index.js";
+} from "../../../generated/versioning/renamedFrom/src/index.js";
 
 describe("Versioning.RenamedFrom", () => {
   describe("RenamedFromClient", () => {

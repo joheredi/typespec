@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { OAuth2Client } from "../../../generated/http/authentication/oauth2/http-client-javascript/src/index.js";
+import { OAuth2Client } from "../../../generated/authentication/oauth2/src/index.js";
 
 describe("Authentication.OAuth2", () => {
   const client = new OAuth2Client(

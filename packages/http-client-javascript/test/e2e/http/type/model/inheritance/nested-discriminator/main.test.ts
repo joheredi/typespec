@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { NestedDiscriminatorClient } from "../../../../../generated/http/type/model/inheritance/nested-discriminator/http-client-javascript/src/index.js";
+import { NestedDiscriminatorClient } from "../../../../../generated/type/model/inheritance/nested-discriminator/src/index.js";
 
 describe("Type.Model.Inheritance.NestedDiscriminator", () => {
   const client = new NestedDiscriminatorClient("http://localhost:3000", {

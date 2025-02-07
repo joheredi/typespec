@@ -6,7 +6,7 @@ import {
   InterfaceV2Client,
   ModelV1,
   ModelV2,
-} from "../../../generated/http/versioning/added/http-client-javascript/src/index.js";
+} from "../../../generated/versioning/added/src/index.js";
 
 describe("Versioning.Added", () => {
   const client = new AddedClient("http://localhost:3000", {

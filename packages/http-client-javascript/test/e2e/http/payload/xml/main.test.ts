@@ -12,7 +12,7 @@ import {
   ModelWithTextValueClient,
   ModelWithUnwrappedArrayValueClient,
   SimpleModelValueClient,
-} from "../../../generated/http/payload/xml/http-client-javascript/src/index.js";
+} from "../../../generated/payload/xml/src/index.js";
 
 describe.skip("Payload.Xml", () => {
   describe("SimpleModelValueClient", () => {

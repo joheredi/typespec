@@ -9,7 +9,7 @@ import {
   PlainTimeClient,
   RequiredAndOptionalClient,
   StringClient,
-} from "../../../../generated/http/type/property/optionality/http-client-javascript/src/index.js";
+} from "../../../../generated/type/property/optionality/src/index.js";
 
 const base64EncodeToUint8Array = (input: string): Uint8Array => {
   // Encode the string as Base64

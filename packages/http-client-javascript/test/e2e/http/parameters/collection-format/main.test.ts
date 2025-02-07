@@ -2,7 +2,7 @@ import { describe, it } from "vitest";
 import {
   HeaderClient,
   QueryClient,
-} from "../../../generated/http/parameters/collection-format/http-client-javascript/src/index.js";
+} from "../../../generated/parameters/collection-format/src/index.js";
 
 describe("Parameters.CollectionFormat", () => {
   describe("QueryClient", () => {

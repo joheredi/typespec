@@ -2,7 +2,7 @@ import { describe, it } from "vitest";
 import {
   AddOptionalParamClient,
   ServiceDrivenClient,
-} from "../../../generated/http/resiliency/srv-driven/http-client-javascript/src/index.js";
+} from "../../../generated/resiliency/srv-driven/src/index.js";
 
 describe("Resiliency.ServiceDriven", () => {
   const endpoint = "http://localhost:3000";

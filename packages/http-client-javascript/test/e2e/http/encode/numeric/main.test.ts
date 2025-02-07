@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { PropertyClient } from "../../../generated/http/encode/numeric/http-client-javascript/src/index.js";
+import { PropertyClient } from "../../../generated/encode/numeric/src/index.js";
 
 describe("Encode.Numeric", () => {
   describe("PropertyClient", () => {

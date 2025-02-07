@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { StringBodyClient } from "../../../generated/http/payload/media-type/http-client-javascript/src/index.js";
+import { StringBodyClient } from "../../../generated/payload/media-type/src/index.js";
 
 describe("Payload.MediaType", () => {
   describe("StringBodyClient", () => {

@@ -1,8 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  DaysOfWeekEnum,
-  StringClient,
-} from "../../../../generated/http/type/enum/fixed/http-client-javascript/src/index.js";
+import { DaysOfWeekEnum, StringClient } from "../../../../generated/type/enum/fixed/src/index.js";
 
 describe("Type.Enum.Fixed", () => {
   describe("StringClient", () => {

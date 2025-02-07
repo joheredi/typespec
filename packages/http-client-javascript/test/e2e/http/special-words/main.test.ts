@@ -4,7 +4,7 @@ import {
   ModelsClient,
   OperationsClient,
   ParametersClient,
-} from "../../generated/http/special-words/http-client-javascript/src/index.js";
+} from "../../generated/special-words/src/index.js";
 
 describe("SpecialWords", () => {
   describe("OperationsClient", () => {

@@ -8,7 +8,7 @@ import {
   QueryClient,
   RequestBodyClient,
   ResponseBodyClient,
-} from "../../../generated/http/encode/bytes/http-client-javascript/src/index.js";
+} from "../../../generated/encode/bytes/src/index.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

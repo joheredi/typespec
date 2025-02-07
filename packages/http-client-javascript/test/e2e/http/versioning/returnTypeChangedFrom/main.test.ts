@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { ReturnTypeChangedFromClient } from "../../../generated/http/versioning/returnTypeChangedFrom/http-client-javascript/src/index.js";
+import { ReturnTypeChangedFromClient } from "../../../generated/versioning/returnTypeChangedFrom/src/index.js";
 
 describe("Versioning.ReturnTypeChangedFrom", () => {
   describe("TestClient", () => {

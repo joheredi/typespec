@@ -2,10 +2,7 @@ import { readFile } from "fs/promises";
 import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
 import { beforeEach, describe, it } from "vitest";
-import {
-  FormDataClient,
-  HttpPartsClient,
-} from "../../../generated/http/payload/multipart/http-client-javascript/src/index.js";
+import { FormDataClient, HttpPartsClient } from "../../../generated/payload/multipart/src/index.js";
 
 describe("Payload.MultiPart", () => {
   let __filename;

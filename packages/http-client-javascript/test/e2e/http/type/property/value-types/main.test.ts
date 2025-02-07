@@ -13,7 +13,7 @@ import {
   FloatClient,
   IntClient,
   StringClient,
-} from "../../../../generated/http/type/property/value-types/http-client-javascript/src/index.js";
+} from "../../../../generated/type/property/value-types/src/index.js";
 
 const base64EncodeToUint8Array = (input: string): Uint8Array => {
   // Encode the string as Base64

@@ -1,5 +1,5 @@
 import { describe, it } from "vitest";
-import { SingleClient } from "../../../../generated/http/server/path/single/http-client-javascript/src/index.js";
+import { SingleClient } from "../../../../generated/server/path/single/src/index.js";
 
 describe("Server.Path.Single", () => {
   const client = new SingleClient("http://localhost:3000", { allowInsecureConnection: true });

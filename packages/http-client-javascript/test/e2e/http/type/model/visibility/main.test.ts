@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { VisibilityClient } from "../../../../generated/http/type/model/visibility/http-client-javascript/src/index.js";
+import { VisibilityClient } from "../../../../generated/type/model/visibility/src/index.js";
 
 describe("Type.Model.Visibility", () => {
   const client = new VisibilityClient("http://localhost:3000", { allowInsecureConnection: true });

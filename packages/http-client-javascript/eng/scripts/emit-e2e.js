@@ -18,9 +18,14 @@ const { pathExists, stat, readFile, writeFile } = pkg;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const basePath = join(__dirname, "node_modules", "@azure-tools", "cadl-ranch-specs");
-const ignoreFilePath = join(__dirname, ".testignore");
-const reportFilePath = join(__dirname, ".test-gen-report.txt");
+// Define the project root as two levels up (from "project-root/eng/scripts" to "project-root")
+const projectRoot = join(__dirname, "../..");
+
+const tspConfig = join(__dirname, "tspconfig.yaml");
+
+const basePath = join(projectRoot, "node_modules", "@typespec", "http-specs", "specs");
+const ignoreFilePath = join(projectRoot, ".testignore");
+const reportFilePath = join(projectRoot, ".test-gen-report.txt");
 
 // Parse command-line arguments using yargs
 const argv = yargs(hideBin(process.argv))
@@ -145,6 +150,8 @@ async function processFiles(files, options) {
         fullPath,
         "--emit",
         "@typespec/http-client-javascript",
+        "--config",
+        tspConfig,
         "--output-dir",
         outputDir,
       ]);
@@ -160,8 +167,7 @@ async function processFiles(files, options) {
       await runCommand("npx", ["prettier", outputDir, "--write"]);
 
       if (build) {
-        const generatedProject = join(outputDir, "http-client-javascript");
-        await runCommand("npm", ["run", "build"], { cwd: generatedProject });
+        await runCommand("npm", ["run", "build"], { cwd: outputDir });
       }
 
       console.log(chalk.green(`Finished processing: ${relativePath}`));

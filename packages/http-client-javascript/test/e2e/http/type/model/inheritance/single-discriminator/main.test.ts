@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   Eagle,
   SingleDiscriminatorClient,
-} from "../../../../../generated/http/type/model/inheritance/single-discriminator/http-client-javascript/src/index.js";
+} from "../../../../../generated/type/model/inheritance/single-discriminator/src/index.js";
 
 describe("Type.Model.Inheritance.SingleDiscriminator", () => {
   const client = new SingleDiscriminatorClient("http://localhost:3000", {

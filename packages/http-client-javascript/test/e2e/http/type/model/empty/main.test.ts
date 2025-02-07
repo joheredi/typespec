@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { EmptyClient } from "../../../../generated/http/type/model/empty/http-client-javascript/src/index.js";
+import { EmptyClient } from "../../../../generated/type/model/empty/src/index.js";
 
 describe("Type.Model.Empty", () => {
   const client = new EmptyClient("http://localhost:3000", { allowInsecureConnection: true });

@@ -3,7 +3,7 @@ import {
   HeaderClient,
   PropertyClient,
   QueryClient,
-} from "../../../generated/http/encode/duration/http-client-javascript/src/index.js";
+} from "../../../generated/encode/duration/src/index.js";
 
 describe("Encode.Duration", () => {
   describe("QueryClient", () => {

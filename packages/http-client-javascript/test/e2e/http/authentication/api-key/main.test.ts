@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { ApiKeyClient } from "../../../generated/http/authentication/api-key/http-client-javascript/src/index.js";
+import { ApiKeyClient } from "../../../generated/authentication/api-key/src/index.js";
 
 describe("Authentication.ApiKey", () => {
   const client = new ApiKeyClient(

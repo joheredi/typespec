@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { PropertyClient } from "../../../../generated/http/serialization/encoded-name/json/http-client-javascript/src/index.js";
+import { PropertyClient } from "../../../../generated/serialization/encoded-name/json/src/index.js";
 
 describe("Serialization.EncodedName.Json", () => {
   describe("PropertyClient", () => {

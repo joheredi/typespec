@@ -6,7 +6,7 @@ import {
   IsUnknownClient,
   IsUnknownDerivedClient,
   IsUnknownDiscriminatedClient,
-} from "../../../../generated/http/type/property/additional-properties/http-client-javascript/src/index.js";
+} from "../../../../generated/type/property/additional-properties/src/index.js";
 
 describe("Type.Property.AdditionalProperties", () => {
   describe("ExtendsUnknownClient", () => {

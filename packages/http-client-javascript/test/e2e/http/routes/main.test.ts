@@ -17,7 +17,7 @@ import {
   RoutesClient,
   ExplodeClient as SimpleExplodeClient,
   StandardClient as SimpleStandardClient,
-} from "../../generated/http/routes/http-client-javascript/src/index.js";
+} from "../../generated/routes/src/index.js";
 
 describe("Routes", () => {
   const baseUrl = "http://localhost:3000";

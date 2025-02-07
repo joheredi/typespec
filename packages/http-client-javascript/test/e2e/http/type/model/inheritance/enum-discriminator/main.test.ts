@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { EnumDiscriminatorClient } from "../../../../../generated/http/type/model/inheritance/enum-discriminator/http-client-javascript/src/index.js";
+import { EnumDiscriminatorClient } from "../../../../../generated/type/model/inheritance/enum-discriminator/src/index.js";
 
 describe("Type.Model.Inheritance.EnumDiscriminator", () => {
   const client = new EnumDiscriminatorClient("http://localhost:3000", {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { JsonMergePatchClient } from "../../../generated/http/payload/json-merge-patch/http-client-javascript/src/index.js";
+import { JsonMergePatchClient } from "../../../generated/payload/json-merge-patch/src/index.js";
 
 describe("Payload.JsonMergePatch", () => {
   const client = new JsonMergePatchClient("http://localhost:3000", {

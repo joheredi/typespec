@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { UsageClient } from "../../../../generated/http/type/model/usage/http-client-javascript/src/index.js";
+import { UsageClient } from "../../../../generated/type/model/usage/src/index.js";
 
 describe.skip("Type.Model.Usage", () => {
   const client = new UsageClient("http://localhost:3000", { allowInsecureConnection: true });

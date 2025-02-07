@@ -7,7 +7,7 @@ import {
   DecimalVerifyClient,
   StringClient,
   UnknownClient,
-} from "../../../generated/http/type/scalar/http-client-javascript/src/index.js";
+} from "../../../generated/type/scalar/src/index.js";
 
 describe("Type.Scalar", () => {
   describe("StringClient", () => {

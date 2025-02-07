@@ -1,8 +1,5 @@
 import { describe, it } from "vitest";
-import {
-  AliasClient,
-  ModelClient,
-} from "../../../generated/http/parameters/spread/http-client-javascript/src/index.js";
+import { AliasClient, ModelClient } from "../../../generated/parameters/spread/src/index.js";
 
 describe("Parameters.Spread", () => {
   describe("ModelClient", () => {

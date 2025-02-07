@@ -1,5 +1,5 @@
 {
-  "name": "http-client-javascript",
+  "name": "@typespec/http-client-javascript",
   "version": "1.0.0",
   "type": "module",
   "private": true,
@@ -12,13 +12,14 @@
     "watch-tsc": "tsc -p . --watch",
     "watch": "concurrently --kill-others \"npm run watch-tsc\" \"npm run watch-src\"",
     "test": "vitest run --exclude=test/e2e",
-    "build-todo": "rimraf sample/output/todo dist/sample/output/todo && tsp compile sample/main.tsp --emit http-client-javascript --output-dir sample/output/todo && babel sample/output/todo -d dist/sample/output/todo --extensions .ts,.tsx && npx prettier sample/output --write",
-    "build-petstore": "tsp compile ../samples/specs/petstore/petstore.tsp --emit http-client-javascript --output-dir sample/output/petstore && babel sample/output/petstore -d dist/sample/output/petstore --extensions .ts,.tsx && npx prettier sample/output --write",
+    "build-todo": "rimraf sample/output/todo dist/sample/output/todo && tsp compile sample/main.tsp --emit @typespec/http-client-javascript --output-dir sample/output/todo && babel sample/output/todo -d dist/sample/output/todo --extensions .ts,.tsx && npx prettier sample/output --write",
+    "build-petstore": "tsp compile ../samples/specs/petstore/petstore.tsp --emit @typespec/http-client-javascript --output-dir sample/output/petstore && babel sample/output/petstore -d dist/sample/output/petstore --extensions .ts,.tsx && npx prettier sample/output --write",
     "format": "prettier . --write",
     "build:test": "tsc -p tsconfig.test.json",
     "start:server": "npx cadl-ranch server start node_modules/@azure-tools/cadl-ranch-specs/http",
     "stop:server": "npx cadl-ranch server stop",
-    "test:e2e": "node eng/scripts/run-e2e-tests.js"
+    "test:e2e": "node eng/scripts/run-e2e-tests.js",
+    "emit:e2e": "node eng/scripts/emit-e2e.js"
   },
   "keywords": [],
   "author": "",
@@ -49,7 +50,7 @@
     "inquirer": "^12.2.0",
     "@typespec/ts-http-runtime": "0.1.0",
     "uri-template": "^2.0.0",
-    "@typespec/http-specs": "workspace:~",
+    "@typespec/http-specs": "0.1.0-alpha.8",
     "@typespec/versioning": "workspace:~",
     "@azure-tools/typespec-client-generator-core": "0.49.0",
     "@azure-tools/typespec-azure-resource-manager": "0.49.0",

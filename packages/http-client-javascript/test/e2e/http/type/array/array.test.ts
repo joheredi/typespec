@@ -14,7 +14,7 @@ import {
   NullableStringValueClient,
   StringValueClient,
   UnknownValueClient,
-} from "../../../generated/http/type/array/http-client-javascript/src/index.js";
+} from "../../../generated/type/array/src/index.js";
 
 describe("Type.Array", () => {
   describe("Int32ValueClient", () => {

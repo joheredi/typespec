@@ -4,7 +4,7 @@ import {
   EnumV3,
   ModelV3,
   RemovedClient,
-} from "../../../generated/http/versioning/removed/http-client-javascript/src/index.js";
+} from "../../../generated/versioning/removed/src/index.js";
 
 describe("Versioning.Removed", () => {
   const client = new RemovedClient("http://localhost:3000", { allowInsecureConnection: true });

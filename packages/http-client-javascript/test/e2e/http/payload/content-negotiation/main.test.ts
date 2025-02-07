@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   DifferentBodyClient,
   SameBodyClient,
-} from "../../../generated/http/payload/content-negotiation/http-client-javascript/src/index.js";
+} from "../../../generated/payload/content-negotiation/src/index.js";
 
 describe("Payload.ContentNegotiation", () => {
   describe("SameBodyClient", () => {

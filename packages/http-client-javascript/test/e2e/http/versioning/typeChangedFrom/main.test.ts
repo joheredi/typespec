@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { TypeChangedFromClient } from "../../../generated/http/versioning/typeChangedFrom/http-client-javascript/src/index.js";
+import { TypeChangedFromClient } from "../../../generated/versioning/typeChangedFrom/src/index.js";
 
 describe("Versioning.TypeChangedFrom", () => {
   const endpoint = "http://localhost:3000";

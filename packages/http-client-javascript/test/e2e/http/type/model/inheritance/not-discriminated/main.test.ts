@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { NotDiscriminatedClient } from "../../../../../generated/http/type/model/inheritance/not-discriminated/http-client-javascript/src/index.js";
+import { NotDiscriminatedClient } from "../../../../../generated/type/model/inheritance/not-discriminated/src/index.js";
 
 describe("Type.Model.Inheritance.NotDiscriminated", () => {
   const client = new NotDiscriminatedClient("http://localhost:3000", {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { RecursiveClient } from "../../../../../generated/http/type/model/inheritance/recursive/http-client-javascript/src/index.js";
+import { RecursiveClient } from "../../../../../generated/type/model/inheritance/recursive/src/index.js";
 
 describe("Type.Model.Inheritance.Recursive", () => {
   const client = new RecursiveClient("http://localhost:3000", { allowInsecureConnection: true });

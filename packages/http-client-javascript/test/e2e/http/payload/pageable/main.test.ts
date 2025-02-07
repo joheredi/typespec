@@ -1,5 +1,5 @@
 import { describe } from "vitest";
-import { PageableClient } from "../../../generated/http/payload/pageable/http-client-javascript/src/index.js";
+import { PageableClient } from "../../../generated/payload/pageable/src/index.js";
 
 describe("Payload.Pageable", () => {
   describe("list", () => {

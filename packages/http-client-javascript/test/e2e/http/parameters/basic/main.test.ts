@@ -2,7 +2,7 @@ import { describe, it } from "vitest";
 import {
   ExplicitBodyClient,
   ImplicitBodyClient,
-} from "../../../generated/http/parameters/basic/http-client-javascript/src/index.js";
+} from "../../../generated/parameters/basic/src/index.js";
 
 describe("Parameters.Basic", () => {
   describe("ExplicitBodyClient", () => {

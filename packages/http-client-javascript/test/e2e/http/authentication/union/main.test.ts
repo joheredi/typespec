@@ -1,5 +1,5 @@
 import { describe, it } from "vitest";
-import { UnionClient } from "../../../generated/http/authentication/union/http-client-javascript/src/index.js";
+import { UnionClient } from "../../../generated/authentication/union/src/index.js";
 
 describe("Authentication.Union", () => {
   it("should authenticate using the valid API key", async () => {

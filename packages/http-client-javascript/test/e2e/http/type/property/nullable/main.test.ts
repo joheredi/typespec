@@ -7,7 +7,7 @@ import {
   DatetimeClient,
   DurationClient,
   StringClient,
-} from "../../../../generated/http/type/property/nullable/http-client-javascript/src/index.js";
+} from "../../../../generated/type/property/nullable/src/index.js";
 
 const base64EncodeToUint8Array = (input: string): Uint8Array => {
   // Encode the string as Base64

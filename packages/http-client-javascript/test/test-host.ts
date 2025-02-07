@@ -24,7 +24,7 @@ export async function createHttpClientJavascriptEmitterTestRunner() {
     autoUsings: ["TypeSpec.Http", "TypeSpec.Rest"],
     compilerOptions: {
       noEmit: false,
-      emit: ["http-client-javascript"],
+      emit: ["@typespec/http-client-javascript"],
     },
   });
 }

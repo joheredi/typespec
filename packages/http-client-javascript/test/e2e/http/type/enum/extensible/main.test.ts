@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { StringClient } from "../../../../generated/http/type/enum/extensible/http-client-javascript/src/index.js";
+import { StringClient } from "../../../../generated/type/enum/extensible/src/index.js";
 
 describe("Type.Enum.Extensible", () => {
   describe("StringClient", () => {

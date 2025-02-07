@@ -1,5 +1,5 @@
 import { describe, it } from "vitest";
-import { RepeatabilityClient } from "../../../generated/http/special-headers/repeatability/http-client-javascript/src/index.js";
+import { RepeatabilityClient } from "../../../generated/special-headers/repeatability/src/index.js";
 
 describe("SpecialHeaders.Repeatability", () => {
   const client = new RepeatabilityClient("http://localhost:3000", {

@@ -14,7 +14,7 @@ const EmitterOptionsSchema: JSONSchemaType<JsClientEmitterOptions> = {
 };
 
 export const $lib = createTypeSpecLibrary({
-  name: "http-client-javascript",
+  name: "@typespec/http-client-javascript",
   emitter: {
     options: EmitterOptionsSchema,
   },

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { MultipleClient } from "../../../../generated/http/server/path/multiple/http-client-javascript/src/index.js";
+import { MultipleClient } from "../../../../generated/server/path/multiple/src/index.js";
 
 describe("Server.Path.Multiple", () => {
   const client = new MultipleClient("http://localhost:3000", {

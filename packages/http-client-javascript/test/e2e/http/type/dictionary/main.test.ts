@@ -11,7 +11,7 @@ import {
   RecursiveModelValueClient,
   StringValueClient,
   UnknownValueClient,
-} from "../../../generated/http/type/dictionary/http-client-javascript/src/index.js";
+} from "../../../generated/type/dictionary/src/index.js";
 
 describe("Type.Dictionary", () => {
   describe("Int32ValueClient", () => {

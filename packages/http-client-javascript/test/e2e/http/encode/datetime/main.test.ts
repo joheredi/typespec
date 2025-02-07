@@ -4,7 +4,7 @@ import {
   PropertyClient,
   QueryClient,
   ResponseHeaderClient,
-} from "../../../generated/http/encode/datetime/http-client-javascript/src/index.js";
+} from "../../../generated/encode/datetime/src/index.js";
 
 describe("Encode.Datetime", () => {
   describe("QueryClient", () => {
@@ -33,10 +33,7 @@ describe("Encode.Datetime", () => {
 
     it("should test unixTimestamp encode for datetime array query parameter", async () => {
       // For QueryClient, the array dates remain as before.
-      const timestamps = [
-        new Date("2023-06-12T10:47:44Z"),
-        new Date("2023-06-14T09:17:36Z"),
-      ];
+      const timestamps = [new Date("2023-06-12T10:47:44Z"), new Date("2023-06-14T09:17:36Z")];
       await client.unixTimestampArray(timestamps);
       // Assert successful request
     });
@@ -126,27 +123,33 @@ describe("Encode.Datetime", () => {
 
     it("should handle default encode (rfc7231) for datetime response header", async () => {
       let value;
-      const response = await client.default_({onResponse: (r) =>{
-        value = new Date((r.headers as any)["value"])
-      }});
+      const response = await client.default_({
+        onResponse: (r) => {
+          value = new Date((r.headers as any)["value"]);
+        },
+      });
       expect(value).toEqual(new Date("2022-08-26T14:38:00.000Z"));
     });
 
     it("should handle rfc3339 encode for datetime response header", async () => {
       let value;
 
-      const response = await client.rfc3339({onResponse: (r) =>{
-        value = new Date((r.headers as any)["value"])
-      }});
+      const response = await client.rfc3339({
+        onResponse: (r) => {
+          value = new Date((r.headers as any)["value"]);
+        },
+      });
       expect(value).toEqual(new Date("2022-08-26T18:38:00.000Z"));
     });
 
     it("should handle rfc7231 encode for datetime response header", async () => {
       let value;
 
-      const response = await client.rfc7231({onResponse: (r) =>{
-        value = new Date((r.headers as any)["value"])
-      }});
+      const response = await client.rfc7231({
+        onResponse: (r) => {
+          value = new Date((r.headers as any)["value"]);
+        },
+      });
       expect(value).toEqual(new Date("2022-08-26T14:38:00.000Z"));
     });
 
@@ -154,10 +157,11 @@ describe("Encode.Datetime", () => {
       let value;
 
       // Correct response header unixTimestamp date.
-      const response = await client.unixTimestamp({onResponse: (r) =>{
-  
-        value = +(r.headers as any)["value"]
-      }});
+      const response = await client.unixTimestamp({
+        onResponse: (r) => {
+          value = +(r.headers as any)["value"];
+        },
+      });
       expect(value).toEqual(1686566864);
     });
   });

@@ -1,5 +1,5 @@
 import { describe, it } from "vitest";
-import { ConditionalRequestClient } from "../../../generated/http/special-headers/conditional-request/http-client-javascript/src/index.js";
+import { ConditionalRequestClient } from "../../../generated/special-headers/conditional-request/src/index.js";
 
 describe("SpecialHeaders.ConditionalRequest", () => {
   const client = new ConditionalRequestClient("http://localhost:3000", {

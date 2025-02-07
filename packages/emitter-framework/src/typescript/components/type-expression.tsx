@@ -118,8 +118,6 @@ function getScalarIntrinsicExpression(type: Scalar | IntrinsicType): string | nu
       let emittedType = "Date";
       switch(encoding?.encoding) {
         case "unixTimestamp":
-          emittedType = "number";
-          break;
         case "rfc7231":
         case "rfc3339":
         default:

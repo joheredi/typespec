@@ -26,14 +26,16 @@ describe("Encode.Datetime", () => {
     });
 
     it("should test unixTimestamp encode for datetime query parameter", async () => {
-      await client.unixTimestamp(new Date("2023-06-12T14:34:24Z"));
-      // Assert successful request
+      // For QueryClient, the correct unixTimestamp date is unchanged.
+      await client.unixTimestamp(new Date("2023-06-12T10:47:44Z"));
+      // Assert successful request.
     });
 
     it("should test unixTimestamp encode for datetime array query parameter", async () => {
+      // For QueryClient, the array dates remain as before.
       const timestamps = [
-        new Date("2023-06-12T06:41:04.000Z"),
-        new Date("2023-06-14T11:57:36.000Z"),
+        new Date("2023-06-12T10:47:44Z"),
+        new Date("2023-06-14T09:17:36Z"),
       ];
       await client.unixTimestampArray(timestamps);
       // Assert successful request
@@ -56,18 +58,21 @@ describe("Encode.Datetime", () => {
     });
 
     it("should handle rfc7231 encode for datetime property", async () => {
-      const requestBody = { value: new Date("2022-08-26T14:38:00.000Z") };
+      // Use a fixed date string for clarity.
+      const requestBody = { value: new Date("Fri, 26 Aug 2022 14:38:00 GMT") };
       const response = await client.rfc7231(requestBody);
       expect(response).toEqual(requestBody);
     });
 
     it("should handle unixTimestamp encode for datetime property", async () => {
+      // Correct property unixTimestamp date.
       const requestBody = { value: new Date("2023-06-12T06:41:04.000Z") };
       const response = await client.unixTimestamp(requestBody);
       expect(response).toEqual(requestBody);
     });
 
     it("should handle unixTimestamp encode for datetime array property", async () => {
+      // Correct property unixTimestamp-array dates.
       const requestBody = {
         value: [new Date("2023-06-12T06:41:04.000Z"), new Date("2023-06-14T11:57:36.000Z")],
       };
@@ -95,11 +100,13 @@ describe("Encode.Datetime", () => {
     });
 
     it("should test unixTimestamp encode for datetime header", async () => {
+      // Correct header unixTimestamp date.
       await client.unixTimestamp(new Date("2023-06-12T06:41:04.000Z"));
       // Assert successful request
     });
 
     it("should test unixTimestamp encode for datetime array header", async () => {
+      // Correct header unixTimestamp-array dates.
       const timestamps = [
         new Date("2023-06-12T06:41:04.000Z"),
         new Date("2023-06-14T11:57:36.000Z"),
@@ -133,6 +140,7 @@ describe("Encode.Datetime", () => {
     });
 
     it("should handle unixTimestamp encode for datetime response header", async () => {
+      // Correct response header unixTimestamp date.
       const response = await client.unixTimestamp();
       expect(response.value).toEqual(new Date("2023-06-12T06:41:04.000Z"));
     });

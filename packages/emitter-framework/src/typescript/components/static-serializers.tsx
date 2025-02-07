@@ -86,7 +86,7 @@ export function DateUnixTimestampSerializer() {
           return undefined;
         }
 
-        return date.getTime();
+        return Math.floor(date.getTime() / 1000);
       `}
     </ts.FunctionDeclaration>)
 }

@@ -27,6 +27,11 @@ export async function getWithParams(
   };
 
   const response = await client.path(path).get(httpRequestOptions);
+
+  if (typeof options?.operationOptions?.onResponse === "function") {
+    options?.operationOptions?.onResponse(response);
+  }
+
   if (
     +response.status === 200 &&
     response.headers["content-type"]?.includes("application/json")

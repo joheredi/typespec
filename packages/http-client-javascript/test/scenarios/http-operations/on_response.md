@@ -1,34 +1,43 @@
-# Should handle a model that has a property of type ModelProperty
+# Should call on response after receiving the response from the service.
+
+## TypeSpec
 
 ```tsp
 @service
 namespace Test;
-model Request {
+model Widget {
   id: string;
-  profileImage: bytes;
+  total_weight: int32;
+  color: "red" | "blue";
+  is_required?: boolean;
 }
 
-  @post
-  @route("/foo")
-  op foo(
-    profileImage: Request.profileImage,
-  ): NoContentResponse;
+@post op foo(...Widget): void;
 ```
 
-## Operation
+## TypeScript
+
+### Operation
+
+Generates a function that call the onResponse callback
 
 ```ts src/api/testClientOperations.ts function foo
 export async function foo(
   client: TestClientContext,
-  profileImage: Uint8Array,
+  id: string,
+  totalWeight: number,
+  color: "red" | "blue",
   options?: FooOptions,
 ): Promise<void> {
-  const path = parse("/foo").expand({});
+  const path = parse("/").expand({});
 
   const httpRequestOptions = {
     headers: {},
     body: {
-      profileImage: profileImage,
+      id: id,
+      total_weight: totalWeight,
+      color: color,
+      is_required: options?.isRequired,
     },
   };
 

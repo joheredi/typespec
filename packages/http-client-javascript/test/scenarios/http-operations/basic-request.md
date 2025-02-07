@@ -33,6 +33,11 @@ export async function read(
   };
 
   const response = await client.path(path).get(httpRequestOptions);
+
+  if (typeof options?.operationOptions?.onResponse === "function") {
+    options?.operationOptions?.onResponse(response);
+  }
+
   if (+response.status === 204 && !response.body) {
     return;
   }
@@ -96,6 +101,11 @@ export async function read(
   };
 
   const response = await client.path(path).post(httpRequestOptions);
+
+  if (typeof options?.operationOptions?.onResponse === "function") {
+    options?.operationOptions?.onResponse(response);
+  }
+
   if (+response.status === 204 && !response.body) {
     return;
   }
@@ -141,6 +151,11 @@ export async function read(
   };
 
   const response = await client.path(path).get(httpRequestOptions);
+
+  if (typeof options?.operationOptions?.onResponse === "function") {
+    options?.operationOptions?.onResponse(response);
+  }
+
   if (+response.status === 204 && !response.body) {
     return;
   }

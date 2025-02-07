@@ -8,9 +8,11 @@ export function getOperationOptionsInterfaceRefkey() {
 
 export function OperationOptionsInterfaceDeclaration() {
   const declarationRefkey = getOperationOptionsInterfaceRefkey();
+  const onResponseCallback = ay.code`(rawResponse: ${httpRuntimeTemplateLib.PathUncheckedResponse}) => void`;
+
   const operationOptions =
     <ts.InterfaceExpression>
-  <ts.InterfaceMember name="onResponse" optional type={httpRuntimeTemplateLib.PathUncheckedResponse} />
+  <ts.InterfaceMember name="onResponse" optional type={onResponseCallback} />
 </ts.InterfaceExpression>;
   return <ts.InterfaceDeclaration export name="OperationOptions" refkey={declarationRefkey}>
     <ts.InterfaceMember name="operationOptions" optional type={operationOptions}/>

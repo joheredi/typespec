@@ -36,6 +36,11 @@ export async function unionEnumName(
   };
 
   const response = await client.path(path).post(httpRequestOptions);
+
+  if (typeof options?.operationOptions?.onResponse === "function") {
+    options?.operationOptions?.onResponse(response);
+  }
+
   if (+response.status === 204 && !response.body) {
     return;
   }

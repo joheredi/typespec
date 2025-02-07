@@ -23,6 +23,11 @@ export async function list(
   };
 
   const response = await client.path(path).get(httpRequestOptions);
+
+  if (typeof options?.operationOptions?.onResponse === "function") {
+    options?.operationOptions?.onResponse(response);
+  }
+
   if (+response.status === 200 && response.headers["content-type"]?.includes("application/json")) {
     return jsonPageToApplicationTransform(response.body)!;
   }
@@ -44,12 +49,17 @@ export async function createJsonAttachment(
 
   const httpRequestOptions = {
     headers: {
-      "content-type": options?.contentType ?? "application/json",
+      contentType: options?.contentType ?? "application/json",
     },
     body: jsonTodoAttachmentToTransportTransform(contents),
   };
 
   const response = await client.path(path).post(httpRequestOptions);
+
+  if (typeof options?.operationOptions?.onResponse === "function") {
+    options?.operationOptions?.onResponse(response);
+  }
+
   if (+response.status === 204 && !response.body) {
     return;
   }
@@ -71,12 +81,17 @@ export async function createFileAttachment(
 
   const httpRequestOptions = {
     headers: {
-      "content-type": options?.contentType ?? "multipart/form-data",
+      contentType: options?.contentType ?? "multipart/form-data",
     },
     body: [createFilePartDescriptor("contents", body.contents)],
   };
 
   const response = await client.path(path).post(httpRequestOptions);
+
+  if (typeof options?.operationOptions?.onResponse === "function") {
+    options?.operationOptions?.onResponse(response);
+  }
+
   if (+response.status === 204 && !response.body) {
     return;
   }

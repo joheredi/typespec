@@ -29,7 +29,7 @@ export async function list(
   options?: ListOptions,
 ): Promise<TodoPage> {
   const path = parse("/items{?limit,offset}").expand({
-    limit: options?.limit,
+    limit: options?.limit ?? 50,
     offset: options?.offset,
   });
 
@@ -38,6 +38,11 @@ export async function list(
   };
 
   const response = await client.path(path).get(httpRequestOptions);
+
+  if (typeof options?.operationOptions?.onResponse === "function") {
+    options?.operationOptions?.onResponse(response);
+  }
+
   if (+response.status === 200 && response.headers["content-type"]?.includes("application/json")) {
     return jsonTodoPageToApplicationTransform(response.body)!;
   }
@@ -74,7 +79,7 @@ export async function createJson(
 
   const httpRequestOptions = {
     headers: {
-      "content-type": options?.contentType ?? "application/json",
+      contentType: options?.contentType ?? "application/json",
     },
     body: {
       item: jsonTodoItemToTransportTransform(item),
@@ -83,6 +88,11 @@ export async function createJson(
   };
 
   const response = await client.path(path).post(httpRequestOptions);
+
+  if (typeof options?.operationOptions?.onResponse === "function") {
+    options?.operationOptions?.onResponse(response);
+  }
+
   if (+response.status === 200 && response.headers["content-type"]?.includes("application/json")) {
     return {
       id: response.body.id,
@@ -123,7 +133,7 @@ export async function createForm(
 
   const httpRequestOptions = {
     headers: {
-      "content-type": options?.contentType ?? "multipart/form-data",
+      contentType: options?.contentType ?? "multipart/form-data",
     },
     body: [
       {
@@ -144,6 +154,11 @@ export async function createForm(
   };
 
   const response = await client.path(path).post(httpRequestOptions);
+
+  if (typeof options?.operationOptions?.onResponse === "function") {
+    options?.operationOptions?.onResponse(response);
+  }
+
   if (+response.status === 200 && response.headers["content-type"]?.includes("application/json")) {
     return {
       id: response.body.id,
@@ -187,6 +202,11 @@ export async function get(
   };
 
   const response = await client.path(path).get(httpRequestOptions);
+
+  if (typeof options?.operationOptions?.onResponse === "function") {
+    options?.operationOptions?.onResponse(response);
+  }
+
   if (+response.status === 200 && response.headers["content-type"]?.includes("application/json")) {
     return {
       id: response.body.id,
@@ -230,12 +250,17 @@ export async function update(
 
   const httpRequestOptions = {
     headers: {
-      "content-type": options?.contentType ?? "application/merge-patch+json",
+      contentType: options?.contentType ?? "application/merge-patch+json",
     },
     body: jsonTodoItemPatchToTransportTransform(patch),
   };
 
   const response = await client.path(path).patch(httpRequestOptions);
+
+  if (typeof options?.operationOptions?.onResponse === "function") {
+    options?.operationOptions?.onResponse(response);
+  }
+
   if (+response.status === 200 && response.headers["content-type"]?.includes("application/json")) {
     return {
       id: response.body.id,
@@ -268,6 +293,11 @@ export async function delete_(
   };
 
   const response = await client.path(path).delete(httpRequestOptions);
+
+  if (typeof options?.operationOptions?.onResponse === "function") {
+    options?.operationOptions?.onResponse(response);
+  }
+
   if (+response.status === 204 && !response.body) {
     return;
   }

@@ -2,6 +2,6 @@ import { PathUncheckedResponse } from "@typespec/ts-http-runtime";
 
 export interface OperationOptions {
   operationOptions?: {
-    onResponse?: PathUncheckedResponse;
+    onResponse?: (rawResponse: PathUncheckedResponse) => void;
   };
 }

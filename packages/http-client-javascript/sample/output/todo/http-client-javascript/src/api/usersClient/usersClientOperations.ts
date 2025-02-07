@@ -18,13 +18,16 @@ export async function create(
   const path = parse("/users").expand({});
 
   const httpRequestOptions = {
-    headers: {
-      "content-type": "application/json",
-    },
+    headers: {},
     body: jsonUserToTransportTransform(user),
   };
 
   const response = await client.path(path).post(httpRequestOptions);
+
+  if (typeof options?.operationOptions?.onResponse === "function") {
+    options?.operationOptions?.onResponse(response);
+  }
+
   if (+response.status === 200 && response.headers["content-type"]?.includes("application/json")) {
     return {
       id: response.body.id,

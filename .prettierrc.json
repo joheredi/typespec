@@ -27,6 +27,12 @@
       }
     },
     {
+      "files": ["packages/sketch-alloy-json/**/*.tsx"],
+      "options": {
+        "parser": "alloy-ts"
+      }
+    },
+    {
       "files": ["packages/emitter-framework/**/*.tsx"],
       "options": {
         "parser": "alloy-ts"

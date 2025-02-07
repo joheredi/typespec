@@ -1688,6 +1688,115 @@ importers:
         specifier: ^3.0.4
         version: 3.0.4(@types/debug@4.1.12)(@types/node@22.10.10)(@vitest/ui@3.0.4)(happy-dom@16.7.2)(jiti@1.21.6)(jsdom@19.0.0)(tsx@4.19.2)(yaml@2.7.0)
 
+  packages/sketch-alloy-json:
+    dependencies:
+      '@alloy-js/core':
+        specifier: ^0.4.0
+        version: 0.4.0
+      '@alloy-js/json':
+        specifier: ^0.3.0
+        version: 0.3.0
+      '@typespec/compiler':
+        specifier: workspace:*
+        version: link:../compiler
+      '@typespec/emitter-framework':
+        specifier: workspace:*
+        version: link:../emitter-framework
+      '@typespec/http':
+        specifier: workspace:*
+        version: link:../http
+      '@typespec/json-schema':
+        specifier: workspace:*
+        version: link:../json-schema
+      '@typespec/openapi':
+        specifier: workspace:*
+        version: link:../openapi
+      '@typespec/openapi3':
+        specifier: workspace:*
+        version: link:../openapi3
+      '@typespec/rest':
+        specifier: workspace:*
+        version: link:../rest
+    devDependencies:
+      '@alloy-js/babel-preset':
+        specifier: ^0.1.1
+        version: 0.1.1(@babel/core@7.26.0)
+      '@azure-tools/cadl-ranch':
+        specifier: 0.16.2
+        version: 0.16.2(@typespec/versioning@packages+versioning)
+      '@azure-tools/cadl-ranch-expect':
+        specifier: 0.15.7
+        version: 0.15.7(@typespec/compiler@packages+compiler)(@typespec/http@packages+http)(@typespec/rest@packages+rest)(@typespec/versioning@packages+versioning)
+      '@azure-tools/cadl-ranch-specs':
+        specifier: 0.39.6
+        version: 0.39.6(@azure-tools/cadl-ranch-expect@0.15.7(@typespec/compiler@packages+compiler)(@typespec/http@packages+http)(@typespec/rest@packages+rest)(@typespec/versioning@packages+versioning))(@azure-tools/typespec-azure-core@0.49.0(@typespec/compiler@packages+compiler)(@typespec/http@packages+http)(@typespec/rest@packages+rest))(@typespec/compiler@packages+compiler)(@typespec/http@packages+http)(@typespec/rest@packages+rest)(@typespec/versioning@packages+versioning)(@typespec/xml@0.64.0(@typespec/compiler@packages+compiler))
+      '@azure-tools/typespec-azure-resource-manager':
+        specifier: 0.49.0
+        version: 0.49.0(@azure-tools/typespec-azure-core@0.49.0(@typespec/compiler@packages+compiler)(@typespec/http@packages+http)(@typespec/rest@packages+rest))(@typespec/compiler@packages+compiler)(@typespec/http@packages+http)(@typespec/openapi@packages+openapi)(@typespec/rest@packages+rest)(@typespec/versioning@packages+versioning)
+      '@azure-tools/typespec-client-generator-core':
+        specifier: 0.49.0
+        version: 0.49.0(@azure-tools/typespec-azure-core@0.49.0(@typespec/compiler@packages+compiler)(@typespec/http@packages+http)(@typespec/rest@packages+rest))(@typespec/compiler@packages+compiler)(@typespec/http@packages+http)(@typespec/openapi@packages+openapi)(@typespec/rest@packages+rest)(@typespec/versioning@packages+versioning)
+      '@babel/cli':
+        specifier: ^7.24.8
+        version: 7.26.4(@babel/core@7.26.0)
+      '@babel/core':
+        specifier: ^7.24.9
+        version: 7.26.0
+      '@babel/preset-typescript':
+        specifier: ^7.26.0
+        version: 7.26.0(@babel/core@7.26.0)
+      '@rollup/plugin-babel':
+        specifier: ^6.0.4
+        version: 6.0.4(@babel/core@7.26.0)(@types/babel__core@7.20.5)(rollup@4.31.0)
+      '@types/yargs':
+        specifier: ^17.0.0
+        version: 17.0.33
+      '@typespec/http-specs':
+        specifier: workspace:~
+        version: link:../http-specs
+      '@typespec/ts-http-runtime':
+        specifier: 0.1.0
+        version: 0.1.0
+      '@typespec/versioning':
+        specifier: workspace:~
+        version: link:../versioning
+      '@vitest/ui':
+        specifier: ^3.0.4
+        version: 3.0.4(vitest@3.0.4)
+      chalk:
+        specifier: ^2.4.2
+        version: 2.4.2
+      concurrently:
+        specifier: ^8.2.2
+        version: 8.2.2
+      execa:
+        specifier: ^9.5.2
+        version: 9.5.2
+      fs-extra:
+        specifier: ^11.2.0
+        version: 11.2.0
+      globby:
+        specifier: ^14.0.2
+        version: 14.0.2
+      inquirer:
+        specifier: ^12.2.0
+        version: 12.4.1(@types/node@22.13.1)
+      ts-morph:
+        specifier: ^23.0.0
+        version: 23.0.0
+      typescript:
+        specifier: ^5.5.3
+        version: 5.7.3
+      uri-template:
+        specifier: ^2.0.0
+        version: 2.0.0
+      vitest:
+        specifier: ^3.0.4
+        version: 3.0.4(@types/debug@4.1.12)(@types/node@22.13.1)(@vitest/ui@3.0.4)(happy-dom@16.7.2)(jiti@1.21.6)(jsdom@19.0.0)(tsx@4.19.2)(yaml@2.7.0)
+      yargs:
+        specifier: ^17.7.2
+        version: 17.7.2
+
   packages/spec:
     devDependencies:
       '@types/node':
@@ -2502,6 +2611,9 @@ packages:
 
   '@alloy-js/core@0.4.0':
     resolution: {integrity: sha512-fT3++T40TvKF3FvGR53EUCzAGRLzqUoZJqTIyzb4cxeQhqKxGba5RaWh61S/kAcvnI2CPGx6DjbL5g8ts8IjFQ==}
+
+  '@alloy-js/json@0.3.0':
+    resolution: {integrity: sha512-SbMFFIHn5X3zQD3FwBP2DgFs9siYtwBgI17XDTp8S7HNOhYhHk9ydgQ6fAMFYX0QiIdY4Obn1cBVOlIoBI729A==}
 
   '@alloy-js/prettier-plugin-alloy@0.1.0':
     resolution: {integrity: sha512-mFfag8sQm5gPJMoGvJNc1fx66Z3X3nxCeoiitBeFnd5nkBMsMnvVw6LZSrVyybt2qTzY+G/9Qvz3ULkW7RB15Q==}
@@ -12780,6 +12892,13 @@ snapshots:
       '@vue/reactivity': 3.5.13
       chalk: 5.4.1
       cli-table3: 0.6.5
+      pathe: 1.1.2
+    transitivePeerDependencies:
+      - supports-color
+
+  '@alloy-js/json@0.3.0':
+    dependencies:
+      '@alloy-js/core': 0.4.0
       pathe: 1.1.2
     transitivePeerDependencies:
       - supports-color

@@ -3,6 +3,8 @@ import * as ts from "@alloy-js/typescript";
 import { EncodeData, Model, ModelProperty } from "@typespec/compiler";
 import { $ } from "@typespec/compiler/experimental/typekit";
 import { JsonTransform } from "./transforms/json/json-transform.jsx";
+import { isConstantHeader } from "../utils/operations.js";
+import { useTransformNamePolicy } from "@typespec/emitter-framework";
 
 export interface HttpRequestParametersExpressionProps {
   optionsParameter: ModelProperty;
@@ -12,6 +14,7 @@ export interface HttpRequestParametersExpressionProps {
 
 export function HttpRequestParametersExpression(props: HttpRequestParametersExpressionProps) {
   const parameters: (ModelProperty | Children)[] = [];
+  const transformNamer = useTransformNamePolicy();
 
   if (props.children || (Array.isArray(props.children) && props.children.length)) {
     parameters.push(<>
@@ -32,7 +35,14 @@ export function HttpRequestParametersExpression(props: HttpRequestParametersExpr
   const members = mapJoin(
     props.parameters.properties,
     (_parameterName, parameter) => {
+
       const input = parameter.optional ? code`${optionsParamRef}?` : null;
+      const defaultValue = (parameter.type as any).value
+
+      if(defaultValue) {
+        const name = transformNamer.getTransportName(parameter);
+        return <ts.ObjectProperty name={name}><ts.ValueExpression jsValue={defaultValue} /></ts.ObjectProperty>
+      }
 
       const encoding = $.modelProperty.getEncoding(parameter) ?? getDefaultEncoding(parameter);
       return <JsonTransform itemRef={input} type={parameter} target="transport" encoding={encoding}/>;
@@ -45,6 +55,16 @@ export function HttpRequestParametersExpression(props: HttpRequestParametersExpr
   return <ts.ObjectExpression>
     {parameters}
   </ts.ObjectExpression>;
+}
+
+function getDefaultValue(modelProperty: ModelProperty) {
+  const defaultValue = modelProperty.defaultValue;
+
+  if(defaultValue?.valueKind === "StringValue") {
+    return defaultValue.value;
+  }
+
+  return undefined
 }
 
 function getDefaultEncoding(prop: ModelProperty): EncodeData | undefined {

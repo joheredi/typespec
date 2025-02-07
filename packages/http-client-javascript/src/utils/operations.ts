@@ -96,7 +96,7 @@ export const httpParamsMutator: Mutator = {
   },
 };
 
-function isConstantHeader(modelProperty: ModelProperty) {
+export function isConstantHeader(modelProperty: ModelProperty) {
   if (!$.modelProperty.isHttpHeader(modelProperty)) {
     return false;
   }

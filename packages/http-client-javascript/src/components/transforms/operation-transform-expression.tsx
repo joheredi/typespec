@@ -1,7 +1,7 @@
 import * as ts from "@alloy-js/typescript";
 import { Type } from "@typespec/compiler";
 import { $ } from "@typespec/compiler/experimental/typekit";
-import { HasName, TransformNamePolicyContext } from "@typespec/emitter-framework";
+import { HasName, TransformNamePolicyContext, useTransformNamePolicy } from "@typespec/emitter-framework";
 import { ClientOperation } from "@typespec/http-client";
 import { reportDiagnostic } from "../../lib.js";
 import { JsonTransform } from "./json/json-transform.jsx";
@@ -13,6 +13,7 @@ export interface OperationTransformToTransportExpression {
 }
 
 export function OperationTransformExpression(props: OperationTransformToTransportExpression) {
+  const namePolicy = useTransformNamePolicy()
   const body = props.operation.httpOperation.parameters.body;
 
   // TODO: Handle content types other than application/json and multipart
@@ -21,13 +22,13 @@ export function OperationTransformExpression(props: OperationTransformToTranspor
     return;
   }
 
-  const itemRef = body.property ? body.property.name : null;
+  const itemRef = body.property ? payloadApplicationNameGetter(body.property) : null;
 
   if (body.bodyKind === "multipart") {
     return <MultipartTransform body={body} />;
   }
 
-  const payloadType = body.type;
+  const payloadType = body.type
   return <TransformNamePolicyContext.Provider value={{ getTransportName: defaultTransportNameGetter, getApplicationName: payloadApplicationNameGetter }}>
       <JsonTransform itemRef={itemRef} target="transport" type={payloadType}  />
   </TransformNamePolicyContext.Provider>;

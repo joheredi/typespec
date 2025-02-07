@@ -15,7 +15,10 @@
     "build-todo": "rimraf sample/output/todo dist/sample/output/todo && tsp compile sample/main.tsp --emit http-client-javascript --output-dir sample/output/todo && babel sample/output/todo -d dist/sample/output/todo --extensions .ts,.tsx && npx prettier sample/output --write",
     "build-petstore": "tsp compile ../samples/specs/petstore/petstore.tsp --emit http-client-javascript --output-dir sample/output/petstore && babel sample/output/petstore -d dist/sample/output/petstore --extensions .ts,.tsx && npx prettier sample/output --write",
     "format": "prettier . --write",
-    "build:test": "tsc -p tsconfig.test.json"
+    "build:test": "tsc -p tsconfig.test.json",
+    "start:server": "npx cadl-ranch server start node_modules/@azure-tools/cadl-ranch-specs/http",
+    "stop:server": "npx cadl-ranch server stop",
+    "test:e2e": "node eng/scripts/run-e2e-tests.js"
   },
   "keywords": [],
   "author": "",
@@ -60,6 +63,7 @@
     "ts-morph": "^23.0.0",
     "typescript": "^5.5.3",
     "vitest": "^3.0.4",
-    "@vitest/ui": "^3.0.4"
+    "@vitest/ui": "^3.0.4",
+    "ora": "^8.2.0"
   }
 }

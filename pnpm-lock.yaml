@@ -11,6 +11,9 @@ importers:
 
   .:
     devDependencies:
+      '@alloy-js/prettier-plugin-alloy':
+        specifier: ^0.1.0
+        version: 0.1.0
       '@chronus/chronus':
         specifier: ^0.14.0
         version: 0.14.0
@@ -2499,6 +2502,10 @@ packages:
 
   '@alloy-js/core@0.4.0':
     resolution: {integrity: sha512-fT3++T40TvKF3FvGR53EUCzAGRLzqUoZJqTIyzb4cxeQhqKxGba5RaWh61S/kAcvnI2CPGx6DjbL5g8ts8IjFQ==}
+
+  '@alloy-js/prettier-plugin-alloy@0.1.0':
+    resolution: {integrity: sha512-mFfag8sQm5gPJMoGvJNc1fx66Z3X3nxCeoiitBeFnd5nkBMsMnvVw6LZSrVyybt2qTzY+G/9Qvz3ULkW7RB15Q==}
+    engines: {node: '>=18.0.0'}
 
   '@alloy-js/typescript@0.4.0':
     resolution: {integrity: sha512-XOgMeRNVspKo3YG+wEW2jOqIXwelLkLLFseIu9TlOay9VKUwcXklfR+D/OY7pcZALpXSY7g1htXIIgGYdCaRdw==}
@@ -12776,6 +12783,8 @@ snapshots:
       pathe: 1.1.2
     transitivePeerDependencies:
       - supports-color
+
+  '@alloy-js/prettier-plugin-alloy@0.1.0': {}
 
   '@alloy-js/typescript@0.4.0':
     dependencies:

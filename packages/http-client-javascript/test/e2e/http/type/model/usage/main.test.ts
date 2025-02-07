@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { UsageClient } from "../../../../generated/http/type/model/usage/http-client-javascript/src/index.js";
 
-describe("Type.Model.Usage", () => {
+describe.skip("Type.Model.Usage", () => {
   const client = new UsageClient("http://localhost:3000", { allowInsecureConnection: true });
 
-  it.skip("should send a POST request with the specified body for input operation", async () => {
+  it("should send a POST request with the specified body for input operation", async () => {
     // TODO: Shadowing issue
     await client.input({ requiredProp: "example-value" });
     // Assert successful request

@@ -1,14 +1,19 @@
 import { describe, it } from "vitest";
 import {
+  BodyOptionalityClient,
   OptionalExplicitClient,
-  ParametersClient,
 } from "../../../generated/http/parameters/body-optionality/http-client-javascript/src/index.js";
 
 describe("Parameters.BodyOptionality", () => {
-  const client = new ParametersClient("http://localhost:3000", { allowInsecureConnection: true });
+  const client = new BodyOptionalityClient("http://localhost:3000", {
+    allowInsecureConnection: true,
+    retryOptions: {
+      maxRetries: 1,
+    },
+  });
 
   it("should handle required explicit body parameter", async () => {
-    await client.bodyOptionalityClient.requiredExplicit({ name: "foo" });
+    await client.requiredExplicit({ name: "foo" });
     // Assert successful request
   });
 
@@ -32,7 +37,7 @@ describe("Parameters.BodyOptionality", () => {
   });
 
   it("should handle implicit required body parameter", async () => {
-    await client.bodyOptionalityClient.requiredImplicit("foo");
+    await client.requiredImplicit("foo");
     // Assert successful request
   });
 });

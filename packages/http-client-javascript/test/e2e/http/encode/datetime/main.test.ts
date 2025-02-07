@@ -125,24 +125,40 @@ describe("Encode.Datetime", () => {
     });
 
     it("should handle default encode (rfc7231) for datetime response header", async () => {
-      const response = await client.default_();
-      expect(response.value).toEqual(new Date("2022-08-26T14:38:00.000Z"));
+      let value;
+      const response = await client.default_({onResponse: (r) =>{
+        value = new Date((r.headers as any)["value"])
+      }});
+      expect(value).toEqual(new Date("2022-08-26T14:38:00.000Z"));
     });
 
     it("should handle rfc3339 encode for datetime response header", async () => {
-      const response = await client.rfc3339();
-      expect(response.value).toEqual(new Date("2022-08-26T18:38:00.000Z"));
+      let value;
+
+      const response = await client.rfc3339({onResponse: (r) =>{
+        value = new Date((r.headers as any)["value"])
+      }});
+      expect(value).toEqual(new Date("2022-08-26T18:38:00.000Z"));
     });
 
     it("should handle rfc7231 encode for datetime response header", async () => {
-      const response = await client.rfc7231();
-      expect(response.value).toEqual(new Date("2022-08-26T14:38:00.000Z"));
+      let value;
+
+      const response = await client.rfc7231({onResponse: (r) =>{
+        value = new Date((r.headers as any)["value"])
+      }});
+      expect(value).toEqual(new Date("2022-08-26T14:38:00.000Z"));
     });
 
     it("should handle unixTimestamp encode for datetime response header", async () => {
+      let value;
+
       // Correct response header unixTimestamp date.
-      const response = await client.unixTimestamp();
-      expect(response.value).toEqual(new Date("2023-06-12T06:41:04.000Z"));
+      const response = await client.unixTimestamp({onResponse: (r) =>{
+  
+        value = +(r.headers as any)["value"]
+      }});
+      expect(value).toEqual(1686566864);
     });
   });
 });

@@ -111,9 +111,11 @@ describe("Type.Property.AdditionalProperties", () => {
     it("Expected input body: {'name': 'IsUnknownAdditionalProperties', 'prop1': 32, 'prop2': true, 'prop3': 'abc'}", async () => {
       await client.put({
         name: "IsUnknownAdditionalProperties",
-        prop1: 32,
-        prop2: true,
-        prop3: "abc",
+        additionalProperties: {
+          prop1: 32,
+          prop2: true,
+          prop3: "abc",
+        },
       });
     });
   });
@@ -141,9 +143,11 @@ describe("Type.Property.AdditionalProperties", () => {
         name: "IsUnknownAdditionalProperties",
         index: 314,
         age: 2.71875,
-        prop1: 32,
-        prop2: true,
-        prop3: "abc",
+        additionalProperties: {
+          prop1: 32,
+          prop2: true,
+          prop3: "abc",
+        },
       });
     });
   });
@@ -171,11 +175,13 @@ describe("Type.Property.AdditionalProperties", () => {
       await client.put({
         kind: "derived",
         name: "Derived",
-        index: 314,
-        age: 2.71875,
-        prop1: 32,
-        prop2: true,
-        prop3: "abc",
+        additionalProperties: {
+          index: 314,
+          age: 2.71875,
+          prop1: 32,
+          prop2: true,
+          prop3: "abc",
+        },
       });
     });
   });

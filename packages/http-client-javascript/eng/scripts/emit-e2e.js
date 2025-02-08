@@ -1,33 +1,29 @@
 #!/usr/bin/env node
-
 import chalk from "chalk";
 import { execa } from "execa";
+import pkg from "fs-extra";
 import { copyFile, mkdir, rm } from "fs/promises";
 import { globby } from "globby";
-import inquirer from "inquirer";
-import { dirname, join } from "path";
+import { Listr } from "listr2";
+import { dirname, join, resolve } from "path";
 import { fileURLToPath } from "url";
 import { hideBin } from "yargs/helpers";
 import yargs from "yargs/yargs";
-
-import pkg from "fs-extra";
-import { resolve } from "path";
 
 const { pathExists, stat, readFile, writeFile } = pkg;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Define the project root as two levels up (from "project-root/eng/scripts" to "project-root")
 const projectRoot = join(__dirname, "../..");
-
 const tspConfig = join(__dirname, "tspconfig.yaml");
 
 const basePath = join(projectRoot, "node_modules", "@typespec", "http-specs", "specs");
 const ignoreFilePath = join(projectRoot, ".testignore");
 const reportFilePath = join(projectRoot, ".test-gen-report.txt");
+const failedProcessesFilePath = join(projectRoot, ".failed-processes.txt");
 
-// Parse command-line arguments using yargs
+// Parse command-line arguments.
 const argv = yargs(hideBin(process.argv))
   .option("main-only", {
     type: "boolean",
@@ -36,7 +32,7 @@ const argv = yargs(hideBin(process.argv))
   })
   .option("interactive", {
     type: "boolean",
-    describe: "Enable interactive mode",
+    describe: "Enable interactive mode (sequential processing)",
     default: false,
   })
   .option("report", {
@@ -57,7 +53,7 @@ const argv = yargs(hideBin(process.argv))
   })
   .help().argv;
 
-// Read and parse the ignore file
+// Reads the ignore file.
 async function getIgnoreList() {
   try {
     const content = await readFile(ignoreFilePath, "utf8");
@@ -71,7 +67,7 @@ async function getIgnoreList() {
   }
 }
 
-// Recursively process paths (files or directories relative to basePath)
+// Recursively process paths (files or directories relative to basePath).
 async function processPaths(paths, ignoreList, mainOnly) {
   const results = [];
   for (const relativePath of paths) {
@@ -84,13 +80,9 @@ async function processPaths(paths, ignoreList, mainOnly) {
 
     const stats = await stat(fullPath);
     if (stats.isFile() && (fullPath.endsWith("client.tsp") || fullPath.endsWith("main.tsp"))) {
-      // Add valid files directly
-      if (ignoreList.some((ignore) => relativePath.startsWith(ignore))) {
-        continue;
-      }
+      if (ignoreList.some((ignore) => relativePath.startsWith(ignore))) continue;
       results.push({ fullPath, relativePath });
     } else if (stats.isDirectory()) {
-      // Discover files in the directory
       const patterns = mainOnly ? ["**/main.tsp"] : ["**/client.tsp", "**/main.tsp"];
       const discoveredPaths = await globby(patterns, { cwd: fullPath });
       const validFiles = discoveredPaths
@@ -99,14 +91,13 @@ async function processPaths(paths, ignoreList, mainOnly) {
           relativePath: join(relativePath, p),
         }))
         .filter((file) => !ignoreList.some((ignore) => file.relativePath.startsWith(ignore)));
-
       results.push(...validFiles);
     } else {
       console.warn(chalk.yellow(`Skipping unsupported path: ${relativePath}`));
     }
   }
 
-  // Deduplicate and prioritize client.tsp over main.tsp
+  // Deduplicate and prioritize client.tsp over main.tsp.
   const filesByDir = new Map();
   for (const file of results) {
     const dir = dirname(file.relativePath);
@@ -115,139 +106,172 @@ async function processPaths(paths, ignoreList, mainOnly) {
       filesByDir.set(dir, file);
     }
   }
-
   return Array.from(filesByDir.values());
 }
 
-// Run a shell command using execa
+// Run a shell command silently.
 async function runCommand(command, args, options = {}) {
-  console.log(chalk.cyan(`Executing: ${command} ${args.join(" ")}`));
-  await execa(command, args, { stdio: "inherit", ...options });
+  return await execa(command, args, { stdio: "pipe", ...options });
 }
 
-// Process files with interactive mode
-async function processFiles(files, options) {
-  const { interactive, generateReport, build } = options;
-  const succeeded = [];
-  const failed = [];
+// Process a single file.
+async function processFile(file, options) {
+  const { fullPath, relativePath } = file;
+  const { build } = options;
+  const outputDir = join("test", "e2e", "generated", dirname(relativePath));
+  const specCopyPath = join(outputDir, "spec.tsp");
 
-  for (let i = 0; i < files.length; i++) {
-    const { fullPath, relativePath } = files[i];
-    console.log(chalk.blue(`Processing: ${relativePath}`));
-    const outputDir = join("test", "e2e", "generated", dirname(relativePath));
-    const specCopyPath = join(outputDir, "spec.tsp");
-
-    try {
-      // Clear the target directory if it exists
-      if (await pathExists(outputDir)) {
-        console.log(chalk.yellow(`Clearing directory: ${outputDir}`));
-        await rm(outputDir, { recursive: true, force: true });
-      }
-
-      await mkdir(outputDir, { recursive: true });
-      await copyFile(fullPath, specCopyPath);
-
-      await runCommand("npx", [
-        "tsp",
-        "compile",
-        fullPath,
-        "--emit",
-        "@typespec/http-client-javascript",
-        "--config",
-        tspConfig,
-        "--output-dir",
-        outputDir,
-      ]);
-
-      await runCommand("npx", [
-        "babel",
-        outputDir,
-        "-d",
-        `dist/${outputDir}`,
-        "--extensions",
-        ".ts,.tsx",
-      ]);
-      await runCommand("npx", ["prettier", outputDir, "--write"]);
-
-      if (build) {
-        await runCommand("npm", ["run", "build"], { cwd: outputDir });
-      }
-
-      console.log(chalk.green(`Finished processing: ${relativePath}`));
-      succeeded.push(relativePath);
-    } catch {
-      console.error(chalk.red(`Failed to process: ${relativePath}`));
-      console.error(chalk.yellow(`Spec: ${specCopyPath}`));
-      failed.push(relativePath);
-
-      if (interactive) {
-        // Prompt user for action
-        const { action } = await inquirer.prompt([
-          {
-            type: "list",
-            name: "action",
-            message: `Processing failed for ${relativePath}. What would you like to do?`,
-            choices: [
-              { name: "Retry", value: "retry" },
-              { name: "Skip to next file", value: "next" },
-              { name: "Abort processing", value: "abort" },
-            ],
-          },
-        ]);
-
-        if (action === "retry") {
-          console.log(chalk.blue("Retrying..."));
-          i--; // Decrement index to retry the same file
-          continue;
-        } else if (action === "next") {
-          console.log(chalk.yellow("Skipping to next file..."));
-          continue;
-        } else if (action === "abort") {
-          console.log(chalk.red("Aborting processing."));
-          break;
-        }
-      } else {
-        console.error(chalk.red("Non-interactive mode: continuing."));
-        continue;
-      }
+  try {
+    if (await pathExists(outputDir)) {
+      await rm(outputDir, { recursive: true, force: true });
     }
-  }
+    await mkdir(outputDir, { recursive: true });
+    await copyFile(fullPath, specCopyPath);
 
-  // Summary
-  console.log(chalk.bold.green("\nProcessing Complete:"));
-  console.log(chalk.green(`Succeeded: ${succeeded.length}`));
-  console.log(chalk.red(`Failed: ${failed.length}`));
+    await runCommand("npx", [
+      "tsp",
+      "compile",
+      fullPath,
+      "--emit",
+      "@typespec/http-client-javascript",
+      "--config",
+      tspConfig,
+      "--output-dir",
+      outputDir,
+    ]);
 
-  if (generateReport) {
-    const report = [
-      "Succeeded Files:",
-      ...succeeded.map((f) => `  - ${f}`),
-      "Failed Files:",
-      ...failed.map((f) => `  - ${f}`),
-    ].join("\n");
-    await writeFile(reportFilePath, report, "utf8");
-    console.log(chalk.blue(`Report written to: ${reportFilePath}`));
+    await runCommand("npx", [
+      "babel",
+      outputDir,
+      "-d",
+      `dist/${outputDir}`,
+      "--extensions",
+      ".ts,.tsx",
+    ]);
+
+    await runCommand("npx", ["prettier", outputDir, "--write"]);
+
+    if (build) {
+      await runCommand("npm", ["run", "build"], { cwd: outputDir });
+    }
+    return { status: "succeeded", relativePath };
+  } catch (error) {
+    const errorOutput = error.stdout || error.stderr || error.message;
+    return { status: "failed", relativePath, errorOutput };
   }
 }
 
-// Main logic
+// Create a Listr2 task list that organizes processing tasks.
+// We use a parent task that sets up the shared context.
+async function processFilesListr(files, options) {
+  const tasks = new Listr(
+    [
+      {
+        title: "Processing Files",
+        task: (ctx, task) => {
+          // Initialize shared context for results.
+          ctx.succeeded = [];
+          ctx.failed = [];
+          ctx.failedOutputs = [];
+
+          // Return a nested task list for each file.
+          return new Listr(
+            files.map((file) => ({
+              title: file.relativePath,
+              task: async (ctx, task) => {
+                const result = await processFile(file, options);
+                if (result.status === "failed") {
+                  ctx.failed.push(result.relativePath);
+                  ctx.failedOutputs.push(
+                    `File: ${result.relativePath}\nError: ${result.errorOutput}\n`,
+                  );
+                  throw new Error(`Failed processing ${result.relativePath}`);
+                } else {
+                  ctx.succeeded.push(result.relativePath);
+                }
+              },
+            })),
+            {
+              // Limit concurrency to 4 at a time.
+              concurrent: 4,
+              exitOnError: false,
+              rendererOptions: {
+                collapse: false,
+                showTimer: true,
+                // Customize symbols: pending (queued) vs. active (processing)
+                symbols: {
+                  pending: "⏳",
+                  active: "⠋",
+                  completed: "✔",
+                  failed: "✖",
+                },
+              },
+            },
+          );
+        },
+      },
+    ],
+    {
+      rendererOptions: {
+        showTimer: true,
+      },
+    },
+  );
+
+  try {
+    const ctx = await tasks.run();
+    return ctx;
+  } catch (err) {
+    // Even if some tasks fail, context is still available.
+    return err.context;
+  }
+}
+
+// Main logic.
 (async () => {
   const ignoreList = await getIgnoreList();
-  const paths = argv._;
-
   const files =
-    paths.length > 0
-      ? await processPaths(paths, ignoreList, argv["main-only"])
-      : await processPaths(["."], ignoreList, argv["main-only"]); // Default to basePath if no paths provided
+    argv._.length > 0
+      ? await processPaths(argv._, ignoreList, argv["main-only"])
+      : await processPaths(["."], ignoreList, argv["main-only"]);
 
   if (files.length === 0) {
     console.log(chalk.yellow("No files to process."));
     return;
   }
 
-  await processFiles(files, {
-    interactive: argv.interactive,
-    generateReport: argv.report,
+  // Use Listr2-based concurrent processing.
+  const ctx = await processFilesListr(files, {
     build: argv.build,
+    generateReport: argv.report,
   });
+
+  // Access the results from the shared context.
+  const succeeded = ctx.succeeded || [];
+  const failed = ctx.failed || [];
+  const failedOutputs = ctx.failedOutputs || [];
+
+  console.log(chalk.bold.green("\nProcessing Complete:"));
+  console.log(chalk.green(`Succeeded: ${succeeded.length}`));
+  console.log(chalk.red(`Failed: ${failed.length}`));
+
+  // Write an overall report file if requested.
+  if (argv.report) {
+    const report = [
+      "Succeeded Files:",
+      ...succeeded.map((f) => `  - ${f}`),
+      "",
+      "Failed Files:",
+      ...failed.map((f) => `  - ${f}`),
+    ].join("\n");
+    await writeFile(reportFilePath, report, "utf8");
+    console.log(chalk.blue(`Report written to: ${reportFilePath}`));
+  }
+
+  // Write detailed failed outputs to a file.
+  if (failedOutputs.length > 0) {
+    const errorReport = ["Failed Processes Error Output:", ...failedOutputs].join("\n");
+    await writeFile(failedProcessesFilePath, errorReport, "utf8");
+    console.log(chalk.blue(`Error details written to: ${failedProcessesFilePath}`));
+  }
 })();

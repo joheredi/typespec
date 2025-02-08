@@ -86,7 +86,7 @@ export function createTransformNamePolicy(namers: TransformNamers = {}): ef.Tran
  * @param type - The type object that must have a `name` property of type `string`.
  * @returns The transformed application name as a string.
  */
-function defaultApplicationNameGetter(type: WithName): string {
+export function defaultApplicationNameGetter(type: WithName): string {
   if (!hasStringName(type)) {
     reportDiagnostic($.program, { code: "symbol-name-not-supported", target: type });
     return "";
@@ -105,7 +105,10 @@ function defaultApplicationNameGetter(type: WithName): string {
  * @param encoding - Optional encoding for the transport name.
  * @returns The transformed transport name as a string.
  */
-export function defaultTransportNameGetter(type: WithName, encoding?: string): string {
+export function defaultTransportNameGetter(
+  type: WithName,
+  encoding: string = "application/json",
+): string {
   if (!hasStringName(type)) {
     reportDiagnostic($.program, { code: "symbol-name-not-supported", target: type });
     return "";

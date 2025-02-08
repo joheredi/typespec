@@ -1,0 +1,20 @@
+{
+  "User": 5,
+  "TodoItem": 11,
+  "TodoLabelRecord": 2,
+  "ToDoItemMultipartRequest": 2,
+  "FileAttachmentMultipartRequest": 1,
+  "TodoAttachment": 3,
+  "ApiError": 2,
+  "Standard4XXResponse": 1,
+  "Standard5XXResponse": 1,
+  "UserExistsResponse": 2,
+  "InvalidUserResponse": 2,
+  "InvalidTodoItem": 1,
+  "UserCreatedResponse": 7,
+  "PaginationControls": 2,
+  "TodoPage": 7,
+  "TodoItemPatch": 4,
+  "NotFoundErrorResponse": 2,
+  "Page": 1
+}

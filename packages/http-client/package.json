@@ -23,7 +23,7 @@
     }
   },
   "dependencies": {
-    "@alloy-js/core": "^0.4.0",
+    "@alloy-js/core": "^0.5.0",
     "@typespec/compiler": "workspace:*",
     "@typespec/http": "workspace:*"
   },
@@ -39,7 +39,7 @@
     "vitest": "^3.0.4"
   },
   "scripts": {
-    "build-src": "babel src -d dist/src --extensions '.ts,.tsx'",
+    "build-src": "babel src -d dist/src --extensions .ts,.tsx",
     "build": "tsc -p . && npm run build-src",
     "watch": "tsc --watch",
     "build:tsp": "tsp compile . --no-emit",

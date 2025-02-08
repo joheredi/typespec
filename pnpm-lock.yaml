@@ -287,8 +287,8 @@ importers:
   packages/compiler:
     dependencies:
       '@alloy-js/core':
-        specifier: ^0.4.0
-        version: 0.4.0
+        specifier: ^0.5.0
+        version: 0.5.0
       '@babel/code-frame':
         specifier: ~7.26.2
         version: 7.26.2
@@ -390,11 +390,11 @@ importers:
   packages/emitter-framework:
     dependencies:
       '@alloy-js/core':
-        specifier: ^0.4.0
-        version: 0.4.0
+        specifier: ^0.5.0
+        version: 0.5.0
       '@alloy-js/typescript':
-        specifier: ^0.4.0
-        version: 0.4.0
+        specifier: ^0.5.0
+        version: 0.5.0
       '@typespec/compiler':
         specifier: workspace:~
         version: link:../compiler
@@ -645,8 +645,8 @@ importers:
   packages/http-client:
     dependencies:
       '@alloy-js/core':
-        specifier: ^0.4.0
-        version: 0.4.0
+        specifier: ^0.5.0
+        version: 0.5.0
       '@typespec/compiler':
         specifier: workspace:*
         version: link:../compiler
@@ -685,11 +685,11 @@ importers:
   packages/http-client-javascript:
     dependencies:
       '@alloy-js/core':
-        specifier: ^0.4.0
-        version: 0.4.0
+        specifier: ^0.5.0
+        version: 0.5.0
       '@alloy-js/typescript':
-        specifier: ^0.4.0
-        version: 0.4.0
+        specifier: ^0.5.0
+        version: 0.5.0
       '@typespec/compiler':
         specifier: workspace:*
         version: link:../compiler
@@ -1691,11 +1691,11 @@ importers:
   packages/sketch-alloy-json:
     dependencies:
       '@alloy-js/core':
-        specifier: ^0.4.0
-        version: 0.4.0
+        specifier: ^0.5.0
+        version: 0.5.0
       '@alloy-js/json':
-        specifier: ^0.3.0
-        version: 0.3.0
+        specifier: ^0.5.0
+        version: 0.5.0
       '@typespec/compiler':
         specifier: workspace:*
         version: link:../compiler
@@ -2609,18 +2609,18 @@ packages:
   '@alloy-js/babel-preset@0.1.1':
     resolution: {integrity: sha512-sX3nb9+qciBXTaafIYYa/aW3FFZPcSIWm7VFwz134nFJu79jMS+JgsBgcL+md6zH4Vf9WPE/8V1E4LX9WdxS1A==}
 
-  '@alloy-js/core@0.4.0':
-    resolution: {integrity: sha512-fT3++T40TvKF3FvGR53EUCzAGRLzqUoZJqTIyzb4cxeQhqKxGba5RaWh61S/kAcvnI2CPGx6DjbL5g8ts8IjFQ==}
+  '@alloy-js/core@0.5.0':
+    resolution: {integrity: sha512-EGmjQ8f02xeKPchq3fLlRhK5mt1acce9x0eG1MLOGidNY/PNPlwm6McgT4kSlTIvqGB1R8S64MQQIh86fOpDhQ==}
 
-  '@alloy-js/json@0.3.0':
-    resolution: {integrity: sha512-SbMFFIHn5X3zQD3FwBP2DgFs9siYtwBgI17XDTp8S7HNOhYhHk9ydgQ6fAMFYX0QiIdY4Obn1cBVOlIoBI729A==}
+  '@alloy-js/json@0.5.0':
+    resolution: {integrity: sha512-c5vc+fNBlXhgj9UWcS61ZzwjPDN9EV9PpAzjG7kqoQrKSzUCxVvoaY/oYNRX48vMCp4TvjKXnkKWHPnA4NpakQ==}
 
   '@alloy-js/prettier-plugin-alloy@0.1.0':
     resolution: {integrity: sha512-mFfag8sQm5gPJMoGvJNc1fx66Z3X3nxCeoiitBeFnd5nkBMsMnvVw6LZSrVyybt2qTzY+G/9Qvz3ULkW7RB15Q==}
     engines: {node: '>=18.0.0'}
 
-  '@alloy-js/typescript@0.4.0':
-    resolution: {integrity: sha512-XOgMeRNVspKo3YG+wEW2jOqIXwelLkLLFseIu9TlOay9VKUwcXklfR+D/OY7pcZALpXSY7g1htXIIgGYdCaRdw==}
+  '@alloy-js/typescript@0.5.0':
+    resolution: {integrity: sha512-asIUIxqCJDBw3HINDdy+mj5vWm3FUCLlXxfSuydyCzmFvVIfMz2TLQGa660CNx98KLsNzCWegmXnsC5QYH3rbg==}
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -12884,7 +12884,7 @@ snapshots:
     transitivePeerDependencies:
       - '@babel/core'
 
-  '@alloy-js/core@0.4.0':
+  '@alloy-js/core@0.5.0':
     dependencies:
       '@alloy-js/babel-preset': 0.1.1(@babel/core@7.26.0)
       '@babel/core': 7.26.0
@@ -12896,18 +12896,18 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@alloy-js/json@0.3.0':
+  '@alloy-js/json@0.5.0':
     dependencies:
-      '@alloy-js/core': 0.4.0
+      '@alloy-js/core': 0.5.0
       pathe: 1.1.2
     transitivePeerDependencies:
       - supports-color
 
   '@alloy-js/prettier-plugin-alloy@0.1.0': {}
 
-  '@alloy-js/typescript@0.4.0':
+  '@alloy-js/typescript@0.5.0':
     dependencies:
-      '@alloy-js/core': 0.4.0
+      '@alloy-js/core': 0.5.0
       change-case: 5.4.4
       pathe: 1.1.2
     transitivePeerDependencies:

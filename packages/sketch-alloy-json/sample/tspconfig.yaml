@@ -1,0 +1,6 @@
+emitters:
+  "sketch-alloy-json": true
+
+options:
+  "sketch-alloy-json":
+    emitter-output-dir: "{output-dir}"

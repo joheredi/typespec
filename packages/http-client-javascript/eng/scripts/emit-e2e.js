@@ -4,7 +4,9 @@ import { execa } from "execa";
 import pkg from "fs-extra";
 import { copyFile, mkdir, rm } from "fs/promises";
 import { globby } from "globby";
-import { Listr } from "listr2";
+import inquirer from "inquirer";
+import ora from "ora";
+import pLimit from "p-limit";
 import { dirname, join, resolve } from "path";
 import { fileURLToPath } from "url";
 import { hideBin } from "yargs/helpers";
@@ -21,7 +23,6 @@ const tspConfig = join(__dirname, "tspconfig.yaml");
 const basePath = join(projectRoot, "node_modules", "@typespec", "http-specs", "specs");
 const ignoreFilePath = join(projectRoot, ".testignore");
 const reportFilePath = join(projectRoot, ".test-gen-report.txt");
-const failedProcessesFilePath = join(projectRoot, ".failed-processes.txt");
 
 // Parse command-line arguments.
 const argv = yargs(hideBin(process.argv))
@@ -32,7 +33,7 @@ const argv = yargs(hideBin(process.argv))
   })
   .option("interactive", {
     type: "boolean",
-    describe: "Enable interactive mode (sequential processing)",
+    describe: "Enable interactive mode",
     default: false,
   })
   .option("report", {
@@ -53,7 +54,7 @@ const argv = yargs(hideBin(process.argv))
   })
   .help().argv;
 
-// Reads the ignore file.
+// Read and parse the ignore file.
 async function getIgnoreList() {
   try {
     const content = await readFile(ignoreFilePath, "utf8");
@@ -111,23 +112,34 @@ async function processPaths(paths, ignoreList, mainOnly) {
 
 // Run a shell command silently.
 async function runCommand(command, args, options = {}) {
+  // Remove clutter by not printing anything; capture output by setting stdio to 'pipe'.
   return await execa(command, args, { stdio: "pipe", ...options });
 }
 
 // Process a single file.
 async function processFile(file, options) {
   const { fullPath, relativePath } = file;
-  const { build } = options;
+  const { build, interactive } = options;
   const outputDir = join("test", "e2e", "generated", dirname(relativePath));
   const specCopyPath = join(outputDir, "spec.tsp");
 
+  let spinner;
+  if (interactive) {
+    spinner = ora({ text: `Processing: ${relativePath}`, color: "cyan" }).start();
+  }
+
   try {
     if (await pathExists(outputDir)) {
+      if (spinner) spinner.text = `Clearing directory: ${outputDir}`;
       await rm(outputDir, { recursive: true, force: true });
     }
+    if (spinner) spinner.text = `Creating directory: ${outputDir}`;
     await mkdir(outputDir, { recursive: true });
+
+    if (spinner) spinner.text = `Copying spec to: ${specCopyPath}`;
     await copyFile(fullPath, specCopyPath);
 
+    if (spinner) spinner.text = `Compiling: ${relativePath}`;
     await runCommand("npx", [
       "tsp",
       "compile",
@@ -140,6 +152,7 @@ async function processFile(file, options) {
       outputDir,
     ]);
 
+    if (spinner) spinner.text = `Transpiling with Babel: ${relativePath}`;
     await runCommand("npx", [
       "babel",
       outputDir,
@@ -149,129 +162,130 @@ async function processFile(file, options) {
       ".ts,.tsx",
     ]);
 
+    if (spinner) spinner.text = `Formatting with Prettier: ${relativePath}`;
     await runCommand("npx", ["prettier", outputDir, "--write"]);
 
     if (build) {
+      if (spinner) spinner.text = `Building project: ${relativePath}`;
       await runCommand("npm", ["run", "build"], { cwd: outputDir });
+    }
+
+    if (spinner) {
+      spinner.succeed(`Finished processing: ${relativePath}`);
     }
     return { status: "succeeded", relativePath };
   } catch (error) {
-    const errorOutput = error.stdout || error.stderr || error.message;
-    return { status: "failed", relativePath, errorOutput };
-  }
-}
-
-// Create a Listr2 task list that organizes processing tasks.
-// We use a parent task that sets up the shared context.
-async function processFilesListr(files, options) {
-  const tasks = new Listr(
-    [
-      {
-        title: "Processing Files",
-        task: (ctx, task) => {
-          // Initialize shared context for results.
-          ctx.succeeded = [];
-          ctx.failed = [];
-          ctx.failedOutputs = [];
-
-          // Return a nested task list for each file.
-          return new Listr(
-            files.map((file) => ({
-              title: file.relativePath,
-              task: async (ctx, task) => {
-                const result = await processFile(file, options);
-                if (result.status === "failed") {
-                  ctx.failed.push(result.relativePath);
-                  ctx.failedOutputs.push(
-                    `File: ${result.relativePath}\nError: ${result.errorOutput}\n`,
-                  );
-                  throw new Error(`Failed processing ${result.relativePath}`);
-                } else {
-                  ctx.succeeded.push(result.relativePath);
-                }
-              },
-            })),
-            {
-              // Limit concurrency to 4 at a time.
-              concurrent: 4,
-              exitOnError: false,
-              rendererOptions: {
-                collapse: false,
-                showTimer: true,
-                // Customize symbols: pending (queued) vs. active (processing)
-                symbols: {
-                  pending: "⏳",
-                  active: "⠋",
-                  completed: "✔",
-                  failed: "✖",
-                },
-              },
-            },
-          );
+    if (spinner) {
+      spinner.fail(`Failed processing: ${relativePath}`);
+    }
+    // Optionally log error details here if needed:
+    // console.error(error.stdout || error.stderr);
+    if (interactive) {
+      const { action } = await inquirer.prompt([
+        {
+          type: "list",
+          name: "action",
+          message: `Processing failed for ${relativePath}. What would you like to do?`,
+          choices: [
+            { name: "Retry", value: "retry" },
+            { name: "Skip to next file", value: "next" },
+            { name: "Abort processing", value: "abort" },
+          ],
         },
-      },
-    ],
-    {
-      rendererOptions: {
-        showTimer: true,
-      },
-    },
-  );
+      ]);
 
-  try {
-    const ctx = await tasks.run();
-    return ctx;
-  } catch (err) {
-    // Even if some tasks fail, context is still available.
-    return err.context;
+      if (action === "retry") {
+        if (spinner) spinner.start(`Retrying: ${relativePath}`);
+        return await processFile(file, options);
+      } else if (action === "next") {
+        console.log(chalk.yellow(`Skipping: ${relativePath}`));
+      } else if (action === "abort") {
+        console.log(chalk.red("Aborting processing."));
+        throw new Error("Processing aborted by user");
+      }
+    }
+    return { status: "failed", relativePath };
   }
 }
 
-// Main logic.
-(async () => {
-  const ignoreList = await getIgnoreList();
-  const files =
-    argv._.length > 0
-      ? await processPaths(argv._, ignoreList, argv["main-only"])
-      : await processPaths(["."], ignoreList, argv["main-only"]);
+// Process all files.
+async function processFiles(files, options) {
+  const { interactive, generateReport } = options;
+  const succeeded = [];
+  const failed = [];
 
-  if (files.length === 0) {
-    console.log(chalk.yellow("No files to process."));
-    return;
+  if (interactive) {
+    // Sequential processing so each spinner is visible.
+    for (const file of files) {
+      try {
+        const result = await processFile(file, options);
+        if (result.status === "succeeded") {
+          succeeded.push(result.relativePath);
+        } else {
+          failed.push(result.relativePath);
+        }
+      } catch (err) {
+        break;
+      }
+    }
+  } else {
+    // Global progress spinner.
+    const total = files.length;
+    let completed = 0;
+    const globalSpinner = ora({ text: `Processing 0/${total} files...`, color: "cyan" }).start();
+    const limit = pLimit(4);
+    const tasks = files.map((file) =>
+      limit(() =>
+        processFile(file, options).then((result) => {
+          completed++;
+          globalSpinner.text = `Processing ${completed}/${total} files...`;
+          return result;
+        }),
+      ),
+    );
+    const results = await Promise.all(tasks);
+    globalSpinner.succeed(`Processed ${total} files`);
+    for (const result of results) {
+      if (result.status === "succeeded") {
+        succeeded.push(result.relativePath);
+      } else {
+        failed.push(result.relativePath);
+      }
+    }
   }
-
-  // Use Listr2-based concurrent processing.
-  const ctx = await processFilesListr(files, {
-    build: argv.build,
-    generateReport: argv.report,
-  });
-
-  // Access the results from the shared context.
-  const succeeded = ctx.succeeded || [];
-  const failed = ctx.failed || [];
-  const failedOutputs = ctx.failedOutputs || [];
 
   console.log(chalk.bold.green("\nProcessing Complete:"));
   console.log(chalk.green(`Succeeded: ${succeeded.length}`));
   console.log(chalk.red(`Failed: ${failed.length}`));
 
-  // Write an overall report file if requested.
-  if (argv.report) {
+  if (generateReport) {
     const report = [
       "Succeeded Files:",
       ...succeeded.map((f) => `  - ${f}`),
-      "",
       "Failed Files:",
       ...failed.map((f) => `  - ${f}`),
     ].join("\n");
     await writeFile(reportFilePath, report, "utf8");
     console.log(chalk.blue(`Report written to: ${reportFilePath}`));
   }
+}
 
-  // Write detailed failed outputs to a file.
-  if (failedOutputs.length > 0) {
-    const errorReport = ["Failed Processes Error Output:", ...failedOutputs].join("\n");
-    await writeFile(failedProcessesFilePath, errorReport, "utf8");
-    console.log(chalk.blue(`Error details written to: ${failedProcessesFilePath}`));
+// Main logic.
+(async () => {
+  const ignoreList = await getIgnoreList();
+  const paths =
+    argv._.length > 0
+      ? await processPaths(argv._, ignoreList, argv["main-only"])
+      : await processPaths(["."], ignoreList, argv["main-only"]);
+
+  if (paths.length === 0) {
+    console.log(chalk.yellow("No files to process."));
+    return;
   }
+
+  await processFiles(paths, {
+    interactive: argv.interactive,
+    generateReport: argv.report,
+    build: argv.build,
+  });
 })();

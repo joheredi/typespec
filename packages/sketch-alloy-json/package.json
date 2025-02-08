@@ -12,7 +12,7 @@
     "watch-tsc": "tsc -p . --watch",
     "watch": "concurrently --kill-others \"npm run watch-tsc\" \"npm run watch-src\"",
     "test": "vitest run --exclude=test/e2e",
-    "build-sample": "rimraf sample/output && tsp compile sample/main.tsp --emit sketch-alloy-json --output-dir sample/output",
+    "emit:sample": "rimraf sample/output && tsp compile sample/main.tsp --emit sketch-alloy-json --output-dir sample/output",
     "format": "prettier . --write"
   },
   "keywords": [],

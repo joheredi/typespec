@@ -10,7 +10,11 @@ const spinner = ora();
 // Get test path argument from CLI (e.g., `npm run test:e2e my/test/path`)
 const testPath = process.argv[2] || ""; // Default: Run all tests if no path is provided
 const vitestArgs = ["run"];
-if (testPath) vitestArgs.push(testPath); // Append path if provided
+if (testPath) {
+  vitestArgs.push(testPath);
+} else {
+  vitestArgs.push("test/e2e");
+}
 
 /**
  * Waits until the mock server responds with HTTP 204 on /routes

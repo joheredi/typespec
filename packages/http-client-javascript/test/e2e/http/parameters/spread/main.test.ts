@@ -50,7 +50,7 @@ describe("Parameters.Spread", () => {
     });
 
     it("should handle spread alias containing another alias property as body", async () => {
-      await client.spreadParameterWithInnerAlias("bar", "1", "foo", 1);
+      await client.spreadParameterWithInnerAlias("bar", "1", 1, "foo");
     });
   });
 });

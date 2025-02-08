@@ -21,8 +21,6 @@ The operation has has no required parameters so options and client should be the
 ```ts src/api/testClientOperations.ts function create
 export async function create(
   client: TestClientContext,
-  id: string,
-  name: string,
   widget: Widget,
   options?: CreateOptions,
 ): Promise<void> {
@@ -69,13 +67,8 @@ export class TestClient {
   constructor(endpoint: string, options?: TestClientOptions) {
     this.#context = createTestClientContext(endpoint, options);
   }
-  async create(
-    id: string,
-    name: string,
-    widget: Widget,
-    options?: CreateOptions,
-  ) {
-    return create(this.#context, id, name, widget, options);
+  async create(widget: Widget, options?: CreateOptions) {
+    return create(this.#context, widget, options);
   }
 }
 ```

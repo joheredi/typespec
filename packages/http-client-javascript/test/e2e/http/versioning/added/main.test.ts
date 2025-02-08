@@ -23,7 +23,8 @@ describe("Versioning.Added", () => {
       unionProp: 10,
       enumProp: EnumV1.EnumMemberV2,
     };
-    const response = await client.v1("bar", body);
+
+    const response = await client.v1(body, "");
     expect(response).toEqual(body);
   });
 

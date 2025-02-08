@@ -1,9 +1,11 @@
 import { describe } from "vitest";
-import { PageableClient } from "../../../generated/payload/pageable/src/index.js";
+import { ServerDrivenPaginationClient } from "../../../generated/payload/pageable/src/index.js";
 
 describe("Payload.Pageable", () => {
   describe("list", () => {
-    const client = new PageableClient("http://localhost:3000", { allowInsecureConnection: true });
+    const client = new ServerDrivenPaginationClient("http://localhost:3000", {
+      allowInsecureConnection: true,
+    });
 
     // it("should list users with pagination", async () => {
     //   const users = client.list({

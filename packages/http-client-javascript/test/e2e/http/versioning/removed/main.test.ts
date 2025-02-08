@@ -16,7 +16,7 @@ describe("Versioning.Removed", () => {
         enumProp: EnumV2.EnumMemberV2,
         unionProp: "bar",
       };
-      const response = await client.v2("foo", body as any);
+      const response = await client.v2(body as any, "");
       expect(response).toEqual(body); // Mock API expected value
     });
   });

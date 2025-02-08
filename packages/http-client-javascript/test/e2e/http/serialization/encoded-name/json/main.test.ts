@@ -6,9 +6,7 @@ describe("Serialization.EncodedName.Json", () => {
     const client = new PropertyClient("http://localhost:3000", { allowInsecureConnection: true });
 
     it("should send a JsonEncodedNameModel with 'defaultName' mapped to 'wireName'", async () => {
-      await client.send({
-        defaultName: true,
-      });
+      await client.send({ defaultName: true });
       // Assert successful request
     });
 

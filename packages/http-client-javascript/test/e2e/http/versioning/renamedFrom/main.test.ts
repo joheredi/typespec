@@ -22,11 +22,14 @@ describe("Versioning.RenamedFrom", () => {
         unionProp: 10,
       };
 
-      const response = await client.newOp("bar", {
-        enumProp: NewEnum.NewEnumMember,
-        newProp: "foo",
-        unionProp: 10,
-      });
+      const response = await client.newOp(
+        {
+          enumProp: NewEnum.NewEnumMember,
+          newProp: "foo",
+          unionProp: 10,
+        },
+        "",
+      );
       expect(response).toEqual(body); // Mock API expected to return the same body
     });
   });

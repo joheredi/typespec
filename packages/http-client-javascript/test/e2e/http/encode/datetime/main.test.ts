@@ -123,9 +123,11 @@ describe("Encode.Datetime", () => {
 
     it("should handle default encode (rfc7231) for datetime response header", async () => {
       let value;
-      const response = await client.default_({
-        onResponse: (r) => {
-          value = new Date((r.headers as any)["value"]);
+      await client.default_({
+        operationOptions: {
+          onResponse: (r) => {
+            value = new Date((r.headers as any)["value"]);
+          },
         },
       });
       expect(value).toEqual(new Date("2022-08-26T14:38:00.000Z"));
@@ -134,9 +136,11 @@ describe("Encode.Datetime", () => {
     it("should handle rfc3339 encode for datetime response header", async () => {
       let value;
 
-      const response = await client.rfc3339({
-        onResponse: (r) => {
-          value = new Date((r.headers as any)["value"]);
+      await client.rfc3339({
+        operationOptions: {
+          onResponse: (r) => {
+            value = new Date((r.headers as any)["value"]);
+          },
         },
       });
       expect(value).toEqual(new Date("2022-08-26T18:38:00.000Z"));
@@ -145,9 +149,11 @@ describe("Encode.Datetime", () => {
     it("should handle rfc7231 encode for datetime response header", async () => {
       let value;
 
-      const response = await client.rfc7231({
-        onResponse: (r) => {
-          value = new Date((r.headers as any)["value"]);
+      await client.rfc3339({
+        operationOptions: {
+          onResponse: (r) => {
+            value = new Date((r.headers as any)["value"]);
+          },
         },
       });
       expect(value).toEqual(new Date("2022-08-26T14:38:00.000Z"));
@@ -157,9 +163,11 @@ describe("Encode.Datetime", () => {
       let value;
 
       // Correct response header unixTimestamp date.
-      const response = await client.unixTimestamp({
-        onResponse: (r) => {
-          value = +(r.headers as any)["value"];
+      await client.rfc3339({
+        operationOptions: {
+          onResponse: (r) => {
+            value = new Date((r.headers as any)["value"]);
+          },
         },
       });
       expect(value).toEqual(1686566864);

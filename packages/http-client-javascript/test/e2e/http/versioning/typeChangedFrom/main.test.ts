@@ -11,7 +11,7 @@ describe("Versioning.TypeChangedFrom", () => {
 
     it("should send and receive data using v1 API signature", async () => {
       const requestBody = { prop: "foo", changedProp: "42" };
-      const response = await client.test("42", requestBody);
+      const response = await client.test(requestBody, "");
       expect(response).toEqual(requestBody); // Mock API behavior
     });
   });
@@ -25,7 +25,7 @@ describe("Versioning.TypeChangedFrom", () => {
       const requestBody = { prop: "foo", changedProp: "bar" };
       const queryParam = "baz";
 
-      const response = await client.test(queryParam, requestBody);
+      const response = await client.test(requestBody, queryParam);
       expect(response).toEqual(requestBody); // Mock API behavior
     });
   });

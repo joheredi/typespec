@@ -85,6 +85,9 @@ async function processPaths(paths, ignoreList, mainOnly) {
     const stats = await stat(fullPath);
     if (stats.isFile() && (fullPath.endsWith("client.tsp") || fullPath.endsWith("main.tsp"))) {
       // Add valid files directly
+      if (ignoreList.some((ignore) => relativePath.startsWith(ignore))) {
+        continue;
+      }
       results.push({ fullPath, relativePath });
     } else if (stats.isDirectory()) {
       // Discover files in the directory

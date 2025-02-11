@@ -16,7 +16,6 @@ model TRex extends Dinosaur {
 
 @get
 op getLegacyModel(): Dinosaur;
-
 ```
 
 ## Models
@@ -43,6 +42,8 @@ export function jsonDinosaurToTransportTransform(input_?: Dinosaur): any {
   }
 
   return {
+    ...jsonDinosaurToTransportDiscriminator(input_),
+
     size: input_.size,
     kind: input_.kind,
   }!;
@@ -56,9 +57,8 @@ export function jsonTRexToTransportTransform(input_?: TRex): any {
   }
 
   return {
-    ...jsonDinosaurToTransportTransform(input_),
-
     kind: input_.kind,
+    size: input_.size,
   }!;
 }
 ```
@@ -72,6 +72,8 @@ export function jsonDinosaurToApplicationTransform(input_?: any): Dinosaur {
   }
 
   return {
+    ...jsonDinosaurToApplicationDiscriminator(input_),
+
     size: input_.size,
     kind: input_.kind,
   }!;
@@ -85,9 +87,8 @@ export function jsonTRexToApplicationTransform(input_?: any): TRex {
   }
 
   return {
-    ...jsonDinosaurToApplicationTransform(input_),
-
     kind: input_.kind,
+    size: input_.size,
   }!;
 }
 ```

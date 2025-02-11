@@ -24,26 +24,27 @@ export function JsonTransformDiscriminator(props: JsonTransformDiscriminatorProp
     (name, variant) => {
       return ay.code`
     if( discriminatorValue === ${JSON.stringify(name)}) {
-      return ${(<JsonTransform type={variant.type} target={props.target} itemRef={itemRef} />)}!
+      return ${<JsonTransform type={variant.type} target={props.target} itemRef={itemRef} />}!
     }
     `;
     },
     { joiner: "\n\n" },
   );
 
-  return (
-    <>
+  return <>
       const discriminatorValue = {discriminatorRef};
       {discriminatingCases}
       <>
       console.warn(`Received unknown kind: ` + discriminatorValue); 
       return {itemRef}</>
-    </>
-  );
+    </>;
 }
 
-export function getJsonTransformDiscriminatorRefkey(type: Union | Model) {
-  return ay.refkey(type, "json_transform_discriminator");
+export function getJsonTransformDiscriminatorRefkey(
+  type: Union | Model,
+  target: "application" | "transport",
+) {
+  return ay.refkey(type, "json_transform_discriminator_", target);
 }
 
 export interface JsonTransformDiscriminatorDeclarationProps {
@@ -74,13 +75,12 @@ export function JsonTransformDiscriminatorDeclaration(
     input_: { type: inputType, refkey: inputRef, optional: true },
   };
 
-  return (
-    <ts.FunctionDeclaration
+  return <ts.FunctionDeclaration
       name={transformName}
       export
       returnType={returnType}
       parameters={parameters}
-      refkey={getJsonTransformDiscriminatorRefkey(props.type)}
+      refkey={getJsonTransformDiscriminatorRefkey(props.type, props.target)}
     >
       {ay.code`
     if(!${inputRef}) {
@@ -88,6 +88,5 @@ export function JsonTransformDiscriminatorDeclaration(
     }
     `}
       <JsonTransformDiscriminator {...props} itemRef={inputRef} discriminator={discriminator} />
-    </ts.FunctionDeclaration>
-  );
+    </ts.FunctionDeclaration>;
 }

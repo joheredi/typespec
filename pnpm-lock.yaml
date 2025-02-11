@@ -751,6 +751,9 @@ importers:
       '@typespec/http-specs':
         specifier: 0.1.0-alpha.8
         version: 0.1.0-alpha.8(@typespec/compiler@packages+compiler)(@typespec/http@packages+http)(@typespec/rest@packages+rest)(@typespec/versioning@packages+versioning)
+      '@typespec/spector':
+        specifier: workspace:~
+        version: link:../spector
       '@typespec/ts-http-runtime':
         specifier: 0.1.0
         version: 0.1.0

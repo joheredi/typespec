@@ -94,7 +94,10 @@ export interface ModelKit {
    * Gets all properties from a model, explicitly defined, implicitly defined.
    * @param model model to get the properties from
    */
-  getProperties(model: Model): RekeyableMap<string, ModelProperty>;
+  getProperties(
+    model: Model,
+    options?: { includeExtended?: boolean },
+  ): RekeyableMap<string, ModelProperty>;
 }
 
 interface TypekitExtension {
@@ -145,10 +148,10 @@ defineKit<TypekitExtension>({
       return getEffectiveModelType(this.program, model, filter);
     },
     getSpreadType(model) {
-      if(spreadCache.has(model)) {
+      if (spreadCache.has(model)) {
         return spreadCache.get(model);
       }
-      
+
       if (!model.indexer) {
         return undefined;
       }
@@ -167,7 +170,7 @@ defineKit<TypekitExtension>({
 
       return model.indexer.value;
     },
-    getProperties(model) {
+    getProperties(model, options = {}) {
       // Add explicitly defined properties
       const properties = copyMap(model.properties);
 
@@ -179,6 +182,18 @@ defineKit<TypekitExtension>({
           discriminatorName,
           this.modelProperty.create({ name: discriminatorName, type: this.builtin.string }),
         );
+      }
+
+      if (options.includeExtended) {
+        let base = model.baseModel;
+        while (base) {
+          for (const [key, value] of base.properties) {
+            if (!properties.has(key)) {
+              properties.set(key, value);
+            }
+          }
+          base = base.baseModel;
+        }
       }
 
       // TODO: Add Spread?

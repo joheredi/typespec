@@ -1,6 +1,5 @@
 import * as ay from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
-import * as ef from "@typespec/emitter-framework/typescript";
 
 import { Model } from "@typespec/compiler";
 import { $ } from "@typespec/compiler/experimental/typekit";
@@ -21,10 +20,14 @@ export function JsonRecordTransform(props: JsonRecordTransformProps) {
 
   // TODO: Do we need to cast?
   return ay.code`
+    if(!${props.itemRef}) {
+      return undefined;
+    }
+      
     const _transformedRecord: any = {};
 
     for (const [key, value] of Object.entries(${props.itemRef} ?? {})) {
-      const transformedItem = ${(<JsonTransform type={elementType} target={props.target} itemRef="value as any" />)};
+      const transformedItem = ${<JsonTransform type={elementType} target={props.target} itemRef="value as any" />};
       _transformedRecord[key] = transformedItem;
     }
 
@@ -69,8 +72,7 @@ export function JsonRecordTransformDeclaration(props: JsonRecordTransformDeclara
   };
 
   const declarationRefkey = getJsonRecordTransformRefkey(props.type, props.target);
-  return (
-    <ts.FunctionDeclaration
+  return <ts.FunctionDeclaration
       name={transformName}
       export
       returnType={returnType}
@@ -78,6 +80,5 @@ export function JsonRecordTransformDeclaration(props: JsonRecordTransformDeclara
       refkey={declarationRefkey}
     >
       <JsonRecordTransform {...props} itemRef={inputRef} />
-    </ts.FunctionDeclaration>
-  );
+    </ts.FunctionDeclaration>;
 }

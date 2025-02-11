@@ -2,7 +2,10 @@ import * as ay from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
 import { Union } from "@typespec/compiler";
 import { $ } from "@typespec/compiler/experimental/typekit";
-import { getJsonTransformDiscriminatorRefkey, JsonTransformDiscriminator, JsonTransformDiscriminatorDeclaration } from "./json-transform-discriminator.jsx";
+import {
+  getJsonTransformDiscriminatorRefkey,
+  JsonTransformDiscriminatorDeclaration,
+} from "./json-transform-discriminator.jsx";
 import { JsonTransform } from "./json-transform.jsx";
 
 export interface JsonUnionTransformProps {
@@ -12,19 +15,16 @@ export interface JsonUnionTransformProps {
 }
 
 export function JsonUnionTransform(props: JsonUnionTransformProps) {
-
-
-
   const discriminator = $.type.getDiscriminator(props.type);
   if (discriminator) {
     // return <JsonTransformDiscriminator {...props} discriminator={discriminator}/>;
-    return <>{getJsonTransformDiscriminatorRefkey(props.type)}({props.itemRef})</>
+    return <>{getJsonTransformDiscriminatorRefkey(props.type, props.target)}({props.itemRef})</>;
   }
 
   const variantType = props.type.variants.values().next().value!.type;
 
-  if(!$.union.isExtensible(props.type)) {
-    return props.itemRef
+  if (!$.union.isExtensible(props.type)) {
+    return props.itemRef;
   }
 
   // TODO: Handle non-discriminated unions

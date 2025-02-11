@@ -84,6 +84,8 @@ export function jsonBirdToTransportTransform(input_?: Bird): any {
   }
 
   return {
+    ...jsonBirdToTransportDiscriminator(input_),
+
     kind: input_.kind,
     wingspan: input_.wingspan,
   }!;
@@ -100,9 +102,8 @@ export function jsonSeaGullToTransportTransform(input_?: SeaGull): any {
   }
 
   return {
-    ...jsonBirdToTransportTransform(input_),
-
     kind: input_.kind,
+    wingspan: input_.wingspan,
   }!;
 }
 ```
@@ -117,9 +118,8 @@ export function jsonSparrowToTransportTransform(input_?: Sparrow): any {
   }
 
   return {
-    ...jsonBirdToTransportTransform(input_),
-
     kind: input_.kind,
+    wingspan: input_.wingspan,
   }!;
 }
 ```
@@ -134,9 +134,8 @@ export function jsonGooseToTransportTransform(input_?: Goose): any {
   }
 
   return {
-    ...jsonBirdToTransportTransform(input_),
-
     kind: input_.kind,
+    wingspan: input_.wingspan,
   }!;
 }
 ```
@@ -156,12 +155,11 @@ export function jsonEagleToTransportTransform(input_?: Eagle): any {
   }
 
   return {
-    ...jsonBirdToTransportTransform(input_),
-
     kind: input_.kind,
     friends: jsonArrayBirdToTransportTransform(input_.friends),
     hate: jsonRecordBirdToTransportTransform(input_.hate),
     partner: jsonBirdToTransportTransform(input_.partner),
+    wingspan: input_.wingspan,
   }!;
 }
 ```

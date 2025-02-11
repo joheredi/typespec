@@ -11,7 +11,10 @@ describe("Payload.MultiPart", () => {
   let pngContents: Uint8Array;
 
   describe("FormDataClient", () => {
-    const client = new FormDataClient("http://localhost:3000", { allowInsecureConnection: true });
+    const client = new FormDataClient("http://localhost:3000", {
+      allowInsecureConnection: true,
+      retryOptions: { maxRetries: 1 },
+    });
 
     beforeEach(async () => {
       __filename = fileURLToPath(import.meta.url);
@@ -80,7 +83,10 @@ describe("Payload.MultiPart", () => {
   });
 
   describe("FormDataClient.HttpParts.ContentType", () => {
-    const client = new HttpPartsClient("http://localhost:3000", { allowInsecureConnection: true });
+    const client = new HttpPartsClient("http://localhost:3000", {
+      allowInsecureConnection: true,
+      retryOptions: { maxRetries: 1 },
+    });
 
     it("should handle image/jpeg with specific content type", async () => {
       await client.contentTypeClient.imageJpegContentType({

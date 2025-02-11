@@ -2,12 +2,14 @@ import * as ay from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
 
 import { Model } from "@typespec/compiler";
-import { JsonModelPropertyTransform } from "./json-model-property-transform.jsx";
-import { JsonTransformDiscriminatorDeclaration } from "./json-transform-discriminator.jsx";
 import { $ } from "@typespec/compiler/experimental/typekit";
-import { JsonRecordTransformDeclaration } from "./json-record-transform.jsx";
 import { JsonAdditionalPropertiesTransform } from "./json-model-additional-properties-transform.jsx";
-import { JsonModelBaseTransform } from "./json-model-base-transform.jsx";
+import { JsonModelPropertyTransform } from "./json-model-property-transform.jsx";
+import { JsonRecordTransformDeclaration } from "./json-record-transform.jsx";
+import {
+  getJsonTransformDiscriminatorRefkey,
+  JsonTransformDiscriminatorDeclaration,
+} from "./json-transform-discriminator.jsx";
 
 export interface JsonModelTransformProps {
   itemRef: ay.Refkey | ay.Children;
@@ -17,18 +19,22 @@ export interface JsonModelTransformProps {
 
 export function JsonModelTransform(props: JsonModelTransformProps) {
   // Need to skip never properties
-  const properties = Array.from($.model.getProperties(props.type).values()).filter(p => !$.type.isNever(p.type))
+  const properties = Array.from(
+    $.model.getProperties(props.type, { includeExtended: true }).values(),
+  ).filter((p) => !$.type.isNever(p.type));
+
+  const discriminator = $.type.getDiscriminator(props.type);
+
+  const discriminate = getJsonTransformDiscriminatorRefkey(props.type, props.target);
 
   return <ts.ObjectExpression>
-    <JsonModelBaseTransform itemRef={props.itemRef} target={props.target} type={props.type}/>
+    {discriminator ? <>...{discriminate}({props.itemRef}),</>: null}
     <JsonAdditionalPropertiesTransform itemRef={props.itemRef} target={props.target} type={props.type} />
     {ay.mapJoin(properties, (property) => {
       return <JsonModelPropertyTransform itemRef={props.itemRef} type={property} target={props.target} />;
     }, {joiner: ",\n"})}
   </ts.ObjectExpression>;
 }
-
-
 
 export function getJsonModelTransformRefkey(
   type: Model,
@@ -61,7 +67,7 @@ export function JsonModelTransformDeclaration(
   };
 
   const spread = $.model.getSpreadType(props.type);
-  const hasAdditionalProperties = spread && $.model.is(spread) && $.record.is(spread)
+  const hasAdditionalProperties = spread && $.model.is(spread) && $.record.is(spread);
 
   const declarationRefkey = getJsonModelTransformRefkey(props.type, props.target);
   return <>

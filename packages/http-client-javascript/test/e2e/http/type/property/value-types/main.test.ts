@@ -13,7 +13,7 @@ import {
   FloatClient,
   IntClient,
   StringClient,
-} from "../../../../generated/type/property/value-types/src/index.js";
+} from "../../../../generated/http/type/property/value-types/http-client-javascript/src/index.js";
 
 const base64EncodeToUint8Array = (input: string): Uint8Array => {
   // Encode the string as Base64
@@ -30,6 +30,10 @@ const base64EncodeToUint8Array = (input: string): Uint8Array => {
 
   return uint8Array;
 };
+
+const str = "Hello, World!";
+const encoder = new TextEncoder();
+const helloWorldUint8Array = encoder.encode(str);
 
 const helloWorldBase64 = base64EncodeToUint8Array("hello, world!");
 
@@ -61,15 +65,18 @@ describe("Type.Property.ValueTypes", () => {
   });
 
   describe("BytesClient", () => {
-    const client = new BytesClient("http://localhost:3000", { allowInsecureConnection: true });
+    const client = new BytesClient("http://localhost:3000", {
+      allowInsecureConnection: true,
+      retryOptions: { maxRetries: 1 },
+    });
 
     it("should handle a model with a bytes property", async () => {
       const response = await client.get();
-      expect(response).toEqual({ property: "aGVsbG8sIHdvcmxkIQ==" });
+      expect(response).toStrictEqual({ property: helloWorldUint8Array });
     });
 
     it("should send a model with a bytes property", async () => {
-      await client.put({ property: helloWorldBase64 });
+      await client.put({ property: helloWorldUint8Array });
     });
   });
 
@@ -130,7 +137,7 @@ describe("Type.Property.ValueTypes", () => {
 
     it("should handle a model with a datetime property", async () => {
       const response = await client.get();
-      expect(response).toEqual({ property: "2022-08-26T18:38:00Z" });
+      expect(response).toEqual({ property: new Date("2022-08-26T18:38:00Z") });
     });
 
     it("should send a model with a datetime property", async () => {

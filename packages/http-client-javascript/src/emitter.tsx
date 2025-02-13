@@ -13,7 +13,7 @@ import { JsClientEmitterOptions } from "./lib.js";
 export async function $onEmit(context: EmitContext<JsClientEmitterOptions>) {
   const packageName = context.options["package-name"] ?? "test-package";
   return <Output>
-        <ts.PackageDirectory name={packageName} version="1.0.0" path="." scripts={{ "build": "tsc" }}>
+        <ts.PackageDirectory name={packageName} version="1.0.0" path="." scripts={{ "build": "tsc" }} devDependencies={{ "@types/node": "~18.19.75" }}>
           <ay.SourceDirectory path="src">
             <ts.BarrelFile export="." />
             <Client/>

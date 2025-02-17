@@ -1,0 +1,6 @@
+emitters:
+  "@typespec/http-client-javascript": true
+
+options:
+  "@typespec/http-client-javascript":
+    emitter-output-dir: "{output-dir}"

@@ -20,8 +20,14 @@
         "parser": "typespec"
       }
     },
-    {
+        {
       "files": ["packages/http-client/**/*.tsx"],
+      "options": {
+        "parser": "alloy-ts"
+      }
+    },
+    {
+      "files": ["packages/http-client-javascript/**/*.tsx"],
       "options": {
         "parser": "alloy-ts"
       }

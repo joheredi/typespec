@@ -1,5 +1,5 @@
 {
-  "name": "@typespec/http-client-javascript",
+  "name": "@typespec/http-client-js",
   "version": "1.0.0",
   "type": "module",
   "private": true,
@@ -13,7 +13,7 @@
     "watch": "concurrently --kill-others \"npm run watch-tsc\" \"npm run watch-src\"",
     "test:scenarios": "vitest run --include=test/scenarios.test.ts",
     "test": "npm run test:scenarios && npm run emit:e2e && npm run build:test && npm run test:e2e",
-    "build-todo": "rimraf sample/output/todo dist/sample/output/todo && tsp compile sample/main.tsp --emit @typespec/http-client-javascript --output-dir sample/output/todo && babel sample/output/todo -d dist/sample/output/todo --extensions .ts,.tsx && npx prettier sample/output --write",
+    "build-todo": "rimraf sample/output/todo dist/sample/output/todo && tsp compile sample/main.tsp --emit @typespec/http-client-js --output-dir sample/output/todo && babel sample/output/todo -d dist/sample/output/todo --extensions .ts,.tsx && npx prettier sample/output --write",
     "format": "prettier . --write",
     "build:test": "tsc -p tsconfig.test.json",
     "start:server": "npx tsp-spector server start node_modules/@typespec/http-specs/specs --coverageFile ./tsp-spector-coverage-javascript-standard.json",

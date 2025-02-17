@@ -153,7 +153,7 @@ async function processFile(file, options) {
       "compile",
       fullPath,
       "--emit",
-      "@typespec/http-client-javascript",
+      "@typespec/http-client-js",
       "--config",
       tspConfig,
       "--output-dir",

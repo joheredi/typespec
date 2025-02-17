@@ -3,6 +3,6 @@ import { createTestLibrary, TypeSpecTestLibrary } from "@typespec/compiler/testi
 import { fileURLToPath } from "url";
 
 export const HttpClientJavascriptEmitterTestLibrary: TypeSpecTestLibrary = createTestLibrary({
-  name: "@typespec/http-client-javascript",
+  name: "@typespec/http-client-js",
   packageRoot: resolvePath(fileURLToPath(import.meta.url), "../../../"),
 });

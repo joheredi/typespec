@@ -13,6 +13,6 @@ await executeScenarios(
   HttpClientJavascriptEmitterTestLibrary,
   tsExtractorConfig,
   "./test/scenarios",
-  join("tsp-output", "@typespec/http-client-javascript"),
+  join("tsp-output", "@typespec/http-client-js"),
   snipperExtractor,
 );

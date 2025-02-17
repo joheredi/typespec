@@ -27,7 +27,7 @@
       }
     },
     {
-      "files": ["packages/http-client-javascript/**/*.tsx"],
+      "files": ["packages/http-client-js/**/*.tsx"],
       "options": {
         "parser": "alloy-ts"
       }

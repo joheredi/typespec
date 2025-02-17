@@ -15,7 +15,7 @@ const __dirname = dirname(__filename);
 
 const pngImagePath = resolve(
   __dirname,
-  "/home/joheredi/azure/typespec/packages/http-client-javascript/node_modules/@azure-tools/cadl-ranch-specs/assets/image.png",
+  "/home/joheredi/azure/typespec/packages/http-client-js/node_modules/@azure-tools/cadl-ranch-specs/assets/image.png",
 );
 const pngBuffer = await readFile(pngImagePath);
 const pngContents = new Uint8Array(pngBuffer);

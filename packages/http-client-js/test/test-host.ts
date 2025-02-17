@@ -24,12 +24,12 @@ export async function createHttpClientJavascriptEmitterTestRunner() {
     autoUsings: ["TypeSpec.Http", "TypeSpec.Rest"],
     compilerOptions: {
       noEmit: false,
-      emit: ["@typespec/http-client-javascript"],
+      emit: ["@typespec/http-client-js"],
     },
   });
 }
 
-const emitterOutputDir = join("tsp-output", "http-client-javascript");
+const emitterOutputDir = join("tsp-output", "http-client-js");
 
 export async function emitWithDiagnostics(
   code: string,

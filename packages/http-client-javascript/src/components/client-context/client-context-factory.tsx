@@ -7,6 +7,7 @@ import { reportDiagnostic } from "../../lib.js";
 import { buildClientParameters } from "../../utils/parameters.jsx";
 import { httpRuntimeTemplateLib } from "../external-packages/ts-http-runtime.js";
 import { getClientcontextDeclarationRef } from "./client-context-declaration.jsx";
+import { ClientTestOptions } from "../testing/client-options.jsx";
 
 export interface ClientContextFactoryProps {
   client: cl.Client;
@@ -110,7 +111,7 @@ interface ClientOptionsExpressionProps {
 }
 
 function ClientOptionsExpression(props: ClientOptionsExpressionProps) {
-  const options: ay.Children = ["...options"];
+  const options: ay.Children = ["...options", <ClientTestOptions />];
 
   const children = Array.isArray(props.children) ? props.children : [props.children];
   if (children.length) {

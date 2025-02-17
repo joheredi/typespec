@@ -7,7 +7,7 @@ import { globby } from "globby";
 import inquirer from "inquirer";
 import ora from "ora";
 import pLimit from "p-limit";
-import { dirname, join, resolve } from "path";
+import { dirname, join, resolve, basename } from "path";
 import { fileURLToPath } from "url";
 import { hideBin } from "yargs/helpers";
 import yargs from "yargs/yargs";
@@ -22,7 +22,15 @@ const tspConfig = join(__dirname, "tspconfig.yaml");
 
 const basePath = join(projectRoot, "node_modules", "@typespec", "http-specs", "specs");
 const ignoreFilePath = join(projectRoot, ".testignore");
-const reportFilePath = join(projectRoot, ".test-gen-report.txt");
+const logDirRoot = join(projectRoot, "temp", "emit-e2e-logs");
+const reportFilePath = join(logDirRoot, "report.txt");
+
+// Remove the log directory if it exists.
+async function clearLogDirectory() {
+  if (await pathExists(logDirRoot)) {
+    await rm(logDirRoot, { recursive: true, force: true });
+  }
+}
 
 // Parse command-line arguments.
 const argv = yargs(hideBin(process.argv))
@@ -34,11 +42,6 @@ const argv = yargs(hideBin(process.argv))
   .option("interactive", {
     type: "boolean",
     describe: "Enable interactive mode",
-    default: false,
-  })
-  .option("report", {
-    type: "boolean",
-    describe: "Generate a report after processing",
     default: false,
   })
   .positional("paths", {
@@ -113,7 +116,11 @@ async function processPaths(paths, ignoreList, mainOnly) {
 // Run a shell command silently.
 async function runCommand(command, args, options = {}) {
   // Remove clutter by not printing anything; capture output by setting stdio to 'pipe'.
-  return await execa(command, args, { stdio: "pipe", ...options });
+  return await execa(command, args, {
+    stdio: "pipe",
+    env: { NODE_ENV: "test", TYPESPEC_JS_EMITTER_TESTING: "true", ...process.env },
+    ...options,
+  });
 }
 
 // Process a single file.
@@ -122,6 +129,7 @@ async function processFile(file, options) {
   const { build, interactive } = options;
   const outputDir = join("test", "e2e", "generated", dirname(relativePath));
   const specCopyPath = join(outputDir, "spec.tsp");
+  const logDir = join(projectRoot, "temp", "emit-e2e-logs", dirname(relativePath));
 
   let spinner;
   if (interactive) {
@@ -178,8 +186,13 @@ async function processFile(file, options) {
     if (spinner) {
       spinner.fail(`Failed processing: ${relativePath}`);
     }
-    // Optionally log error details here if needed:
-    // console.error(error.stdout || error.stderr);
+    const errorDetails = error.stdout || error.stderr || error.message;
+
+    // Write error details to a log file.
+    await mkdir(logDir, { recursive: true });
+    const logFilePath = join(logDir, `${basename(relativePath, ".tsp")}-error.log`);
+    await writeFile(logFilePath, errorDetails, "utf8");
+
     if (interactive) {
       const { action } = await inquirer.prompt([
         {
@@ -204,13 +217,13 @@ async function processFile(file, options) {
         throw new Error("Processing aborted by user");
       }
     }
-    return { status: "failed", relativePath };
+    return { status: "failed", relativePath, errorDetails };
   }
 }
 
 // Process all files.
 async function processFiles(files, options) {
-  const { interactive, generateReport } = options;
+  const { interactive } = options;
   const succeeded = [];
   const failed = [];
 
@@ -222,7 +235,7 @@ async function processFiles(files, options) {
         if (result.status === "succeeded") {
           succeeded.push(result.relativePath);
         } else {
-          failed.push(result.relativePath);
+          failed.push({ relativePath: result.relativePath, errorDetails: result.errorDetails });
         }
       } catch (err) {
         break;
@@ -249,7 +262,7 @@ async function processFiles(files, options) {
       if (result.status === "succeeded") {
         succeeded.push(result.relativePath);
       } else {
-        failed.push(result.relativePath);
+        failed.push({ relativePath: result.relativePath, errorDetails: result.errorDetails });
       }
     }
   }
@@ -258,20 +271,30 @@ async function processFiles(files, options) {
   console.log(chalk.green(`Succeeded: ${succeeded.length}`));
   console.log(chalk.red(`Failed: ${failed.length}`));
 
-  if (generateReport) {
-    const report = [
-      "Succeeded Files:",
-      ...succeeded.map((f) => `  - ${f}`),
-      "Failed Files:",
-      ...failed.map((f) => `  - ${f}`),
-    ].join("\n");
-    await writeFile(reportFilePath, report, "utf8");
-    console.log(chalk.blue(`Report written to: ${reportFilePath}`));
+  if (failed.length > 0) {
+    console.log(chalk.red("\nFailed Specs:"));
+    failed.forEach((f) => {
+      console.log(chalk.red(`  - ${f.relativePath}`));
+    });
+    console.log(chalk.blue(`\nLogs available at: ${logDirRoot}`));
   }
+
+  // Ensure the log directory exists before writing the report.
+  await mkdir(logDirRoot, { recursive: true });
+  const report = [
+    "Succeeded Files:",
+    ...succeeded.map((f) => `  - ${f}`),
+    "Failed Files:",
+    ...failed.map((f) => `  - ${f.relativePath}\n    Error: ${f.errorDetails}`),
+  ].join("\n");
+  await writeFile(reportFilePath, report, "utf8");
+  console.log(chalk.blue(`Report written to: ${reportFilePath}`));
 }
 
 // Main logic.
 (async () => {
+  await clearLogDirectory(); // Clear the log directory at the start.
+
   const ignoreList = await getIgnoreList();
   const paths =
     argv._.length > 0
@@ -285,7 +308,6 @@ async function processFiles(files, options) {
 
   await processFiles(paths, {
     interactive: argv.interactive,
-    generateReport: argv.report,
     build: argv.build,
   });
 })();

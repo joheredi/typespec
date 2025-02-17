@@ -9,10 +9,11 @@ import { ModelSerializers } from "./components/serializers.js";
 import { Interfaces } from "./components/static-helpers/interfaces.jsx";
 import { MultipartHelpers } from "./components/static-helpers/multipart-helpers.jsx";
 import { JsClientEmitterOptions } from "./lib.js";
+import { writeOutput } from "@typespec/emitter-framework";
 
 export async function $onEmit(context: EmitContext<JsClientEmitterOptions>) {
   const packageName = context.options["package-name"] ?? "test-package";
-  return <Output>
+  const output = <Output>
         <ts.PackageDirectory name={packageName} version="1.0.0" path="." scripts={{ "build": "tsc" }} devDependencies={{ "@types/node": "~18.19.75" }}>
           <ay.SourceDirectory path="src">
             <ts.BarrelFile export="." />
@@ -32,4 +33,6 @@ export async function $onEmit(context: EmitContext<JsClientEmitterOptions>) {
           </ay.SourceDirectory>
         </ts.PackageDirectory>
     </Output>;
+
+    await writeOutput(output, context.emitterOutputDir);
 }

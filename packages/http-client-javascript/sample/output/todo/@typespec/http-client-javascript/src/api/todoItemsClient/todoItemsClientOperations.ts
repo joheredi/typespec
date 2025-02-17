@@ -59,8 +59,6 @@ export interface CreateJsonOptions extends OperationOptions {
 }
 export async function createJson(
   client: TodoItemsClientContext,
-  title: string,
-  status: "NotStarted" | "InProgress" | "Completed",
   item: TodoItem,
   options?: CreateJsonOptions,
 ): Promise<{

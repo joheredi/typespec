@@ -69,13 +69,8 @@ export class TodoItemsClient {
   async list(options?: ListOptions) {
     return list(this.#context, options);
   }
-  async createJson(
-    title: string,
-    status: "NotStarted" | "InProgress" | "Completed",
-    item: TodoItem,
-    options?: CreateJsonOptions,
-  ) {
-    return createJson(this.#context, title, status, item, options);
+  async createJson(item: TodoItem, options?: CreateJsonOptions) {
+    return createJson(this.#context, item, options);
   }
   async createForm(body: ToDoItemMultipartRequest, options?: CreateFormOptions) {
     return createForm(this.#context, body, options);

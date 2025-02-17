@@ -14,7 +14,7 @@ import {
 
 export function decodeBase64(value: string): Uint8Array | undefined {
   if (!value) {
-    return undefined;
+    return undefined as any;
   }
   // Normalize Base64URL to Base64
   const base64 = value
@@ -133,6 +133,9 @@ export function jsonPageToApplicationTransform(input_?: any): Page {
   }!;
 }
 export function jsonArrayTodoAttachmentToTransportTransform(items_?: Array<TodoAttachment>): any {
+  if (!items_) {
+    return undefined as any;
+  }
   const _transformedArray = [];
 
   for (const item of items_ ?? []) {
@@ -143,6 +146,9 @@ export function jsonArrayTodoAttachmentToTransportTransform(items_?: Array<TodoA
   return _transformedArray as any;
 }
 export function jsonArrayTodoAttachmentToApplicationTransform(items_?: any): Array<TodoAttachment> {
+  if (!items_) {
+    return undefined as any;
+  }
   const _transformedArray = [];
 
   for (const item of items_ ?? []) {
@@ -257,6 +263,9 @@ export function jsonTodoPageToApplicationTransform(input_?: any): TodoPage {
   }!;
 }
 export function jsonArrayTodoItemToTransportTransform(items_?: Array<TodoItem>): any {
+  if (!items_) {
+    return undefined as any;
+  }
   const _transformedArray = [];
 
   for (const item of items_ ?? []) {
@@ -267,6 +276,9 @@ export function jsonArrayTodoItemToTransportTransform(items_?: Array<TodoItem>):
   return _transformedArray as any;
 }
 export function jsonArrayTodoItemToApplicationTransform(items_?: any): Array<TodoItem> {
+  if (!items_) {
+    return undefined as any;
+  }
   const _transformedArray = [];
 
   for (const item of items_ ?? []) {
@@ -330,6 +342,9 @@ export function jsonTodoLabelsToApplicationTransform(input_?: any): TodoLabels {
   return input_;
 }
 export function jsonArrayStringToTransportTransform(items_?: Array<string>): any {
+  if (!items_) {
+    return undefined as any;
+  }
   const _transformedArray = [];
 
   for (const item of items_ ?? []) {
@@ -340,6 +355,9 @@ export function jsonArrayStringToTransportTransform(items_?: Array<string>): any
   return _transformedArray as any;
 }
 export function jsonArrayStringToApplicationTransform(items_?: any): Array<string> {
+  if (!items_) {
+    return undefined as any;
+  }
   const _transformedArray = [];
 
   for (const item of items_ ?? []) {
@@ -372,6 +390,9 @@ export function jsonTodoLabelRecordToApplicationTransform(input_?: any): TodoLab
   }!;
 }
 export function jsonArrayTodoLabelRecordToTransportTransform(items_?: Array<TodoLabelRecord>): any {
+  if (!items_) {
+    return undefined as any;
+  }
   const _transformedArray = [];
 
   for (const item of items_ ?? []) {
@@ -384,6 +405,9 @@ export function jsonArrayTodoLabelRecordToTransportTransform(items_?: Array<Todo
 export function jsonArrayTodoLabelRecordToApplicationTransform(
   items_?: any,
 ): Array<TodoLabelRecord> {
+  if (!items_) {
+    return undefined as any;
+  }
   const _transformedArray = [];
 
   for (const item of items_ ?? []) {
@@ -420,6 +444,9 @@ export function jsonToDoItemMultipartRequestToApplicationTransform(
   }!;
 }
 export function jsonArrayHttpPartToTransportTransform(items_?: Array<File>): any {
+  if (!items_) {
+    return undefined as any;
+  }
   const _transformedArray = [];
 
   for (const item of items_ ?? []) {
@@ -430,6 +457,9 @@ export function jsonArrayHttpPartToTransportTransform(items_?: Array<File>): any
   return _transformedArray as any;
 }
 export function jsonArrayHttpPartToApplicationTransform(items_?: any): Array<File> {
+  if (!items_) {
+    return undefined as any;
+  }
   const _transformedArray = [];
 
   for (const item of items_ ?? []) {

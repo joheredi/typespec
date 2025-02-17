@@ -3,6 +3,7 @@ import { exec, spawn } from "child_process";
 import http from "http";
 import ora from "ora";
 import { promisify } from "util";
+import { calculateCoverage } from "./calculate-coverage.js";
 
 const execPromise = promisify(exec);
 const SERVER_URL = "http://localhost:3000/routes/in-interface/fixed"; // Endpoint to check if server is up and running
@@ -78,6 +79,7 @@ const main = async () => {
       spinner.start("Shutting down mock server...");
       await execPromise("npm run stop:server");
       spinner.succeed(chalk.green("✅ Mock server stopped successfully."));
+      await calculateCoverage(); // Call calculateCoverage after the server is stopped
       process.exit(code);
     });
   } catch (err) {
@@ -90,3 +92,4 @@ const main = async () => {
 };
 
 await main();
+// await calculateCoverage(); // Call calculateCoverage after the server is stopped

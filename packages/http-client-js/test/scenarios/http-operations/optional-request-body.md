@@ -13,16 +13,12 @@ op set(@body body?: BodyModel): NoContentResponse;
 @route("/omit")
 @post
 op omit(@body body?: BodyModel): NoContentResponse;
-
 ```
 
 ## Operations
 
 ```ts src/api/testClientOperations.ts function set
-export async function set(
-  client: TestClientContext,
-  options?: SetOptions,
-): Promise<void> {
+export async function set(client: TestClientContext, options?: SetOptions): Promise<void> {
   const path = parse("/set").expand({});
 
   const httpRequestOptions = {

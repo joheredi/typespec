@@ -50,9 +50,7 @@ export function jsonWidgetDataToApplicationTransform(input_?: any): WidgetData {
 ```
 
 ```ts src/models/serializers.ts function jsonWidgetDataToTransportDiscriminator
-export function jsonWidgetDataToTransportDiscriminator(
-  input_?: WidgetData,
-): any {
+export function jsonWidgetDataToTransportDiscriminator(input_?: WidgetData): any {
   if (!input_) {
     return input_ as any;
   }
@@ -70,9 +68,7 @@ export function jsonWidgetDataToTransportDiscriminator(
 ```
 
 ```ts src/models/serializers.ts function jsonWidgetDataToApplicationDiscriminator
-export function jsonWidgetDataToApplicationDiscriminator(
-  input_?: any,
-): WidgetData {
+export function jsonWidgetDataToApplicationDiscriminator(input_?: any): WidgetData {
   if (!input_) {
     return input_ as any;
   }

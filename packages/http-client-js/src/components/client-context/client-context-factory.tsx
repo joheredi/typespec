@@ -6,8 +6,8 @@ import * as cl from "@typespec/http-client";
 import { reportDiagnostic } from "../../lib.js";
 import { buildClientParameters } from "../../utils/parameters.jsx";
 import { httpRuntimeTemplateLib } from "../external-packages/ts-http-runtime.js";
+import { addClientTestOptions } from "../testing/client-options.jsx";
 import { getClientcontextDeclarationRef } from "./client-context-declaration.jsx";
-import { ClientTestOptions } from "../testing/client-options.jsx";
 
 export interface ClientContextFactoryProps {
   client: cl.Client;
@@ -111,7 +111,11 @@ interface ClientOptionsExpressionProps {
 }
 
 function ClientOptionsExpression(props: ClientOptionsExpressionProps) {
-  const options: ay.Children = ["...options", <ClientTestOptions />];
+  const options: ay.Children = ["...options"];
+
+  // Conditionally add test options
+  // based on the environment variable TYPESPEC_JS_EMITTER_TESTING
+  addClientTestOptions(options);
 
   const children = Array.isArray(props.children) ? props.children : [props.children];
   if (children.length) {

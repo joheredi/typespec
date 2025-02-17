@@ -1,12 +1,12 @@
-import { config } from "dotenv";
 import * as ay from "@alloy-js/core";
+import { config } from "dotenv";
 
 config();
 
 export interface ClientTestOptions {}
 
 export function ClientTestOptions(_props: ClientTestOptions) {
-  if (process.env.NODE_ENV !== "test") {
+  if (process.env.TYPESPEC_JS_EMITTER_TESTING !== "true") {
     return null;
   }
 
@@ -19,7 +19,7 @@ export function ClientTestOptions(_props: ClientTestOptions) {
 
 export function addClientTestOptions(
   options: ay.Children[],
-  settings: { location?: "front" | "back" } = { location: "front" }
+  settings: { location?: "front" | "back" } = { location: "front" },
 ) {
   if (process.env.TYPESPEC_JS_EMITTER_TESTING === "true") {
     const testOptions = <ClientTestOptions />;

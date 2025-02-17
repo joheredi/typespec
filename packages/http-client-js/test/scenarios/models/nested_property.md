@@ -8,11 +8,9 @@ model Request {
   profileImage: bytes;
 }
 
-  @post
-  @route("/foo")
-  op foo(
-    profileImage: Request.profileImage,
-  ): NoContentResponse;
+@post
+@route("/foo")
+op foo(profileImage: Request.profileImage): NoContentResponse;
 ```
 
 ## Operation

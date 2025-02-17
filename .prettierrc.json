@@ -20,7 +20,7 @@
         "parser": "typespec"
       }
     },
-        {
+    {
       "files": ["packages/http-client/**/*.tsx"],
       "options": {
         "parser": "alloy-ts"

@@ -13,7 +13,6 @@ op foo(
     }>;
   },
 ): NoContentResponse;
-
 ```
 
 ## Operation

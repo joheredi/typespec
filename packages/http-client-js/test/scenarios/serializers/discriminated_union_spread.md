@@ -22,7 +22,6 @@ model WidgetData1 {
   end?: utcDateTime;
 }
 
-
 @doc("The model spread Record<WidgetData>")
 model SpreadRecordForDiscriminatedUnion {
   @doc("The name property")
@@ -82,9 +81,7 @@ export function jsonWidgetDataToTransportTransform(input_?: WidgetData): any {
 ```
 
 ```ts src/models/serializers.ts function jsonWidgetDataToApplicationDiscriminator
-export function jsonWidgetDataToApplicationDiscriminator(
-  input_?: any,
-): WidgetData {
+export function jsonWidgetDataToApplicationDiscriminator(input_?: any): WidgetData {
   if (!input_) {
     return input_ as any;
   }
@@ -102,9 +99,7 @@ export function jsonWidgetDataToApplicationDiscriminator(
 ```
 
 ```ts src/models/serializers.ts function jsonWidgetDataToTransportDiscriminator
-export function jsonWidgetDataToTransportDiscriminator(
-  input_?: WidgetData,
-): any {
+export function jsonWidgetDataToTransportDiscriminator(input_?: WidgetData): any {
   if (!input_) {
     return input_ as any;
   }

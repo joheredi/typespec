@@ -66,7 +66,7 @@ import { Fish, Shark, SawShark, GoblinShark, Salmon } from "./models.js";
 
 export function decodeBase64(value: string): Uint8Array | undefined {
   if (!value) {
-    return undefined;
+    return undefined as any;
   }
   // Normalize Base64URL to Base64
   const base64 = value
@@ -319,7 +319,7 @@ export function jsonSalmonToApplicationTransform(input_?: any): Salmon {
 }
 export function jsonArrayFishToTransportTransform(items_?: Array<Fish>): any {
   if (!items_) {
-    return undefined;
+    return undefined as any;
   }
   const _transformedArray = [];
 
@@ -332,7 +332,7 @@ export function jsonArrayFishToTransportTransform(items_?: Array<Fish>): any {
 }
 export function jsonArrayFishToApplicationTransform(items_?: any): Array<Fish> {
   if (!items_) {
-    return undefined;
+    return undefined as any;
   }
   const _transformedArray = [];
 
@@ -345,7 +345,7 @@ export function jsonArrayFishToApplicationTransform(items_?: any): Array<Fish> {
 }
 export function jsonRecordFishToTransportTransform(items_?: Record<string, any>): any {
   if (!items_) {
-    return undefined;
+    return undefined as any;
   }
 
   const _transformedRecord: any = {};
@@ -359,7 +359,7 @@ export function jsonRecordFishToTransportTransform(items_?: Record<string, any>)
 }
 export function jsonRecordFishToApplicationTransform(items_?: any): Record<string, any> {
   if (!items_) {
-    return undefined;
+    return undefined as any;
   }
 
   const _transformedRecord: any = {};

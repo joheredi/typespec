@@ -27,28 +27,26 @@ export function JsonModelPropertyTransform(props: JsonModelPropertyTransformProp
   let propertyValue: ay.Children;
 
   if ($.scalar.is(propertyValueType)) {
-    propertyValue = (
+    propertyValue =
       <ScalarDataTransform
         type={propertyValueType}
         encoding={encoding}
         target={props.target}
         itemRef={propertyValueRef}
-      />
-    );
+      />;
   } else {
-    propertyValue = (
-      <JsonTransform type={propertyValueType} target={props.target} itemRef={propertyValueRef} />
-    );
+    propertyValue =
+      <JsonTransform type={propertyValueType} target={props.target} itemRef={propertyValueRef} />;
   }
 
   return <ts.ObjectProperty name={JSON.stringify(targetName)} value={propertyValue} />;
 }
 
 function unpackProperty(modelProperty: ModelProperty): Type {
-  const type = $.httpPart.unpack(modelProperty.type) ?? modelProperty.type 
-  if($.modelProperty.is(type)) {
+  const type = $.httpPart.unpack(modelProperty.type) ?? modelProperty.type;
+  if ($.modelProperty.is(type)) {
     return unpackProperty(type);
   }
 
-  return type
+  return type;
 }

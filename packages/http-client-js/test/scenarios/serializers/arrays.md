@@ -38,7 +38,7 @@ The generated transformation functions iterate over `int32[]` values, but since 
 ```ts src/models/serializers.ts function jsonArrayInt32ToTransportTransform
 export function jsonArrayInt32ToTransportTransform(items_?: Array<number>): any {
   if (!items_) {
-    return undefined;
+    return undefined as any;
   }
   const _transformedArray = [];
 
@@ -100,7 +100,7 @@ Again, the transformation logic is redundant for primitive types. Instead of gen
 ```ts src/models/serializers.ts function jsonArrayInt32ToApplicationTransform
 export function jsonArrayInt32ToApplicationTransform(items_?: any): Array<number> {
   if (!items_) {
-    return undefined;
+    return undefined as any;
   }
   const _transformedArray = [];
 

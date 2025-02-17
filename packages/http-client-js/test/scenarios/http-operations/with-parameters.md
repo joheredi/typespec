@@ -5,22 +5,23 @@ A typical request with path, query header and body parameters. The body is model
 ## TypeSpec
 
 ```tsp
- @service({
-      title: "Widget Service",
-    })
-    namespace DemoService;
+@service({
+  title: "Widget Service",
+})
+namespace DemoService;
 
-    @test model Widget {
-      @path id: string;
-      @header etag: string;
-      @query foo: string;
-      name: string;
-    }
+@test
+model Widget {
+  @path id: string;
+  @header etag: string;
+  @query foo: string;
+  name: string;
+}
 
-    @route("/widgets")
-    interface Widgets {
-      @post read(...Widget): void;
-    }
+@route("/widgets")
+interface Widgets {
+  @post read(...Widget): void;
+}
 ```
 
 ## TyeScript
@@ -77,13 +78,7 @@ export class WidgetsClient {
   constructor(endpoint: string, options?: WidgetsClientOptions) {
     this.#context = createWidgetsClientContext(endpoint, options);
   }
-  async read(
-    id: string,
-    etag: string,
-    foo: string,
-    name: string,
-    options?: ReadOptions,
-  ) {
+  async read(id: string, etag: string, foo: string, name: string, options?: ReadOptions) {
     return read(this.#context, id, etag, foo, name, options);
   }
 }

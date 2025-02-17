@@ -25,8 +25,7 @@ export function SimplePartTransform(props: SimplePartTransformProps) {
     });
   }
 
-  return (
-    <ts.ObjectExpression>
+  return <ts.ObjectExpression>
       <ts.ObjectProperty name="name" jsValue={partName} />,
       <ts.ObjectProperty
         name="body"
@@ -38,8 +37,7 @@ export function SimplePartTransform(props: SimplePartTransformProps) {
           />
         }
       />,
-    </ts.ObjectExpression>
-  );
+    </ts.ObjectExpression>;
 }
 
 function getPartRef(itemRef: ay.Children, partName: string) {

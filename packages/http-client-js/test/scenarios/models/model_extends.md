@@ -10,7 +10,7 @@ model Pet {
   name: string;
 }
 
-model Dog extends Pet{
+model Dog extends Pet {
   color: "black" | "brown";
 }
 

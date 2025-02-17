@@ -7,21 +7,21 @@ A request that sends a request with a path parameter as a property of the input 
 The path parameter is a property of a spread model input in the operation signature
 
 ```tsp
-    @service({
-      title: "Widget Service",
-    })
-    namespace DemoService;
+@service({
+  title: "Widget Service",
+})
+namespace DemoService;
 
-    model ReadParams {
-      @path
-      id: string
-    }
+model ReadParams {
+  @path
+  id: string;
+}
 
-    @route("/widgets")
-    @tag("Widgets")
-    interface Widgets {
-      @test @get read(...ReadParams): void;
-    }
+@route("/widgets")
+@tag("Widgets")
+interface Widgets {
+  @test @get read(...ReadParams): void;
+}
 ```
 
 ## TyeScript

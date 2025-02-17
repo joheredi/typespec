@@ -1,5 +1,4 @@
 import * as ay from "@alloy-js/core";
-import { $ } from "@typespec/compiler/experimental/typekit";
 import { HttpOperationPart } from "@typespec/http";
 import { ArrayPartTransform } from "./array-part-transform.jsx";
 import { FilePartTransform } from "./file-part-transform.jsx";

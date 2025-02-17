@@ -33,10 +33,7 @@ export async function getWithParams(
     options?.operationOptions?.onResponse(response);
   }
 
-  if (
-    +response.status === 200 &&
-    response.headers["content-type"]?.includes("application/json")
-  ) {
+  if (+response.status === 200 && response.headers["content-type"]?.includes("application/json")) {
     return response.body!;
   }
 
@@ -59,11 +56,7 @@ export class TestClient {
   constructor(endpoint: string, options?: TestClientOptions) {
     this.#context = createTestClientContext(endpoint, options);
   }
-  async getWithParams(
-    name: string,
-    age: number,
-    options?: GetWithParamsOptions,
-  ) {
+  async getWithParams(name: string, age: number, options?: GetWithParamsOptions) {
     return getWithParams(this.#context, name, age, options);
   }
 }

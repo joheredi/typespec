@@ -22,10 +22,7 @@ interface Widgets {
 ### **Response Handling**
 
 ```ts src/api/widgetsClient/widgetsClientOperations.ts function read
-export async function read(
-  client: WidgetsClientContext,
-  options?: ReadOptions,
-): Promise<void> {
+export async function read(client: WidgetsClientContext, options?: ReadOptions): Promise<void> {
   const path = parse("/widgets").expand({});
 
   const httpRequestOptions = {
@@ -97,10 +94,7 @@ export function jsonWidgetToApplicationTransform(input_?: any): Widget {
 The function reads a `Widget` instance from the response body, ensuring it only processes JSON responses with a `200` status.
 
 ```ts src/api/widgetsClient/widgetsClientOperations.ts function read
-export async function read(
-  client: WidgetsClientContext,
-  options?: ReadOptions,
-): Promise<Widget> {
+export async function read(client: WidgetsClientContext, options?: ReadOptions): Promise<Widget> {
   const path = parse("/widgets").expand({});
 
   const httpRequestOptions = {
@@ -113,10 +107,7 @@ export async function read(
     options?.operationOptions?.onResponse(response);
   }
 
-  if (
-    +response.status === 200 &&
-    response.headers["content-type"]?.includes("application/json")
-  ) {
+  if (+response.status === 200 && response.headers["content-type"]?.includes("application/json")) {
     return jsonWidgetToApplicationTransform(response.body)!;
   }
 
@@ -174,10 +165,7 @@ export async function read(
     options?.operationOptions?.onResponse(response);
   }
 
-  if (
-    +response.status === 200 &&
-    response.headers["content-type"]?.includes("application/json")
-  ) {
+  if (+response.status === 200 && response.headers["content-type"]?.includes("application/json")) {
     return jsonWidgetToApplicationTransform(response.body)!;
   }
 
@@ -232,10 +220,7 @@ This function ensures that the response is correctly processed based on its `con
 TODO: need to implement xml serialization
 
 ```ts src/api/widgetsClient/widgetsClientOperations.ts function read
-export async function read(
-  client: WidgetsClientContext,
-  options?: ReadOptions,
-): Promise<Widget> {
+export async function read(client: WidgetsClientContext, options?: ReadOptions): Promise<Widget> {
   const path = parse("/widgets").expand({});
 
   const httpRequestOptions = {
@@ -248,17 +233,11 @@ export async function read(
     options?.operationOptions?.onResponse(response);
   }
 
-  if (
-    +response.status === 200 &&
-    response.headers["content-type"]?.includes("application/json")
-  ) {
+  if (+response.status === 200 && response.headers["content-type"]?.includes("application/json")) {
     return jsonWidgetToApplicationTransform(response.body)!;
   }
 
-  if (
-    +response.status === 200 &&
-    response.headers["content-type"]?.includes("application/xml")
-  ) {
+  if (+response.status === 200 && response.headers["content-type"]?.includes("application/xml")) {
     return jsonWidgetToApplicationTransform(response.body)!;
   }
 

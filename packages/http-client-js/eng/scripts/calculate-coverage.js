@@ -1,7 +1,7 @@
-import { readFile } from "fs/promises";
-import { join, dirname } from "path";
-import { fileURLToPath } from "url";
 import chalk from "chalk";
+import { readFile } from "fs/promises";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -12,7 +12,7 @@ export async function calculateCoverage() {
   try {
     console.log(chalk.blue(`Reading coverage file from: ${coverageFilePath}`));
     const data = await readFile(coverageFilePath, "utf8");
-    
+
     const coverage = JSON.parse(data);
 
     const results = coverage[0].results;

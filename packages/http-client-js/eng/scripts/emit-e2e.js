@@ -7,7 +7,7 @@ import { globby } from "globby";
 import inquirer from "inquirer";
 import ora from "ora";
 import pLimit from "p-limit";
-import { dirname, join, resolve, basename } from "path";
+import { basename, dirname, join, resolve } from "path";
 import { fileURLToPath } from "url";
 import { hideBin } from "yargs/helpers";
 import yargs from "yargs/yargs";

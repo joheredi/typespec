@@ -8,16 +8,12 @@ model Foo {
 }
 
 @get op foo(@header accept: "application/xml"): Foo;
-
 ```
 
 ## Operation
 
 ```ts src/api/testClientOperations.ts function foo
-export async function foo(
-  client: TestClientContext,
-  options?: FooOptions,
-): Promise<Foo> {
+export async function foo(client: TestClientContext, options?: FooOptions): Promise<Foo> {
   const path = parse("/").expand({});
 
   const httpRequestOptions = {
@@ -32,10 +28,7 @@ export async function foo(
     options?.operationOptions?.onResponse(response);
   }
 
-  if (
-    +response.status === 200 &&
-    response.headers["content-type"]?.includes("application/json")
-  ) {
+  if (+response.status === 200 && response.headers["content-type"]?.includes("application/json")) {
     return jsonFooToApplicationTransform(response.body)!;
   }
 

@@ -1,6 +1,5 @@
 # Http Client JavaScript
 
-
 ## Environment Variables
 
 ### `TYPESPEC_JS_EMITTER_TESTING`

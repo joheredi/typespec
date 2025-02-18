@@ -11,28 +11,36 @@ export interface JsonAdditionalPropertiesTransformProps {
 }
 
 export function JsonAdditionalPropertiesTransform(props: JsonAdditionalPropertiesTransformProps) {
-  const additionalProperties = $.model.getSpreadType(props.type) as Model;
+  const additionalProperties = $.model.getAdditionalPropertiesRecord(props.type);
 
-  // TODO: Revisit additional properties TypeKit for better UX
-  if (!additionalProperties || !$.record.is(additionalProperties)) {
+  if (!additionalProperties) {
     return null;
   }
 
   if (props.target === "application") {
+    const destructuredProperties = ay.mapJoin(props.type.properties, (name) => name, {
+      joiner: ",",
+      ender: ",",
+    });
+
+    // Inline destructuring that extracts the properties and passes the rest to jsonRecordUnknownToApplicationTransform_2
+    const inlineDestructure = ay.code`
+    ${getJsonRecordTransformRefkey(additionalProperties, props.target)}(
+      (({ ${destructuredProperties} ...rest }) => rest)(${props.itemRef})
+    ),
+    `;
+
     return <>
-    <ts.ObjectProperty name="additionalProperties">
-      {getJsonRecordTransformRefkey(additionalProperties, props.target)}({props.itemRef})
-    </ts.ObjectProperty>,
+      <ts.ObjectProperty name="additionalProperties">
+        {inlineDestructure}
+      </ts.ObjectProperty>
     </>;
   }
 
   const itemRef = ay.code`${props.itemRef}.additionalProperties`;
-  const destructuredProperties = ay.mapJoin(props.type.properties, (name) => name, {
-    joiner: ",",
-    ender: ",",
-  });
-  const inlineDestructure = ay.code`(({${destructuredProperties} ...additionalProperties}: any) => additionalProperties)(${itemRef})`;
+
   return <>
-          ...{getJsonRecordTransformRefkey(additionalProperties, props.target)}{inlineDestructure},
+          ...({getJsonRecordTransformRefkey(additionalProperties, props.target)}({itemRef})
+          ),
   </>;
 }

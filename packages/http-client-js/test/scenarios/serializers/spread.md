@@ -70,6 +70,6 @@ export async function spreadWithMultipleParameters(
     return;
   }
 
-  throw new createRestError(response);
+  throw createRestError(response);
 }
 ```

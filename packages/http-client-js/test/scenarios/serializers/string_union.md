@@ -45,7 +45,7 @@ export async function unionEnumName(
     return;
   }
 
-  throw new createRestError(response);
+  throw createRestError(response);
 }
 ```
 

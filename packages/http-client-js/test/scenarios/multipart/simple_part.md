@@ -64,6 +64,6 @@ export async function doThing(
     return;
   }
 
-  throw new createRestError(response);
+  throw createRestError(response);
 }
 ```

@@ -46,7 +46,7 @@ export async function imageJpegContentType(
     return;
   }
 
-  throw new createRestError(response);
+  throw createRestError(response);
 }
 ```
 

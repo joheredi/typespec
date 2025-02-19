@@ -39,7 +39,7 @@ export async function read(client: WidgetsClientContext, options?: ReadOptions):
     return;
   }
 
-  throw new createRestError(response);
+  throw createRestError(response);
 }
 ```
 
@@ -111,7 +111,7 @@ export async function read(client: WidgetsClientContext, options?: ReadOptions):
     return jsonWidgetToApplicationTransform(response.body)!;
   }
 
-  throw new createRestError(response);
+  throw createRestError(response);
 }
 ```
 
@@ -173,7 +173,7 @@ export async function read(
     return;
   }
 
-  throw new createRestError(response);
+  throw createRestError(response);
 }
 ```
 
@@ -241,6 +241,6 @@ export async function read(client: WidgetsClientContext, options?: ReadOptions):
     return jsonWidgetToApplicationTransform(response.body)!;
   }
 
-  throw new createRestError(response);
+  throw createRestError(response);
 }
 ```

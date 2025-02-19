@@ -37,7 +37,7 @@ export async function getWithParams(
     return response.body!;
   }
 
-  throw new createRestError(response);
+  throw createRestError(response);
 }
 ```
 

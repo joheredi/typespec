@@ -59,6 +59,6 @@ export async function foo(client: ClientContext, options?: FooOptions): Promise<
     return;
   }
 
-  throw new createRestError(response);
+  throw createRestError(response);
 }
 ```

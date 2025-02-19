@@ -59,8 +59,8 @@ export function ClientClass(props: ClientClassProps) {
       const parameters = getOperationParameters(op.httpOperation);
       const args = (Object.keys(parameters)).map((p) => p);
 
-      return <ClassMethod async type={op.operation} parameters={parameters} returnType={null} parametersMode="replace">
-          return <ts.FunctionCallExpression refkey={ay.refkey(op.operation)} args={[contextMemberRef, ...args]}/>;
+      return <ClassMethod async type={op.httpOperation.operation} parameters={parameters} returnType={null} parametersMode="replace">
+          return <ts.FunctionCallExpression refkey={ay.refkey(op.httpOperation.operation)} args={[contextMemberRef, ...args]}/>;
       </ClassMethod>
     })}
   </ClassDeclaration>;

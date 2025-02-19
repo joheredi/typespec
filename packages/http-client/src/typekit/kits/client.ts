@@ -10,6 +10,7 @@ import { defineKit } from "@typespec/compiler/experimental/typekit";
 import {
   getHttpService,
   getServers,
+  HttpOperation,
   HttpServiceAuthentication,
   resolveAuthentication,
 } from "@typespec/http";
@@ -53,7 +54,7 @@ interface ClientKit extends NameKit<InternalClient> {
    *
    * @param client the client to get the methods for
    */
-  listServiceOperations(client: InternalClient): Operation[];
+  listHttpOperations(client: InternalClient): HttpOperation[];
 
   /**
    * Get the url template of a client, given its constructor as well */
@@ -82,7 +83,7 @@ function getClientName(name: string): string {
 }
 
 export const clientCache = new Map<Namespace | Interface, InternalClient>();
-export const clientOperationCache = new Map<InternalClient, Operation[]>();
+export const clientOperationCache = new Map<InternalClient, HttpOperation[]>();
 
 defineKit<TypekitExtension>({
   client: {
@@ -140,7 +141,7 @@ defineKit<TypekitExtension>({
     isPubliclyInitializable(client) {
       return client.type.kind === "Namespace";
     },
-    listServiceOperations(client) {
+    listHttpOperations(client) {
       if (clientOperationCache.has(client)) {
         return clientOperationCache.get(client)!;
       }
@@ -161,9 +162,10 @@ defineKit<TypekitExtension>({
         operations.push(clientOperation);
       }
 
-      clientOperationCache.set(client, operations);
+      const httpOperations = operations.map((o) => this.httpOperation.get(o));
+      clientOperationCache.set(client, httpOperations);
 
-      return operations;
+      return httpOperations;
     },
     getUrlTemplate(client, constructor) {
       const params = this.operation.getClientSignature(client, constructor);

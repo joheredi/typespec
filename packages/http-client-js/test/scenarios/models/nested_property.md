@@ -40,6 +40,6 @@ export async function foo(
     return;
   }
 
-  throw new createRestError(response);
+  throw createRestError(response);
 }
 ```

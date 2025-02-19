@@ -51,7 +51,7 @@ export async function send(
     return;
   }
 
-  throw new createRestError(response);
+  throw createRestError(response);
 }
 ```
 

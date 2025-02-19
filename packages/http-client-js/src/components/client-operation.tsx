@@ -24,29 +24,29 @@ export function ClientOperations(props: ClientOperationsProps) {
 
   return <ts.SourceFile path={`${fileName}.ts`}>
   {ay.mapJoin(clientOperations, (operation) => {
-    return <ClientOperation operation={operation} />;
+    return <ClientOperation clientOperation={operation} />;
   })}
 </ts.SourceFile>;
 }
 
 export interface ClientOperationProps {
-  operation: cl.ClientOperation;
+  clientOperation: cl.ClientOperation;
 }
 
 export function ClientOperation(props: ClientOperationProps) {
-  const client = props.operation.client;
-  const returnType = $.httpOperation.getReturnType(props.operation.httpOperation);
-  const responseRefkey = ay.refkey(props.operation, "http-response");
+  const client = props.clientOperation.client;
+  const returnType = $.httpOperation.getReturnType(props.clientOperation.httpOperation);
+  const responseRefkey = ay.refkey(props.clientOperation, "http-response");
   const clientContextInterfaceRef = getClientcontextDeclarationRef(client);
   const signatureParams: Record<string, ts.ParameterDescriptor | ay.Children> = {
     client: { type: clientContextInterfaceRef, refkey: ay.refkey(client, "client") },
-    ...getOperationParameters(props.operation.httpOperation),
+    ...getOperationParameters(props.clientOperation.httpOperation),
   };
   return <>
-  <OperationOptionsDeclaration operation={props.operation.httpOperation} />
-  <FunctionDeclaration export async type={props.operation.operation} returnType={<TypeExpression type={returnType} />} parametersMode="replace" parameters={signatureParams}>
-      <HttpRequest operation={props.operation} responseRefkey={responseRefkey} />
-      <HttpResponse operation={props.operation} responseRefkey={responseRefkey} />
+  <OperationOptionsDeclaration operation={props.clientOperation.httpOperation} />
+  <FunctionDeclaration export async type={props.clientOperation.httpOperation.operation} returnType={<TypeExpression type={returnType} />} parametersMode="replace" parameters={signatureParams}>
+      <HttpRequest operation={props.clientOperation} responseRefkey={responseRefkey} />
+      <HttpResponse operation={props.clientOperation} responseRefkey={responseRefkey} />
     </FunctionDeclaration>;
     </>;
 }

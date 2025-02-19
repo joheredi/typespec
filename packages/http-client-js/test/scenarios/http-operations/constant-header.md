@@ -32,6 +32,6 @@ export async function foo(client: TestClientContext, options?: FooOptions): Prom
     return jsonFooToApplicationTransform(response.body)!;
   }
 
-  throw new createRestError(response);
+  throw createRestError(response);
 }
 ```

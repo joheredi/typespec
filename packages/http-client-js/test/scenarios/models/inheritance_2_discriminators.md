@@ -57,7 +57,7 @@ export async function getModel(
     return jsonFishToApplicationTransform(response.body)!;
   }
 
-  throw new createRestError(response);
+  throw createRestError(response);
 }
 ```
 

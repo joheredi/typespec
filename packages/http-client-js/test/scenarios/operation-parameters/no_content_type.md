@@ -41,7 +41,7 @@ export async function get(
     return;
   }
 
-  throw new createRestError(response);
+  throw createRestError(response);
 }
 ```
 

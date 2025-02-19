@@ -89,7 +89,7 @@ export async function foo(client: ClientContext, options?: FooOptions): Promise<
     return jsonFooToApplicationTransform(response.body)!;
   }
 
-  throw new createRestError(response);
+  throw createRestError(response);
 }
 ```
 

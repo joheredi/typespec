@@ -36,7 +36,7 @@ export async function set(client: TestClientContext, options?: SetOptions): Prom
     return;
   }
 
-  throw new createRestError(response);
+  throw createRestError(response);
 }
 ```
 

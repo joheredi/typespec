@@ -42,7 +42,7 @@ export async function create(
     return;
   }
 
-  throw new createRestError(response);
+  throw createRestError(response);
 }
 ```
 

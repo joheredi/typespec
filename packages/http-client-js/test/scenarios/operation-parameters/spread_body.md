@@ -45,7 +45,7 @@ export async function create(
     return;
   }
 
-  throw new Error("Unhandled response");
+  throw new createRestError(response);
 }
 ```
 

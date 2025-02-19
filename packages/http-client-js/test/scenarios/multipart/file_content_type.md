@@ -46,7 +46,7 @@ export async function imageJpegContentType(
     return;
   }
 
-  throw new Error("Unhandled response");
+  throw new createRestError(response);
 }
 ```
 

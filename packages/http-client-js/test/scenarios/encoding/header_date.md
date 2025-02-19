@@ -41,7 +41,7 @@ export async function defaultEncoding(
     return;
   }
 
-  throw new Error("Unhandled response");
+  throw new createRestError(response);
 }
 ```
 
@@ -87,7 +87,7 @@ export async function defaultEncoding(
     return;
   }
 
-  throw new Error("Unhandled response");
+  throw new createRestError(response);
 }
 ```
 
@@ -135,7 +135,7 @@ export async function get(
     return;
   }
 
-  throw new Error("Unhandled response");
+  throw new createRestError(response);
 }
 ```
 
@@ -183,7 +183,7 @@ export async function get(
     return;
   }
 
-  throw new Error("Unhandled response");
+  throw new createRestError(response);
 }
 ```
 
@@ -231,6 +231,6 @@ export async function get(
     return;
   }
 
-  throw new Error("Unhandled response");
+  throw new createRestError(response);
 }
 ```

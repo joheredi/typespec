@@ -39,7 +39,7 @@ export async function read(client: WidgetsClientContext, options?: ReadOptions):
     return;
   }
 
-  throw new Error("Unhandled response");
+  throw new createRestError(response);
 }
 ```
 
@@ -107,7 +107,7 @@ export async function read(
     return;
   }
 
-  throw new Error("Unhandled response");
+  throw new createRestError(response);
 }
 ```
 
@@ -157,6 +157,6 @@ export async function read(
     return;
   }
 
-  throw new Error("Unhandled response");
+  throw new createRestError(response);
 }
 ```

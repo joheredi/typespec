@@ -31,7 +31,7 @@ export async function get(client: TestClientContext, options?: GetOptions): Prom
     return response.body!;
   }
 
-  throw new Error("Unhandled response");
+  throw new createRestError(response);
 }
 ```
 

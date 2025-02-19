@@ -51,7 +51,7 @@ export async function send(
     return;
   }
 
-  throw new Error("Unhandled response");
+  throw new createRestError(response);
 }
 ```
 

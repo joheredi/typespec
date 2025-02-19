@@ -2,6 +2,7 @@ import { Children, code, mapJoin, Refkey } from "@alloy-js/core";
 import { isVoidType } from "@typespec/compiler";
 import { $ } from "@typespec/compiler/experimental/typekit";
 import { ClientOperation } from "@typespec/http-client";
+import { getCreateRestErrorRefkey } from "./static-helpers/rest-error.jsx";
 import { JsonTransform } from "./transforms/json/json-transform.jsx";
 export interface HttpResponseProps {
   operation: ClientOperation;
@@ -13,7 +14,7 @@ export function HttpResponse(props: HttpResponseProps) {
   return <>
       <HttpResponses operation={props.operation} />
 
-      {code`throw new Error("Unhandled response");`}
+      {code`throw ${getCreateRestErrorRefkey()}(response);`}
     </>;
 }
 

@@ -64,6 +64,6 @@ export async function doThing(
     return;
   }
 
-  throw new Error("Unhandled response");
+  throw new createRestError(response);
 }
 ```

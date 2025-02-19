@@ -119,6 +119,6 @@ export async function foo(client: TestClientContext, options?: FooOptions): Prom
     return jsonWidgetToApplicationTransform(response.body)!;
   }
 
-  throw new Error("Unhandled response");
+  throw new createRestError(response);
 }
 ```

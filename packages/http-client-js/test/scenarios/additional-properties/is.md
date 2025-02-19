@@ -41,6 +41,6 @@ export async function foo(
     return jsonRecordStringToApplicationTransform(response.body)!;
   }
 
-  throw new Error("Unhandled response");
+  throw new createRestError(response);
 }
 ```

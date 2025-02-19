@@ -57,7 +57,7 @@ export async function getModel(
     return jsonFishToApplicationTransform(response.body)!;
   }
 
-  throw new Error("Unhandled response");
+  throw new createRestError(response);
 }
 ```
 

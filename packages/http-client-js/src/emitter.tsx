@@ -9,6 +9,7 @@ import { Output } from "./components/output.jsx";
 import { ModelSerializers } from "./components/serializers.js";
 import { Interfaces } from "./components/static-helpers/interfaces.jsx";
 import { MultipartHelpers } from "./components/static-helpers/multipart-helpers.jsx";
+import { RestError } from "./components/static-helpers/rest-error.jsx";
 import { JsClientEmitterOptions } from "./lib.js";
 
 /**
@@ -40,6 +41,9 @@ export async function $onEmit(context: EmitContext<JsClientEmitterOptions>) {
           <ay.SourceDirectory path="helpers">
             <Interfaces />
             <MultipartHelpers />
+            <ts.SourceFile path="error.ts">
+              <RestError />
+            </ts.SourceFile>
           </ay.SourceDirectory>
         </ay.SourceDirectory>
       </ts.PackageDirectory>

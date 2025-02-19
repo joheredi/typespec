@@ -13,6 +13,8 @@ export const httpRuntimeTemplateLib = createPackage({
         "TokenCredential",
         "isKeyCredential",
         "PathUncheckedResponse",
+        "HttpRequest",
+        "PipelineResponse",
       ],
     },
   },

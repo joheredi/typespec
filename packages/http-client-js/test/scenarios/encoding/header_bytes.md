@@ -31,7 +31,7 @@ export async function defaultEncoding(
     },
   };
 
-  const response = await client.path(path).get(httpRequestOptions);
+  const response = await client.pathUnchecked(path).get(httpRequestOptions);
 
   if (typeof options?.operationOptions?.onResponse === "function") {
     options?.operationOptions?.onResponse(response);
@@ -73,11 +73,13 @@ export async function defaultEncoding(
 
   const httpRequestOptions = {
     headers: {
-      value: encodeUint8Array(options?.value, "base64url")!,
+      ...(options?.value && {
+        value: encodeUint8Array(options?.value, "base64url")!,
+      }),
     },
   };
 
-  const response = await client.path(path).get(httpRequestOptions);
+  const response = await client.pathUnchecked(path).get(httpRequestOptions);
 
   if (typeof options?.operationOptions?.onResponse === "function") {
     options?.operationOptions?.onResponse(response);
@@ -125,7 +127,7 @@ export async function get(
     },
   };
 
-  const response = await client.path(path).get(httpRequestOptions);
+  const response = await client.pathUnchecked(path).get(httpRequestOptions);
 
   if (typeof options?.operationOptions?.onResponse === "function") {
     options?.operationOptions?.onResponse(response);

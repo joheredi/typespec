@@ -28,12 +28,12 @@ export async function create(
 
   const httpRequestOptions = {
     headers: {
-      foo: options?.foo,
+      ...(options?.foo && { foo: options?.foo }),
     },
     body: jsonWidgetToTransportTransform(widget),
   };
 
-  const response = await client.path(path).post(httpRequestOptions);
+  const response = await client.pathUnchecked(path).post(httpRequestOptions);
 
   if (typeof options?.operationOptions?.onResponse === "function") {
     options?.operationOptions?.onResponse(response);

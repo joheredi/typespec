@@ -21,13 +21,13 @@ export function RestError() {
 
   const restErrorClass =
     <ts.ClassDeclaration export name="RestError" extends="Error" refkey={getRestErrorRefkey()}>
-      <ts.ClassField public name="request" type={httpRuntimeTemplateLib.HttpRequest} refkey={requestRefkey} />
-      <ts.ClassField public name="response" type={httpRuntimeTemplateLib.PipelineResponse} refkey={responseRefkey} />
+      <ts.ClassField public name="request" type={httpRuntimeTemplateLib.PipelineRequest} refkey={requestRefkey} />
+      <ts.ClassField public name="response" type={httpRuntimeTemplateLib.HttpResponse} refkey={responseRefkey} />
       <ts.ClassField public name="status" type="string" refkey={statusRefkey}/>
       <ts.ClassField public name="body" type="any" refkey={bodyRefkey}/>
-      <ts.ClassField public name="headers" type={"Record<string, string>"} refkey={headersRefkey} />
+      <ts.ClassField public name="headers" type={httpRuntimeTemplateLib.RawHttpHeaders} refkey={headersRefkey} />
 
-      <ts.ClassMethod name="constructor" parameters={{message: "string", response: httpRuntimeTemplateLib.PipelineResponse}} returnType={null} refkey={constructorRefkey}>
+      <ts.ClassMethod name="constructor" parameters={{message: "string", response: httpRuntimeTemplateLib.HttpResponse}} returnType={null} refkey={constructorRefkey}>
         {ay.code`
           // Create an error message that includes relevant details.
           super(\`$\{message\} - HTTP $\{response.status} received for $\{response.request.method} $\{response.request.url}\`);
@@ -42,7 +42,7 @@ export function RestError() {
           Object.setPrototypeOf(this, RestError.prototype);
         `}
       </ts.ClassMethod>
-      <ts.ClassMethod static name="fromHttpResponse" parameters={{response: httpRuntimeTemplateLib.PipelineResponse}} returnType={getRestErrorRefkey()} refkey={fromHttpResponseRefkey}>
+      <ts.ClassMethod static name="fromHttpResponse" parameters={{response: httpRuntimeTemplateLib.HttpResponse}} returnType={getRestErrorRefkey()} refkey={fromHttpResponseRefkey}>
         {ay.code`
           const defaultMessage = \`Unexpected HTTP status code: $\{response.status}\`;
           return new RestError(defaultMessage, response);
@@ -51,7 +51,7 @@ export function RestError() {
     </ts.ClassDeclaration>;
 
   const createRestError =
-    <ts.FunctionDeclaration export name="createRestError" parameters={{response: httpRuntimeTemplateLib.PipelineResponse}} returnType={getRestErrorRefkey()} refkey={getCreateRestErrorRefkey()}>
+    <ts.FunctionDeclaration export name="createRestError" parameters={{response: httpRuntimeTemplateLib.HttpResponse}} returnType={getRestErrorRefkey()} refkey={getCreateRestErrorRefkey()}>
     {ay.code`
       return ${fromHttpResponseRefkey}(response);
     `}

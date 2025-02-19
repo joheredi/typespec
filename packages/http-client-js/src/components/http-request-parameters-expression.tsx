@@ -40,13 +40,13 @@ export function HttpRequestParametersExpression(props: HttpRequestParametersExpr
       const parameter = httpProperty.property;
 
       const defaultValue = getDefaultValue(httpProperty);
+      const headerName: ay.Children = transformNamer.getApplicationName(parameter);
+
+      const headerRef = ay.code`${optionsParamRef}?.${headerName}`;
 
       if (defaultValue) {
-        const headerRef: ay.Children = transformNamer.getApplicationName(parameter);
-
-        const itemRef = ay.code`${optionsParamRef}?.${headerRef}`;
         const defaultAssignment = defaultValue ? ` ?? ${defaultValue}` : "";
-        const headerValue = <>{itemRef}{defaultAssignment}</>;
+        const headerValue = <>{headerRef}{defaultAssignment}</>;
         const name = transformNamer.getTransportName(parameter);
         const headerAssignment = <ts.ObjectProperty name={`"${name}"`} value={headerValue} />;
         return headerAssignment;
@@ -54,7 +54,13 @@ export function HttpRequestParametersExpression(props: HttpRequestParametersExpr
 
       const itemRef: ay.Children = parameter.optional ? ay.code`${optionsParamRef}?` : null;
       const encoding = $.modelProperty.getEncoding(parameter) ?? getDefaultEncoding(parameter);
-      return <JsonTransform itemRef={itemRef} type={parameter} target="transport" encoding={encoding}/>;
+      if (parameter.optional) {
+        return ay.code`
+        ...(${headerRef} && {${<JsonTransform itemRef={itemRef} type={parameter} target="transport" encoding={encoding}/>}})
+      `;
+      } else {
+        return <JsonTransform itemRef={itemRef} type={parameter} target="transport" encoding={encoding}/>;
+      }
     },
     { joiner: ",\n" },
   );

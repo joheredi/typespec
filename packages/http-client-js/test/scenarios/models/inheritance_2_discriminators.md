@@ -47,7 +47,7 @@ export async function getModel(
     headers: {},
   };
 
-  const response = await client.path(path).get(httpRequestOptions);
+  const response = await client.pathUnchecked(path).get(httpRequestOptions);
 
   if (typeof options?.operationOptions?.onResponse === "function") {
     options?.operationOptions?.onResponse(response);
@@ -85,44 +85,44 @@ export function encodeUint8Array(
   }
   return Buffer.from(value).toString(encoding);
 }
-export function dateDeserializer(date?: string): Date | undefined {
+export function dateDeserializer(date?: string): Date {
   if (!date) {
-    return undefined;
+    return undefined as any;
   }
 
   return new Date(date);
 }
-export function dateRfc7231Deserializer(date?: string): Date | undefined {
+export function dateRfc7231Deserializer(date?: string): Date {
   if (!date) {
-    return undefined;
+    return undefined as any;
   }
 
   return new Date(date);
 }
-export function dateRfc3339Serializer(date?: Date): string | undefined {
+export function dateRfc3339Serializer(date?: Date): string {
   if (!date) {
-    return undefined;
+    return undefined as any;
   }
 
   return date.toISOString();
 }
-export function dateRfc7231Serializer(date?: Date): string | undefined {
+export function dateRfc7231Serializer(date?: Date): string {
   if (!date) {
-    return undefined;
+    return undefined as any;
   }
 
   return date.toUTCString();
 }
-export function dateUnixTimestampSerializer(date?: Date): number | undefined {
+export function dateUnixTimestampSerializer(date?: Date): number {
   if (!date) {
-    return undefined;
+    return undefined as any;
   }
 
   return Math.floor(date.getTime() / 1000);
 }
-export function dateUnixTimestampDeserializer(date?: number): Date | undefined {
+export function dateUnixTimestampDeserializer(date?: number): Date {
   if (!date) {
-    return undefined;
+    return undefined as any;
   }
 
   return new Date(date * 1000);

@@ -31,7 +31,7 @@ export async function defaultEncoding(
     headers: {},
   };
 
-  const response = await client.path(path).get(httpRequestOptions);
+  const response = await client.pathUnchecked(path).get(httpRequestOptions);
 
   if (typeof options?.operationOptions?.onResponse === "function") {
     options?.operationOptions?.onResponse(response);
@@ -70,14 +70,14 @@ export async function defaultEncoding(
   options?: DefaultEncodingOptions,
 ): Promise<void> {
   const path = parse("/default{?value}").expand({
-    value: dateRfc3339Serializer(options?.value),
+    ...(options?.value && { value: dateRfc3339Serializer(options?.value) }),
   });
 
   const httpRequestOptions = {
     headers: {},
   };
 
-  const response = await client.path(path).get(httpRequestOptions);
+  const response = await client.pathUnchecked(path).get(httpRequestOptions);
 
   if (typeof options?.operationOptions?.onResponse === "function") {
     options?.operationOptions?.onResponse(response);
@@ -125,7 +125,7 @@ export async function get(
     headers: {},
   };
 
-  const response = await client.path(path).get(httpRequestOptions);
+  const response = await client.pathUnchecked(path).get(httpRequestOptions);
 
   if (typeof options?.operationOptions?.onResponse === "function") {
     options?.operationOptions?.onResponse(response);
@@ -173,7 +173,7 @@ export async function get(
     headers: {},
   };
 
-  const response = await client.path(path).get(httpRequestOptions);
+  const response = await client.pathUnchecked(path).get(httpRequestOptions);
 
   if (typeof options?.operationOptions?.onResponse === "function") {
     options?.operationOptions?.onResponse(response);
@@ -221,7 +221,7 @@ export async function get(
     headers: {},
   };
 
-  const response = await client.path(path).get(httpRequestOptions);
+  const response = await client.pathUnchecked(path).get(httpRequestOptions);
 
   if (typeof options?.operationOptions?.onResponse === "function") {
     options?.operationOptions?.onResponse(response);

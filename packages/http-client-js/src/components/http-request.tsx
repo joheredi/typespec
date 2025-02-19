@@ -24,7 +24,7 @@ export function HttpRequest(props: HttpRequestProps) {
 
     <ts.VarDeclaration name="response" refkey={httpResponseRefkey}>
       {code`
-      await client.path(${<Reference refkey={operationUrlRefkey}/>}).${verb}(${<Reference refkey={requestOptionsRefkey}/>})
+      await client.pathUnchecked(${<Reference refkey={operationUrlRefkey}/>}).${verb}(${<Reference refkey={requestOptionsRefkey}/>})
       
       if (typeof options?.operationOptions?.onResponse === "function") {
         options?.operationOptions?.onResponse(response);

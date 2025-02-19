@@ -79,7 +79,7 @@ export async function foo(client: ClientContext, options?: FooOptions): Promise<
     headers: {},
   };
 
-  const response = await client.path(path).get(httpRequestOptions);
+  const response = await client.pathUnchecked(path).get(httpRequestOptions);
 
   if (typeof options?.operationOptions?.onResponse === "function") {
     options?.operationOptions?.onResponse(response);

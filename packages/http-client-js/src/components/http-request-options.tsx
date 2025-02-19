@@ -34,23 +34,6 @@ HttpRequestOptions.Headers = function HttpRequestOptionsHeaders(
     (p) => p.kind === "header" || p.kind === "contentType",
   );
 
-  // Todo: Do we need to assume or trust what http gives us?
-  // If we need to add this we also need to make sure it is added
-  // to the operation parameters.
-
-  // if (!headers.find((p) => p.kind === "contentType")) {
-  //   headers.push({
-  //     kind: "contentType",
-  //     path: ["content-type"],
-  //     property: $.modelProperty.create({
-  //       name: "content-type",
-  //       type: $.builtin.string,
-  //       defaultValue: $.value.createString("application/json"),
-  //       optional: true,
-  //     }),
-  //   });
-  // }
-
   const optionsParam = getOperationOptionsParameterRefkey(props.operation.httpOperation);
   return <ts.ObjectProperty name="headers">
       <HttpRequestParametersExpression parameters={headers} optionsParameter={optionsParam} />,

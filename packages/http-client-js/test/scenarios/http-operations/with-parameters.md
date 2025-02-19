@@ -53,7 +53,7 @@ export async function read(
     },
   };
 
-  const response = await client.path(path).post(httpRequestOptions);
+  const response = await client.pathUnchecked(path).post(httpRequestOptions);
 
   if (typeof options?.operationOptions?.onResponse === "function") {
     options?.operationOptions?.onResponse(response);

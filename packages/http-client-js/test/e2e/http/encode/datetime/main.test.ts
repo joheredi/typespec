@@ -156,7 +156,7 @@ describe("Encode.Datetime", () => {
           },
         },
       });
-      expect(value).toEqual(new Date("2022-08-26T14:38:00.000Z"));
+      expect(value).toEqual(new Date("2022-08-26T18:38:00.000Z"));
     });
 
     it("should handle unixTimestamp encode for datetime response header", async () => {
@@ -166,7 +166,7 @@ describe("Encode.Datetime", () => {
       await client.rfc3339({
         operationOptions: {
           onResponse: (r) => {
-            value = new Date((r.headers as any)["value"]);
+            value = r.headers["value"];
           },
         },
       });

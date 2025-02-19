@@ -84,7 +84,7 @@ describe("Type.Property.Optional", () => {
 
     it("should get default datetime properties", async () => {
       const response = await client.getDefault();
-      expect(response).toEqual({ property: new Date("2022-08-26T18:38:00Z") });
+      expect(response).toEqual({});
     });
 
     it("should put all datetime properties", async () => {

@@ -85,7 +85,6 @@ export function jsonBirdToTransportTransform(input_?: Bird): any {
 
   return {
     ...jsonBirdToTransportDiscriminator(input_),
-
     kind: input_.kind,
     wingspan: input_.wingspan,
   }!;

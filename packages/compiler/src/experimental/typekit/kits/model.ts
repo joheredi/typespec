@@ -209,7 +209,6 @@ defineKit<TypekitExtension>({
           base = base.baseModel;
         }
       }
-
       // TODO: Add Spread?
       return properties;
     },
@@ -228,6 +227,10 @@ defineKit<TypekitExtension>({
       const spread = this.model.getSpreadType(model);
       if (spread && this.model.is(spread) && this.record.is(spread)) {
         return spread;
+      }
+
+      if(model.baseModel) {
+        return this.model.getAdditionalPropertiesRecord(model.baseModel);
       }
 
       return undefined;

@@ -43,7 +43,6 @@ export function jsonDinosaurToTransportTransform(input_?: Dinosaur): any {
 
   return {
     ...jsonDinosaurToTransportDiscriminator(input_),
-
     size: input_.size,
     kind: input_.kind,
   }!;
@@ -73,7 +72,6 @@ export function jsonDinosaurToApplicationTransform(input_?: any): Dinosaur {
 
   return {
     ...jsonDinosaurToApplicationDiscriminator(input_),
-
     size: input_.size,
     kind: input_.kind,
   }!;

@@ -150,7 +150,6 @@ export function jsonFishToTransportTransform(input_?: Fish): any {
 
   return {
     ...jsonFishToTransportDiscriminator(input_),
-
     age: input_.age,
     kind: input_.kind,
   }!;
@@ -178,7 +177,6 @@ export function jsonFishToApplicationTransform(input_?: any): Fish {
 
   return {
     ...jsonFishToApplicationDiscriminator(input_),
-
     age: input_.age,
     kind: input_.kind,
   }!;
@@ -206,7 +204,6 @@ export function jsonSharkToTransportTransform(input_?: Shark): any {
 
   return {
     ...jsonSharkToTransportDiscriminator(input_),
-
     kind: input_.kind,
     sharktype: input_.sharktype,
     age: input_.age,
@@ -235,7 +232,6 @@ export function jsonSharkToApplicationTransform(input_?: any): Shark {
 
   return {
     ...jsonSharkToApplicationDiscriminator(input_),
-
     kind: input_.kind,
     sharktype: input_.sharktype,
     age: input_.age,

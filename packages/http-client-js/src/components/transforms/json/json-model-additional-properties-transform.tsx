@@ -18,7 +18,8 @@ export function JsonAdditionalPropertiesTransform(props: JsonAdditionalPropertie
   }
 
   if (props.target === "application") {
-    const destructuredProperties = ay.mapJoin(props.type.properties, (name) => name, {
+    const properties = $.model.getProperties(props.type, { includeExtended: true });
+    const destructuredProperties = ay.mapJoin(properties, (name) => name, {
       joiner: ",",
       ender: ",",
     });

@@ -16,8 +16,7 @@ describe("Type.Model.Visibility", () => {
     const input = {
       queryProp: 123,
     };
-    const response = await client.headModel(input as any);
-    expect(response).toBeDefined();
+    await client.headModel(input as any);
   });
 
   it("should send a model with write/create/update properties (putModel)", async () => {

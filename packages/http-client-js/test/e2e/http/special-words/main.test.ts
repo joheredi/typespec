@@ -39,7 +39,7 @@ describe("SpecialWords", () => {
     });
 
     it("should handle operation 'constructor'", async () => {
-      await client.constructor();
+      await client.constructor_2();
     });
 
     it("should handle operation 'continue'", async () => {
@@ -147,139 +147,139 @@ describe("SpecialWords", () => {
     const client = new ParametersClient({ allowInsecureConnection: true });
 
     it("should handle parameter 'and'", async () => {
-      await client.withAnd("value");
+      await client.withAnd("ok");
     });
 
     it("should handle parameter 'as'", async () => {
-      await client.withAs("value");
+      await client.withAs("ok");
     });
 
     it("should handle parameter 'assert'", async () => {
-      await client.withAssert("value");
+      await client.withAssert("ok");
     });
 
     it("should handle parameter 'async'", async () => {
-      await client.withAsync("value");
+      await client.withAsync("ok");
     });
 
     it("should handle parameter 'await'", async () => {
-      await client.withAwait("value");
+      await client.withAwait("ok");
     });
 
     it("should handle parameter 'break'", async () => {
-      await client.withBreak("value");
+      await client.withBreak("ok");
     });
 
     it("should handle parameter 'class'", async () => {
-      await client.withClass("value");
+      await client.withClass("ok");
     });
 
     it("should handle parameter 'constructor'", async () => {
-      await client.withConstructor("value");
+      await client.withConstructor("ok");
     });
 
     it("should handle parameter 'continue'", async () => {
-      await client.withContinue("value");
+      await client.withContinue("ok");
     });
 
     it("should handle parameter 'def'", async () => {
-      await client.withDef("value");
+      await client.withDef("ok");
     });
 
     it("should handle parameter 'del'", async () => {
-      await client.withDel("value");
+      await client.withDel("ok");
     });
 
     it("should handle parameter 'elif'", async () => {
-      await client.withElif("value");
+      await client.withElif("ok");
     });
 
     it("should handle parameter 'else'", async () => {
-      await client.withElse("value");
+      await client.withElse("ok");
     });
 
     it("should handle parameter 'except'", async () => {
-      await client.withExcept("value");
+      await client.withExcept("ok");
     });
 
     it("should handle parameter 'exec'", async () => {
-      await client.withExec("value");
+      await client.withExec("ok");
     });
 
     it("should handle parameter 'finally'", async () => {
-      await client.withFinally("value");
+      await client.withFinally("ok");
     });
 
     it("should handle parameter 'for'", async () => {
-      await client.withFor("value");
+      await client.withFor("ok");
     });
 
     it("should handle parameter 'from'", async () => {
-      await client.withFrom("value");
+      await client.withFrom("ok");
     });
 
     it("should handle parameter 'global'", async () => {
-      await client.withGlobal("value");
+      await client.withGlobal("ok");
     });
 
     it("should handle parameter 'if'", async () => {
-      await client.withIf("value");
+      await client.withIf("ok");
     });
 
     it("should handle parameter 'import'", async () => {
-      await client.withImport("value");
+      await client.withImport("ok");
     });
 
     it("should handle parameter 'in'", async () => {
-      await client.withIn("value");
+      await client.withIn("ok");
     });
 
     it("should handle parameter 'is'", async () => {
-      await client.withIs("value");
+      await client.withIs("ok");
     });
 
     it("should handle parameter 'lambda'", async () => {
-      await client.withLambda("value");
+      await client.withLambda("ok");
     });
 
     it("should handle parameter 'not'", async () => {
-      await client.withNot("value");
+      await client.withNot("ok");
     });
 
     it("should handle parameter 'or'", async () => {
-      await client.withOr("value");
+      await client.withOr("ok");
     });
 
     it("should handle parameter 'pass'", async () => {
-      await client.withPass("value");
+      await client.withPass("ok");
     });
 
     it("should handle parameter 'raise'", async () => {
-      await client.withRaise("value");
+      await client.withRaise("ok");
     });
 
     it("should handle parameter 'return'", async () => {
-      await client.withReturn("value");
+      await client.withReturn("ok");
     });
 
     it("should handle parameter 'try'", async () => {
-      await client.withTry("value");
+      await client.withTry("ok");
     });
 
     it("should handle parameter 'while'", async () => {
-      await client.withWhile("value");
+      await client.withWhile("ok");
     });
 
     it("should handle parameter 'with'", async () => {
-      await client.withWith("value");
+      await client.withWith("ok");
     });
 
     it("should handle parameter 'yield'", async () => {
-      await client.withYield("value");
+      await client.withYield("ok");
     });
 
     it("should handle parameter 'cancellationToken'", async () => {
-      await client.withCancellationToken("value");
+      await client.withCancellationToken("ok");
     });
   });
 
@@ -287,135 +287,135 @@ describe("SpecialWords", () => {
     const client = new ModelsClient({ allowInsecureConnection: true });
 
     it("should handle model 'and'", async () => {
-      await client.withAnd({ name: "value" });
+      await client.withAnd({ name: "ok" });
     });
 
     it("should handle model 'as'", async () => {
-      await client.withAs({ name: "value" });
+      await client.withAs({ name: "ok" });
     });
 
     it("should handle model 'assert'", async () => {
-      await client.withAssert({ name: "value" });
+      await client.withAssert({ name: "ok" });
     });
 
     it("should handle model 'async'", async () => {
-      await client.withAsync({ name: "value" });
+      await client.withAsync({ name: "ok" });
     });
 
     it("should handle model 'await'", async () => {
-      await client.withAwait({ name: "value" });
+      await client.withAwait({ name: "ok" });
     });
 
     it("should handle model 'break'", async () => {
-      await client.withBreak({ name: "value" });
+      await client.withBreak({ name: "ok" });
     });
 
     it("should handle model 'class'", async () => {
-      await client.withClass({ name: "value" });
+      await client.withClass({ name: "ok" });
     });
 
     it("should handle model 'constructor'", async () => {
-      await client.withConstructor({ name: "value" });
+      await client.withConstructor({ name: "ok" });
     });
 
     it("should handle model 'continue'", async () => {
-      await client.withContinue({ name: "value" });
+      await client.withContinue({ name: "ok" });
     });
 
     it("should handle model 'def'", async () => {
-      await client.withDef({ name: "value" });
+      await client.withDef({ name: "ok" });
     });
 
     it("should handle model 'del'", async () => {
-      await client.withDel({ name: "value" });
+      await client.withDel({ name: "ok" });
     });
 
     it("should handle model 'elif'", async () => {
-      await client.withElif({ name: "value" });
+      await client.withElif({ name: "ok" });
     });
 
     it("should handle model 'else'", async () => {
-      await client.withElse({ name: "value" });
+      await client.withElse({ name: "ok" });
     });
 
     it("should handle model 'except'", async () => {
-      await client.withExcept({ name: "value" });
+      await client.withExcept({ name: "ok" });
     });
 
     it("should handle model 'exec'", async () => {
-      await client.withExec({ name: "value" });
+      await client.withExec({ name: "ok" });
     });
 
     it("should handle model 'finally'", async () => {
-      await client.withFinally({ name: "value" });
+      await client.withFinally({ name: "ok" });
     });
 
     it("should handle model 'for'", async () => {
-      await client.withFor({ name: "value" });
+      await client.withFor({ name: "ok" });
     });
 
     it("should handle model 'from'", async () => {
-      await client.withFrom({ name: "value" });
+      await client.withFrom({ name: "ok" });
     });
 
     it("should handle model 'global'", async () => {
-      await client.withGlobal({ name: "value" });
+      await client.withGlobal({ name: "ok" });
     });
 
     it("should handle model 'if'", async () => {
-      await client.withIf({ name: "value" });
+      await client.withIf({ name: "ok" });
     });
 
     it("should handle model 'import'", async () => {
-      await client.withImport({ name: "value" });
+      await client.withImport({ name: "ok" });
     });
 
     it("should handle model 'in'", async () => {
-      await client.withIn({ name: "value" });
+      await client.withIn({ name: "ok" });
     });
 
     it("should handle model 'is'", async () => {
-      await client.withIs({ name: "value" });
+      await client.withIs({ name: "ok" });
     });
 
     it("should handle model 'lambda'", async () => {
-      await client.withLambda({ name: "value" });
+      await client.withLambda({ name: "ok" });
     });
 
     it("should handle model 'not'", async () => {
-      await client.withNot({ name: "value" });
+      await client.withNot({ name: "ok" });
     });
 
     it("should handle model 'or'", async () => {
-      await client.withOr({ name: "value" });
+      await client.withOr({ name: "ok" });
     });
 
     it("should handle model 'pass'", async () => {
-      await client.withPass({ name: "value" });
+      await client.withPass({ name: "ok" });
     });
 
     it("should handle model 'raise'", async () => {
-      await client.withRaise({ name: "value" });
+      await client.withRaise({ name: "ok" });
     });
 
     it("should handle model 'return'", async () => {
-      await client.withReturn({ name: "value" });
+      await client.withReturn({ name: "ok" });
     });
 
     it("should handle model 'try'", async () => {
-      await client.withTry({ name: "value" });
+      await client.withTry({ name: "ok" });
     });
 
     it("should handle model 'while'", async () => {
-      await client.withWhile({ name: "value" });
+      await client.withWhile({ name: "ok" });
     });
 
     it("should handle model 'with'", async () => {
-      await client.withWith({ name: "value" });
+      await client.withWith({ name: "ok" });
     });
 
     it("should handle model 'yield'", async () => {
-      await client.withYield({ name: "value" });
+      await client.withYield({ name: "ok" });
     });
   });
 

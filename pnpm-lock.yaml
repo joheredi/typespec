@@ -767,8 +767,8 @@ importers:
         specifier: ~17.0.33
         version: 17.0.33
       '@typespec/http-specs':
-        specifier: 0.1.0-alpha.8
-        version: 0.1.0-alpha.8(@typespec/compiler@packages+compiler)(@typespec/http@packages+http)(@typespec/rest@packages+rest)(@typespec/versioning@packages+versioning)
+        specifier: 0.1.0-alpha.9
+        version: 0.1.0-alpha.9(@typespec/compiler@packages+compiler)(@typespec/http@packages+http)(@typespec/rest@packages+rest)(@typespec/versioning@packages+versioning)
       '@typespec/spector':
         specifier: workspace:~
         version: link:../spector
@@ -6606,20 +6606,20 @@ packages:
     engines: {node: '>=18.0.0'}
     hasBin: true
 
-  '@typespec/compiler@0.65.2':
-    resolution: {integrity: sha512-7qXegZj1VBfOsXzLHTTaVwaOOLTQ2u63d4SqA8RHukSbPwzIZFezd8P7my8SYuL+/onncKHCBLRwsaedFRlLGg==}
+  '@typespec/compiler@0.65.3':
+    resolution: {integrity: sha512-hPiTMyXYe1ips8o/1OcrzKkdrwFt3NinrD70AldhR6cPNz9O9y9r+TdE62c3VpPNknuamNVJn1jTkOWVhUczxA==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
-  '@typespec/http-specs@0.1.0-alpha.8':
-    resolution: {integrity: sha512-1BJfxDDYe8IoRBD2eNizG4nKfscn5G4HVHqveVHHKajUPyhTjQ97IG+BQAIrGAEBJLupQzv5hVCeA1VCgzP1qA==}
+  '@typespec/http-specs@0.1.0-alpha.9':
+    resolution: {integrity: sha512-IIzW606BcfVzAz9U6cWf4u4lGXlTy+UQI69mvW3qM5x2XfcMQJ5RRk/7vnjiendv2zVHBtW7ZRBMezqXkM6nNg==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
-      '@typespec/compiler': ~0.64.0
-      '@typespec/http': ~0.64.0
-      '@typespec/rest': ~0.64.0
-      '@typespec/versioning': ~0.64.0
-      '@typespec/xml': ~0.64.0
+      '@typespec/compiler': ~0.65.0
+      '@typespec/http': ~0.65.0
+      '@typespec/rest': ~0.65.0
+      '@typespec/versioning': ~0.65.0
+      '@typespec/xml': ~0.65.0
 
   '@typespec/http@0.63.0':
     resolution: {integrity: sha512-SYVbBmLPAPdWZfdMs0QlbpTnFREDnkINu2FR+0kRX12qzbRgpRbLsdhg59qx4TfKoh4IAPgSV+Fq84w7BWGsyQ==}
@@ -19371,7 +19371,7 @@ snapshots:
       yaml: 2.5.1
       yargs: 17.7.2
 
-  '@typespec/compiler@0.65.2':
+  '@typespec/compiler@0.65.3':
     dependencies:
       '@babel/code-frame': 7.26.2
       '@npmcli/arborist': 8.0.0
@@ -19392,7 +19392,7 @@ snapshots:
       - bluebird
       - supports-color
 
-  '@typespec/http-specs@0.1.0-alpha.8(@typespec/compiler@packages+compiler)(@typespec/http@packages+http)(@typespec/rest@packages+rest)(@typespec/versioning@packages+versioning)':
+  '@typespec/http-specs@0.1.0-alpha.9(@typespec/compiler@packages+compiler)(@typespec/http@packages+http)(@typespec/rest@packages+rest)(@typespec/versioning@packages+versioning)':
     dependencies:
       '@typespec/compiler': link:packages/compiler
       '@typespec/http': link:packages/http
@@ -19411,19 +19411,19 @@ snapshots:
     dependencies:
       '@typespec/compiler': 0.63.0
 
-  '@typespec/http@0.65.0(@typespec/compiler@0.65.2)':
+  '@typespec/http@0.65.0(@typespec/compiler@0.65.3)':
     dependencies:
-      '@typespec/compiler': 0.65.2
+      '@typespec/compiler': 0.65.3
 
   '@typespec/rest@0.63.1(@typespec/compiler@0.63.0)(@typespec/http@0.63.0(@typespec/compiler@0.63.0))':
     dependencies:
       '@typespec/compiler': 0.63.0
       '@typespec/http': 0.63.0(@typespec/compiler@0.63.0)
 
-  '@typespec/rest@0.65.0(@typespec/compiler@0.65.2)(@typespec/http@0.65.0(@typespec/compiler@0.65.2))':
+  '@typespec/rest@0.65.0(@typespec/compiler@0.65.3)(@typespec/http@0.65.0(@typespec/compiler@0.65.3))':
     dependencies:
-      '@typespec/compiler': 0.65.2
-      '@typespec/http': 0.65.0(@typespec/compiler@0.65.2)
+      '@typespec/compiler': 0.65.3
+      '@typespec/http': 0.65.0(@typespec/compiler@0.65.3)
 
   '@typespec/spec-api@0.1.0-alpha.1':
     dependencies:
@@ -19454,12 +19454,12 @@ snapshots:
     dependencies:
       '@azure/identity': 4.6.0
       '@types/js-yaml': 4.0.9
-      '@typespec/compiler': 0.65.2
-      '@typespec/http': 0.65.0(@typespec/compiler@0.65.2)
-      '@typespec/rest': 0.65.0(@typespec/compiler@0.65.2)(@typespec/http@0.65.0(@typespec/compiler@0.65.2))
+      '@typespec/compiler': 0.65.3
+      '@typespec/http': 0.65.0(@typespec/compiler@0.65.3)
+      '@typespec/rest': 0.65.0(@typespec/compiler@0.65.3)(@typespec/http@0.65.0(@typespec/compiler@0.65.3))
       '@typespec/spec-api': 0.1.0-alpha.1
       '@typespec/spec-coverage-sdk': 0.1.0-alpha.3
-      '@typespec/versioning': 0.65.0(@typespec/compiler@0.65.2)
+      '@typespec/versioning': 0.65.0(@typespec/compiler@0.65.3)
       ajv: 8.17.1
       axios: 1.7.9
       body-parser: 1.20.3
@@ -19493,9 +19493,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typespec/versioning@0.65.0(@typespec/compiler@0.65.2)':
+  '@typespec/versioning@0.65.0(@typespec/compiler@0.65.3)':
     dependencies:
-      '@typespec/compiler': 0.65.2
+      '@typespec/compiler': 0.65.3
 
   '@ungap/structured-clone@1.2.0': {}
 

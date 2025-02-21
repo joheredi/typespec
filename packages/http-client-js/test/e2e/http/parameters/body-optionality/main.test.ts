@@ -5,7 +5,7 @@ import {
 } from "../../../generated/parameters/body-optionality/src/index.js";
 
 describe("Parameters.BodyOptionality", () => {
-  const client = new BodyOptionalityClient("http://localhost:3000", {
+  const client = new BodyOptionalityClient({
     allowInsecureConnection: true,
     retryOptions: {
       maxRetries: 1,
@@ -18,7 +18,7 @@ describe("Parameters.BodyOptionality", () => {
   });
 
   describe("OptionalExplicitClient", () => {
-    const optionalExplicitClient = new OptionalExplicitClient("http://localhost:3000", {
+    const optionalExplicitClient = new OptionalExplicitClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,

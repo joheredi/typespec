@@ -86,15 +86,27 @@ export function hasDefaultValue(property: HttpProperty): boolean {
   return getDefaultValue(property) !== undefined;
 }
 
-export function getDefaultValue(property: HttpProperty): string | number | boolean | undefined {
-  if (property.property.defaultValue) {
-    if ("value" in property.property.defaultValue) {
-      return getValue(property.property.defaultValue);
+export function getDefaultValue(property: ModelProperty): string | number | boolean | undefined;
+export function getDefaultValue(property: HttpProperty): string | number | boolean | undefined;
+export function getDefaultValue(
+  httpOrModelProperty: HttpProperty | ModelProperty,
+): string | number | boolean | undefined {
+  let property;
+
+  if ("kind" in httpOrModelProperty && httpOrModelProperty.kind === "ModelProperty") {
+    property = httpOrModelProperty;
+  } else {
+    property = httpOrModelProperty.property;
+  }
+
+  if (property.defaultValue) {
+    if ("value" in property.defaultValue) {
+      return getValue(property.defaultValue);
     }
   }
 
-  if ("value" in property.property.type && property.property.type.value !== undefined) {
-    return JSON.stringify(property.property.type.value);
+  if ("value" in property.type && property.type.value !== undefined) {
+    return JSON.stringify(property.type.value);
   }
 
   return undefined;

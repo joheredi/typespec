@@ -3,16 +3,16 @@ import {
   NewEnum,
   NewInterfaceClient,
   RenamedFromClient,
+  Versions,
 } from "../../../generated/versioning/renamedFrom/src/index.js";
 
 describe("Versioning.RenamedFrom", () => {
   describe("RenamedFromClient", () => {
-    const client = new RenamedFromClient("http://localhost:3000", {
+    const client = new RenamedFromClient("http://localhost:3000", Versions.V2, {
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,
       },
-      apiVersion: "v2",
     });
 
     it("should handle 'newOp' with renamed properties and return the expected response", async () => {
@@ -35,12 +35,11 @@ describe("Versioning.RenamedFrom", () => {
   });
 
   describe("NewInterfaceClient", () => {
-    const client = new NewInterfaceClient("http://localhost:3000", {
+    const client = new NewInterfaceClient("http://localhost:3000", Versions.V2, {
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,
       },
-      apiVersion: "v2",
     });
 
     it("should handle 'newOpInNewInterface' with renamed properties and return the expected response", async () => {

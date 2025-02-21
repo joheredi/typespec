@@ -3,7 +3,6 @@ import { ApiKeyClient } from "../../../generated/authentication/api-key/src/inde
 
 describe("Authentication.ApiKey", () => {
   const client = new ApiKeyClient(
-    "http://localhost:3000",
     {
       key: "valid-key", // Set the default API key here
     },
@@ -17,7 +16,6 @@ describe("Authentication.ApiKey", () => {
 
   it("should return error for an invalid API key", async () => {
     const invalidClient = new ApiKeyClient(
-      "http://localhost:3000",
       {
         key: "invalid-key",
       },

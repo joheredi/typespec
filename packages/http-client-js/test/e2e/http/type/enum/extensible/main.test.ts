@@ -3,7 +3,7 @@ import { StringClient } from "../../../../generated/type/enum/extensible/src/ind
 
 describe("Type.Enum.Extensible", () => {
   describe("StringClient", () => {
-    const client = new StringClient("http://localhost:3000", { allowInsecureConnection: true });
+    const client = new StringClient({ allowInsecureConnection: true });
 
     it("should handle a known value returned from the server", async () => {
       const response = await client.getKnownValue();

@@ -8,7 +8,7 @@ import {
 
 describe("Encode.Datetime", () => {
   describe("QueryClient", () => {
-    const client = new QueryClient("http://localhost:3000", { allowInsecureConnection: true });
+    const client = new QueryClient({ allowInsecureConnection: true });
 
     it("should test default encode (rfc3339) for datetime query parameter", async () => {
       await client.default_(new Date("2022-08-26T18:38:00.000Z"));
@@ -40,7 +40,7 @@ describe("Encode.Datetime", () => {
   });
 
   describe("PropertyClient", () => {
-    const client = new PropertyClient("http://localhost:3000", { allowInsecureConnection: true });
+    const client = new PropertyClient({ allowInsecureConnection: true });
 
     it("should handle default encode (rfc3339) for datetime property", async () => {
       const requestBody = { value: new Date("2022-08-26T18:38:00.000Z") };
@@ -79,7 +79,7 @@ describe("Encode.Datetime", () => {
   });
 
   describe("HeaderClient", () => {
-    const client = new HeaderClient("http://localhost:3000", { allowInsecureConnection: true });
+    const client = new HeaderClient({ allowInsecureConnection: true });
 
     it("should test default encode (rfc7231) for datetime header", async () => {
       await client.default_(new Date("2022-08-26T14:38:00.000Z"));
@@ -114,7 +114,7 @@ describe("Encode.Datetime", () => {
   });
 
   describe("ResponseHeaderClient", () => {
-    const client = new ResponseHeaderClient("http://localhost:3000", {
+    const client = new ResponseHeaderClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,

@@ -3,7 +3,7 @@ import { ServerDrivenPaginationClient } from "../../../generated/payload/pageabl
 
 describe("Payload.Pageable", () => {
   describe("list", () => {
-    const client = new ServerDrivenPaginationClient("http://localhost:3000", {
+    const client = new ServerDrivenPaginationClient({
       allowInsecureConnection: true,
     });
 

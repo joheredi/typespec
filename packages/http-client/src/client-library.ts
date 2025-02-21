@@ -139,6 +139,10 @@ function visitClient(
     };
   });
 
+  $.client
+    .getConstructor(currentClient)
+    .parameters.properties.forEach((p) => collectDataTypes(p.type, dataTypes));
+
   // Collect data types
   for (const clientOperation of currentClient.operations) {
     // Collect operation parameters

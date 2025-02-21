@@ -2,7 +2,7 @@ import { describe, it } from "vitest";
 import { RepeatabilityClient } from "../../../generated/special-headers/repeatability/src/index.js";
 
 describe("SpecialHeaders.Repeatability", () => {
-  const client = new RepeatabilityClient("http://localhost:3000", {
+  const client = new RepeatabilityClient({
     allowInsecureConnection: true,
     retryOptions: {
       maxRetries: 0,

@@ -5,7 +5,7 @@ import {
 } from "../../../../../generated/type/model/inheritance/single-discriminator/src/index.js";
 
 describe("Type.Model.Inheritance.SingleDiscriminator", () => {
-  const client = new SingleDiscriminatorClient("http://localhost:3000", {
+  const client = new SingleDiscriminatorClient({
     allowInsecureConnection: true,
     retryOptions: {
       maxRetries: 0,

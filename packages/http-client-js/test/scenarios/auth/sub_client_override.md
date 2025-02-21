@@ -71,7 +71,17 @@ export function createTestClientContext(
   credential: KeyCredential,
   options?: TestClientOptions,
 ): TestClientContext {
-  return getClient(endpoint, credential, {
+  const params: Record<string, any> = {
+    endpoint: endpoint,
+  };
+  const resolvedEndpoint = "{endpoint}".replace(/{([^}]+)}/g, (_, key) =>
+    key in params
+      ? String(params[key])
+      : (() => {
+          throw new Error(`Missing parameter: ${key}`);
+        })(),
+  );
+  return getClient(resolvedEndpoint, credential, {
     ...options,
     credentials: {
       apiKeyHeaderName: "Authorization",
@@ -87,7 +97,17 @@ export function createSubClientContext(
   endpoint: string,
   options?: SubClientOptions,
 ): SubClientContext {
-  return getClient(endpoint, {
+  const params: Record<string, any> = {
+    endpoint: endpoint,
+  };
+  const resolvedEndpoint = "{endpoint}".replace(/{([^}]+)}/g, (_, key) =>
+    key in params
+      ? String(params[key])
+      : (() => {
+          throw new Error(`Missing parameter: ${key}`);
+        })(),
+  );
+  return getClient(resolvedEndpoint, credential, {
     ...options,
   });
 }

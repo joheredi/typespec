@@ -16,7 +16,7 @@ import {
 
 describe("Type.Union", () => {
   describe("StringsOnlyClient", () => {
-    const client = new StringsOnlyClient("http://localhost:3000", {
+    const client = new StringsOnlyClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,
@@ -35,7 +35,7 @@ describe("Type.Union", () => {
   });
 
   describe("StringExtensibleClient", () => {
-    const client = new StringExtensibleClient("http://localhost:3000", {
+    const client = new StringExtensibleClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,
@@ -54,7 +54,7 @@ describe("Type.Union", () => {
   });
 
   describe("StringExtensibleNamedClient", () => {
-    const client = new StringExtensibleNamedClient("http://localhost:3000", {
+    const client = new StringExtensibleNamedClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,
@@ -73,7 +73,7 @@ describe("Type.Union", () => {
   });
 
   describe("IntsOnlyClient", () => {
-    const client = new IntsOnlyClient("http://localhost:3000", { allowInsecureConnection: true });
+    const client = new IntsOnlyClient({ allowInsecureConnection: true });
 
     it("should handle a union of integers in response", async () => {
       const response = await client.get();
@@ -87,7 +87,7 @@ describe("Type.Union", () => {
   });
 
   describe("FloatsOnlyClient", () => {
-    const client = new FloatsOnlyClient("http://localhost:3000", { allowInsecureConnection: true });
+    const client = new FloatsOnlyClient({ allowInsecureConnection: true });
 
     it("should handle a union of floats in response", async () => {
       const response = await client.get();
@@ -101,7 +101,7 @@ describe("Type.Union", () => {
   });
 
   describe("ModelsOnlyClient", () => {
-    const client = new ModelsOnlyClient("http://localhost:3000", { allowInsecureConnection: true });
+    const client = new ModelsOnlyClient({ allowInsecureConnection: true });
 
     it("should handle a union of models in response", async () => {
       const response = await client.get();
@@ -115,7 +115,7 @@ describe("Type.Union", () => {
   });
 
   describe("EnumsOnlyClient", () => {
-    const client = new EnumsOnlyClient("http://localhost:3000", { allowInsecureConnection: true });
+    const client = new EnumsOnlyClient({ allowInsecureConnection: true });
 
     it("should handle a union of enums in response", async () => {
       const response = await client.get();
@@ -129,7 +129,7 @@ describe("Type.Union", () => {
   });
 
   describe("StringAndArrayClient", () => {
-    const client = new StringAndArrayClient("http://localhost:3000", {
+    const client = new StringAndArrayClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,
@@ -151,7 +151,7 @@ describe("Type.Union", () => {
   });
 
   describe("MixedLiteralsClient", () => {
-    const client = new MixedLiteralsClient("http://localhost:3000", {
+    const client = new MixedLiteralsClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,
@@ -180,7 +180,7 @@ describe("Type.Union", () => {
   });
 
   describe("MixedTypesClient", () => {
-    const client = new MixedTypesClient("http://localhost:3000", { allowInsecureConnection: true });
+    const client = new MixedTypesClient({ allowInsecureConnection: true });
 
     it("should handle a union of mixed types in response", async () => {
       const response = await client.get();

@@ -16,7 +16,7 @@ import {
 
 describe.skip("Payload.Xml", () => {
   describe("SimpleModelValueClient", () => {
-    const client = new SimpleModelValueClient("http://localhost:3000", {
+    const client = new SimpleModelValueClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,
@@ -34,7 +34,7 @@ describe.skip("Payload.Xml", () => {
   });
 
   describe("ModelWithSimpleArraysValueClient", () => {
-    const client = new ModelWithSimpleArraysValueClient("http://localhost:3000", {
+    const client = new ModelWithSimpleArraysValueClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,
@@ -58,7 +58,7 @@ describe.skip("Payload.Xml", () => {
   });
 
   describe("ModelWithArrayOfModelValueClient", () => {
-    const client = new ModelWithArrayOfModelValueClient("http://localhost:3000", {
+    const client = new ModelWithArrayOfModelValueClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,
@@ -86,7 +86,7 @@ describe.skip("Payload.Xml", () => {
   });
 
   describe("ModelWithOptionalFieldValueClient", () => {
-    const client = new ModelWithOptionalFieldValueClient("http://localhost:3000", {
+    const client = new ModelWithOptionalFieldValueClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,
@@ -104,7 +104,7 @@ describe.skip("Payload.Xml", () => {
   });
 
   describe("ModelWithAttributesValueClient", () => {
-    const client = new ModelWithAttributesValueClient("http://localhost:3000", {
+    const client = new ModelWithAttributesValueClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,
@@ -126,7 +126,7 @@ describe.skip("Payload.Xml", () => {
   });
 
   describe("ModelWithUnwrappedArrayValueClient", () => {
-    const client = new ModelWithUnwrappedArrayValueClient("http://localhost:3000", {
+    const client = new ModelWithUnwrappedArrayValueClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,
@@ -150,7 +150,7 @@ describe.skip("Payload.Xml", () => {
   });
 
   describe("ModelWithRenamedArraysValueClient", () => {
-    const client = new ModelWithRenamedArraysValueClient("http://localhost:3000", {
+    const client = new ModelWithRenamedArraysValueClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,
@@ -174,7 +174,7 @@ describe.skip("Payload.Xml", () => {
   });
 
   describe("ModelWithRenamedFieldsValueClient", () => {
-    const client = new ModelWithRenamedFieldsValueClient("http://localhost:3000", {
+    const client = new ModelWithRenamedFieldsValueClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,
@@ -198,7 +198,7 @@ describe.skip("Payload.Xml", () => {
   });
 
   describe("ModelWithEmptyArrayValueClient", () => {
-    const client = new ModelWithEmptyArrayValueClient("http://localhost:3000", {
+    const client = new ModelWithEmptyArrayValueClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,
@@ -216,7 +216,7 @@ describe.skip("Payload.Xml", () => {
   });
 
   describe("ModelWithTextValueClient", () => {
-    const client = new ModelWithTextValueClient("http://localhost:3000", {
+    const client = new ModelWithTextValueClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,
@@ -240,7 +240,7 @@ describe.skip("Payload.Xml", () => {
   });
 
   describe("ModelWithDictionaryValueClient", () => {
-    const client = new ModelWithDictionaryValueClient("http://localhost:3000", {
+    const client = new ModelWithDictionaryValueClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,
@@ -262,7 +262,7 @@ describe.skip("Payload.Xml", () => {
   });
 
   describe("ModelWithEncodedNamesValueClient", () => {
-    const client = new ModelWithEncodedNamesValueClient("http://localhost:3000", {
+    const client = new ModelWithEncodedNamesValueClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,

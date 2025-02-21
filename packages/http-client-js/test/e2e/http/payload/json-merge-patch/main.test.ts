@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { JsonMergePatchClient } from "../../../generated/payload/json-merge-patch/src/index.js";
 
 describe("Payload.JsonMergePatch", () => {
-  const client = new JsonMergePatchClient("http://localhost:3000", {
+  const client = new JsonMergePatchClient({
     allowInsecureConnection: true,
     retryOptions: {
       maxRetries: 1,

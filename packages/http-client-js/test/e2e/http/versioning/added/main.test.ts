@@ -6,15 +6,15 @@ import {
   InterfaceV2Client,
   ModelV1,
   ModelV2,
+  Versions,
 } from "../../../generated/versioning/added/src/index.js";
 
 describe("Versioning.Added", () => {
-  const client = new AddedClient("http://localhost:3000", {
+  const client = new AddedClient("http://localhost:3000", Versions.V2, {
     allowInsecureConnection: true,
     retryOptions: {
       maxRetries: 0,
     },
-    apiVersion: "v2",
   });
 
   it("should send and receive v1 operation with ModelV1 at latest version", async () => {
@@ -39,12 +39,11 @@ describe("Versioning.Added", () => {
   });
 
   describe("InterfaceV2Client", () => {
-    const interfaceV2Client = new InterfaceV2Client("http://localhost:3000", {
+    const interfaceV2Client = new InterfaceV2Client("http://localhost:3000", Versions.V2, {
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,
       },
-      apiVersion: "v2",
     });
 
     it("should send and receive v2InInterface operation with ModelV2", async () => {

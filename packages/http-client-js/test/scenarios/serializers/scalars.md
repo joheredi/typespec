@@ -19,6 +19,8 @@ op foo(a: MyDate, b: MyUtcDate, c: MyIsoDate, d: MyUnixDate): void;
 ## TypeScript
 
 ```ts src/models/models.ts
+export type String = string;
+
 export type MyDate = Date;
 
 export type UtcDateTime = Date;

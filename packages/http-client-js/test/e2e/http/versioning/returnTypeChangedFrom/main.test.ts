@@ -1,14 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { ReturnTypeChangedFromClient } from "../../../generated/versioning/returnTypeChangedFrom/src/index.js";
+import {
+  ReturnTypeChangedFromClient,
+  Versions,
+} from "../../../generated/versioning/returnTypeChangedFrom/src/index.js";
 
 describe("Versioning.ReturnTypeChangedFrom", () => {
   describe("TestClient", () => {
-    const client = new ReturnTypeChangedFromClient("http://localhost:3000", {
+    const client = new ReturnTypeChangedFromClient("http://localhost:3000", Versions.V2, {
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,
       },
-      apiVersion: "v2",
     });
 
     it("should send the request body and return the expected response body for version 'v2'", async () => {

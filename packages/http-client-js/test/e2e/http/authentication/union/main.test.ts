@@ -4,7 +4,6 @@ import { UnionClient } from "../../../generated/authentication/union/src/index.j
 describe("Authentication.Union", () => {
   it("should authenticate using the valid API key", async () => {
     const client = new UnionClient(
-      "http://localhost:3000",
       {
         key: "valid-key",
       },
@@ -16,7 +15,6 @@ describe("Authentication.Union", () => {
 
   it("should authenticate using the valid OAuth token", async () => {
     const client = new UnionClient(
-      "http://localhost:3000",
       {
         getToken: async () => ({
           token: "Bearer https://security.microsoft.com/.default",

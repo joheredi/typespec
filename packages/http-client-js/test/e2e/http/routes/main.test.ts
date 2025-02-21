@@ -20,11 +20,9 @@ import {
 } from "../../generated/routes/src/index.js";
 
 describe("Routes", () => {
-  const baseUrl = "http://localhost:3000";
-
-  const routesClient = new RoutesClient(baseUrl);
-  const pathParametersClient = new PathParametersClient(baseUrl);
-  const queryParametersClient = new QueryParametersClient(baseUrl);
+  const routesClient = new RoutesClient();
+  const pathParametersClient = new PathParametersClient();
+  const queryParametersClient = new QueryParametersClient();
 
   describe("fixed", () => {
     it("should call fixed operation at the root level", async () => {
@@ -33,7 +31,7 @@ describe("Routes", () => {
   });
 
   describe("InInterface", () => {
-    const inInterfaceClient = new InInterfaceClient(baseUrl);
+    const inInterfaceClient = new InInterfaceClient();
 
     it("should call fixed operation inside interface", async () => {
       await inInterfaceClient.fixed();
@@ -54,7 +52,7 @@ describe("Routes", () => {
     });
 
     describe("ReservedExpansion", () => {
-      const reservedExpansionClient = new ReservedExpansionClient(baseUrl);
+      const reservedExpansionClient = new ReservedExpansionClient();
 
       it("should handle reserved expansion with template", async () => {
         await reservedExpansionClient.template("foo/bar baz");
@@ -67,7 +65,7 @@ describe("Routes", () => {
 
     describe("SimpleExpansion", () => {
       describe("Standard", () => {
-        const simpleStandardClient = new SimpleStandardClient(baseUrl);
+        const simpleStandardClient = new SimpleStandardClient();
 
         it("should handle primitive value with explode: false", async () => {
           await simpleStandardClient.primitive("a");
@@ -83,7 +81,7 @@ describe("Routes", () => {
       });
 
       describe("Explode", () => {
-        const simpleExplodeClient = new SimpleExplodeClient(baseUrl);
+        const simpleExplodeClient = new SimpleExplodeClient();
 
         it("should handle primitive value with explode: true", async () => {
           await simpleExplodeClient.primitive("a");
@@ -101,7 +99,7 @@ describe("Routes", () => {
 
     describe("PathExpansion", () => {
       describe("Standard", () => {
-        const pathStandardClient = new PathStandardClient(baseUrl);
+        const pathStandardClient = new PathStandardClient();
 
         it("should handle primitive value with explode: false", async () => {
           await pathStandardClient.primitive("a");
@@ -117,7 +115,7 @@ describe("Routes", () => {
       });
 
       describe("Explode", () => {
-        const pathExplodeClient = new PathExplodeClient(baseUrl);
+        const pathExplodeClient = new PathExplodeClient();
 
         it("should handle primitive value with explode: true", async () => {
           await pathExplodeClient.primitive("a");
@@ -135,7 +133,7 @@ describe("Routes", () => {
 
     describe("LabelExpansion", () => {
       describe("Standard", () => {
-        const labelStandardClient = new LabelStandardClient(baseUrl);
+        const labelStandardClient = new LabelStandardClient();
 
         it("should handle primitive value with explode: false", async () => {
           await labelStandardClient.primitive("a");
@@ -151,7 +149,7 @@ describe("Routes", () => {
       });
 
       describe("Explode", () => {
-        const labelExplodeClient = new LabelExplodeClient(baseUrl);
+        const labelExplodeClient = new LabelExplodeClient();
 
         it("should handle primitive value with explode: true", async () => {
           await labelExplodeClient.primitive("a");
@@ -169,7 +167,7 @@ describe("Routes", () => {
 
     describe("MatrixExpansion", () => {
       describe("Standard", () => {
-        const matrixStandardClient = new MatrixStandardClient(baseUrl);
+        const matrixStandardClient = new MatrixStandardClient();
 
         it("should handle primitive value with explode: false", async () => {
           await matrixStandardClient.primitive("a");
@@ -185,7 +183,7 @@ describe("Routes", () => {
       });
 
       describe("Explode", () => {
-        const matrixExplodeClient = new MatrixExplodeClient(baseUrl);
+        const matrixExplodeClient = new MatrixExplodeClient();
 
         it("should handle primitive value with explode: true", async () => {
           await matrixExplodeClient.primitive("a");
@@ -217,7 +215,7 @@ describe("Routes", () => {
 
     describe("QueryExpansion", () => {
       describe("Standard", () => {
-        const queryStandardClient = new QueryStandardClient(baseUrl);
+        const queryStandardClient = new QueryStandardClient();
 
         it("should handle primitive value with explode: false", async () => {
           await queryStandardClient.primitive("a");
@@ -233,7 +231,7 @@ describe("Routes", () => {
       });
 
       describe("Explode", () => {
-        const queryExplodeClient = new QueryExplodeClient(baseUrl);
+        const queryExplodeClient = new QueryExplodeClient();
 
         it("should handle primitive value with explode: true", async () => {
           await queryExplodeClient.primitive("a");
@@ -251,7 +249,7 @@ describe("Routes", () => {
 
     describe("QueryContinuation", () => {
       describe("Standard", () => {
-        const continuationStandardClient = new ContinuationStandardClient(baseUrl);
+        const continuationStandardClient = new ContinuationStandardClient();
 
         it("should handle primitive value with explode: false", async () => {
           await continuationStandardClient.primitive("a");
@@ -267,7 +265,7 @@ describe("Routes", () => {
       });
 
       describe("Explode", () => {
-        const continuationExplodeClient = new ContinuationExplodeClient(baseUrl);
+        const continuationExplodeClient = new ContinuationExplodeClient();
 
         it("should handle primitive value with explode: true", async () => {
           await continuationExplodeClient.primitive("a");

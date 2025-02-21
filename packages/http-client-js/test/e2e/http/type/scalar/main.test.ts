@@ -11,7 +11,7 @@ import {
 
 describe("Type.Scalar", () => {
   describe("StringClient", () => {
-    const client = new StringClient("http://localhost:3000", { allowInsecureConnection: true });
+    const client = new StringClient({ allowInsecureConnection: true });
 
     it("should handle a string value returned from the server", async () => {
       const response = await client.get();
@@ -24,7 +24,7 @@ describe("Type.Scalar", () => {
   });
 
   describe("BooleanClient", () => {
-    const client = new BooleanClient("http://localhost:3000", { allowInsecureConnection: true });
+    const client = new BooleanClient({ allowInsecureConnection: true });
 
     it("should handle a boolean value returned from the server", async () => {
       const response = await client.get();
@@ -37,7 +37,7 @@ describe("Type.Scalar", () => {
   });
 
   describe("UnknownClient", () => {
-    const client = new UnknownClient("http://localhost:3000", { allowInsecureConnection: true });
+    const client = new UnknownClient({ allowInsecureConnection: true });
 
     it("should handle an unknown value returned from the server", async () => {
       const response = await client.get();
@@ -50,7 +50,7 @@ describe("Type.Scalar", () => {
   });
 
   describe("DecimalTypeClient", () => {
-    const client = new DecimalTypeClient("http://localhost:3000", {
+    const client = new DecimalTypeClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,
@@ -72,7 +72,7 @@ describe("Type.Scalar", () => {
   });
 
   describe("Decimal128TypeClient", () => {
-    const client = new Decimal128TypeClient("http://localhost:3000", {
+    const client = new Decimal128TypeClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,
@@ -94,7 +94,7 @@ describe("Type.Scalar", () => {
   });
 
   describe("DecimalVerifyClient", () => {
-    const client = new DecimalVerifyClient("http://localhost:3000", {
+    const client = new DecimalVerifyClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,
@@ -112,7 +112,7 @@ describe("Type.Scalar", () => {
   });
 
   describe("Decimal128VerifyClient", () => {
-    const client = new Decimal128VerifyClient("http://localhost:3000", {
+    const client = new Decimal128VerifyClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,

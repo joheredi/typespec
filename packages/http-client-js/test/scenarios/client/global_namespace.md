@@ -18,7 +18,17 @@ export interface ClientContext extends Client {}
 
 ```ts src/api/clientContext.ts function createClientContext
 export function createClientContext(endpoint: string, options?: ClientOptions): ClientContext {
-  return getClient(endpoint, {
+  const params: Record<string, any> = {
+    endpoint: endpoint,
+  };
+  const resolvedEndpoint = "{endpoint}".replace(/{([^}]+)}/g, (_, key) =>
+    key in params
+      ? String(params[key])
+      : (() => {
+          throw new Error(`Missing parameter: ${key}`);
+        })(),
+  );
+  return getClient(resolvedEndpoint, {
     ...options,
   });
 }

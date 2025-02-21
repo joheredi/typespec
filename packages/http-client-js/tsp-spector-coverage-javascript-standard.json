@@ -1,7 +1,7 @@
 [
   {
     "scenariosMetadata": {
-      "commit": "f562ff9bec997b39e0d8e53b2f0be7fdc9ffbaef",
+      "commit": "fc67a19e741be2b68603f46cfa9cda45cfe2c76c",
       "version": "0.1.0-alpha.8",
       "packageName": "@typespec/http-specs"
     },
@@ -380,24 +380,24 @@
       "Type_Union_MixedTypes_get": "pass",
       "Type_Union_MixedTypes_send": "pass",
       "Versioning_Added_v1": "not-implemented",
-      "Versioning_Added_v2": "not-implemented",
-      "Versioning_Added_InterfaceV2": "not-implemented",
-      "Versioning_MadeOptional_test": "not-implemented",
-      "Versioning_Removed_v2": "not-implemented",
-      "Versioning_Removed_modelV3": "not-implemented",
-      "Versioning_Removed_modelV3_V2": "not-implemented",
-      "Versioning_Removed_modelV3_V2preview": "not-implemented",
+      "Versioning_Added_v2": "pass",
+      "Versioning_Added_InterfaceV2": "pass",
+      "Versioning_MadeOptional_test": "pass",
+      "Versioning_Removed_v2": "pass",
+      "Versioning_Removed_modelV3": "pass",
+      "Versioning_Removed_modelV3_V2": "pass",
+      "Versioning_Removed_modelV3_V2preview": "pass",
       "Versioning_RenamedFrom_newOp": "not-implemented",
-      "Versioning_RenamedFrom_NewInterface": "not-implemented",
+      "Versioning_RenamedFrom_NewInterface": "pass",
       "Versioning_ReturnTypeChangedFrom_test": "not-implemented",
-      "Versioning_TypeChangedFrom_test": "not-implemented",
+      "Versioning_TypeChangedFrom_test": "pass",
       "Authentication_Http_Custom_valid": "not-implemented",
       "Authentication_Http_Custom_invalid": "not-implemented",
       "Serialization_EncodedName_Json_Property_send": "pass",
       "Serialization_EncodedName_Json_Property_get": "pass",
       "Server_Endpoint_NotDefined_valid": "pass",
-      "Server_Path_Multiple_noOperationParams": "not-implemented",
-      "Server_Path_Multiple_withOperationPathParam": "not-implemented",
+      "Server_Path_Multiple_noOperationParams": "pass",
+      "Server_Path_Multiple_withOperationPathParam": "pass",
       "Server_Path_Single_myOp": "pass",
       "Server_Versions_NotVersioned_withoutApiVersion": "pass",
       "Server_Versions_NotVersioned_withPathApiVersion": "pass",
@@ -667,6 +667,6 @@
       "Type_Model_Inheritance_SingleDiscriminator_getWrongDiscriminator": "pass",
       "Type_Model_Inheritance_SingleDiscriminator_getLegacyModel": "pass"
     },
-    "createdAt": "2025-02-19T19:26:26.210Z"
+    "createdAt": "2025-02-21T06:09:41.294Z"
   }
 ]

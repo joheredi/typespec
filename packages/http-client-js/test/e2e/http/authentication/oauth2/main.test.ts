@@ -3,7 +3,6 @@ import { OAuth2Client } from "../../../generated/authentication/oauth2/src/index
 
 describe("Authentication.OAuth2", () => {
   const client = new OAuth2Client(
-    "http://localhost:3000",
     {
       getToken: async () => ({
         token: "Bearer https://security.microsoft.com/.default",

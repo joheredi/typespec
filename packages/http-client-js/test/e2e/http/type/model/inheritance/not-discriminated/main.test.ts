@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { NotDiscriminatedClient } from "../../../../../generated/type/model/inheritance/not-discriminated/src/index.js";
 
 describe("Type.Model.Inheritance.NotDiscriminated", () => {
-  const client = new NotDiscriminatedClient("http://localhost:3000", {
+  const client = new NotDiscriminatedClient({
     allowInsecureConnection: true,
     retryOptions: {
       maxRetries: 0,

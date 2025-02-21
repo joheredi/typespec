@@ -7,7 +7,7 @@ import {
 
 describe("Encode.Duration", () => {
   describe("QueryClient", () => {
-    const queryClient = new QueryClient("http://localhost:3000", { allowInsecureConnection: true });
+    const queryClient = new QueryClient({ allowInsecureConnection: true });
 
     it("should test default encode for a duration parameter", async () => {
       await queryClient.default_("P40D");
@@ -41,7 +41,7 @@ describe("Encode.Duration", () => {
   });
 
   describe("PropertyClient", () => {
-    const propertyClient = new PropertyClient("http://localhost:3000", {
+    const propertyClient = new PropertyClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,
@@ -86,7 +86,7 @@ describe("Encode.Duration", () => {
   });
 
   describe("HeaderClient", () => {
-    const headerClient = new HeaderClient("http://localhost:3000", {
+    const headerClient = new HeaderClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,

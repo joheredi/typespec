@@ -6,7 +6,7 @@ import {
 
 describe("Payload.ContentNegotiation", () => {
   describe("SameBodyClient", () => {
-    const client = new SameBodyClient("http://localhost:3000", { allowInsecureConnection: true });
+    const client = new SameBodyClient({ allowInsecureConnection: true });
 
     it("should return a PNG image when 'Accept: image/png' is sent", async () => {
       const response = await client.getAvatarAsPng();
@@ -20,7 +20,7 @@ describe("Payload.ContentNegotiation", () => {
   });
 
   describe("DifferentBodyClient", () => {
-    const client = new DifferentBodyClient("http://localhost:3000", {
+    const client = new DifferentBodyClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,

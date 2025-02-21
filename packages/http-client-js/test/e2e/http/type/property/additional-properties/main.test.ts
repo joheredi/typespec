@@ -11,7 +11,7 @@ import {
 
 describe("Type.Property.AdditionalProperties", () => {
   describe("ExtendsUnknownClient", () => {
-    const client = new ExtendsUnknownClient("http://localhost:3000", {
+    const client = new ExtendsUnknownClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,
@@ -37,7 +37,7 @@ describe("Type.Property.AdditionalProperties", () => {
   });
 
   describe("ExtendsUnknownDerivedClient", () => {
-    const client = new ExtendsUnknownDerivedClient("http://localhost:3000", {
+    const client = new ExtendsUnknownDerivedClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,
@@ -67,7 +67,7 @@ describe("Type.Property.AdditionalProperties", () => {
   });
 
   describe("ExtendsUnknownDiscriminatedClient", () => {
-    const client = new ExtendsUnknownDiscriminatedClient("http://localhost:3000", {
+    const client = new ExtendsUnknownDiscriminatedClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,
@@ -100,7 +100,7 @@ describe("Type.Property.AdditionalProperties", () => {
   });
 
   describe("IsUnknownClient", () => {
-    const client = new IsUnknownClient("http://localhost:3000", { allowInsecureConnection: true });
+    const client = new IsUnknownClient({ allowInsecureConnection: true });
     it("Expected response body: {'name': 'IsUnknownAdditionalProperties', 'prop1': 32, 'prop2': true, 'prop3': 'abc'}", async () => {
       const response = await client.get();
       expect(response).toEqual({
@@ -122,7 +122,7 @@ describe("Type.Property.AdditionalProperties", () => {
   });
 
   describe("IsUnknownDerivedClient", () => {
-    const client = new IsUnknownDerivedClient("http://localhost:3000", {
+    const client = new IsUnknownDerivedClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,
@@ -152,7 +152,7 @@ describe("Type.Property.AdditionalProperties", () => {
   });
 
   describe("IsUnknownDiscriminatedClient", () => {
-    const client = new IsUnknownDiscriminatedClient("http://localhost:3000", {
+    const client = new IsUnknownDiscriminatedClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,

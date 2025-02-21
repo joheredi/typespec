@@ -11,7 +11,7 @@ describe("Payload.MultiPart", () => {
   let pngContents: Uint8Array;
 
   describe("FormDataClient", () => {
-    const client = new FormDataClient("http://localhost:3000", {
+    const client = new FormDataClient({
       allowInsecureConnection: true,
       retryOptions: { maxRetries: 1 },
     });
@@ -83,7 +83,7 @@ describe("Payload.MultiPart", () => {
   });
 
   describe("FormDataClient.HttpParts.ContentType", () => {
-    const client = new HttpPartsClient("http://localhost:3000", {
+    const client = new HttpPartsClient({
       allowInsecureConnection: true,
       retryOptions: { maxRetries: 1 },
     });
@@ -120,7 +120,7 @@ describe("Payload.MultiPart", () => {
 
   describe("FormDataClient.HttpParts", () => {
     it("should send json array and file array", async () => {
-      const client = new HttpPartsClient("http://localhost:3000", {
+      const client = new HttpPartsClient({
         allowInsecureConnection: true,
         retryOptions: {
           maxRetries: 1,
@@ -147,7 +147,7 @@ describe("Payload.MultiPart", () => {
 
   describe("FormDataClient.HttpParts.NonString", () => {
     it("should handle non-string float", async () => {
-      const client = new HttpPartsClient("http://localhost:3000", {
+      const client = new HttpPartsClient({
         allowInsecureConnection: true,
         retryOptions: {
           maxRetries: 1,

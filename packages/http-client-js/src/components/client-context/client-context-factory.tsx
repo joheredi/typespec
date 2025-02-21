@@ -6,6 +6,7 @@ import * as cl from "@typespec/http-client";
 import { reportDiagnostic } from "../../lib.js";
 import { buildClientParameters } from "../../utils/parameters.jsx";
 import { httpRuntimeTemplateLib } from "../external-packages/ts-http-runtime.js";
+import { ParametrizedEndpoint } from "../static-helpers/parametrized-endpoint.jsx";
 import { addClientTestOptions } from "../testing/client-options.jsx";
 import { getClientcontextDeclarationRef } from "./client-context-declaration.jsx";
 
@@ -25,9 +26,19 @@ export function ClientContextFactoryDeclaration(props: ClientContextFactoryProps
 
   const clientConstructor = $.client.getConstructor(props.client);
   const parameters = buildClientParameters(props.client);
+  const urlTemplate = $.client.getUrlTemplate(props.client);
+  const endpointRef = ay.refkey();
+  const resolvedEndpoint =
+    <ParametrizedEndpoint refkey={endpointRef} template={urlTemplate.url} params={urlTemplate.parameters} />;
+
+  let credentialsRef: string | undefined;
+  if (clientConstructor.parameters.properties.has("credential")) {
+    credentialsRef = "credential";
+  }
 
   // Filter out optional parameters, they will be passed as options
-  const args = <ClientFactoryArguments client={props.client} />;
+  const args =
+    <ClientFactoryArguments client={props.client} endpointRef={endpointRef}  credentialsRef={credentialsRef}/>;
 
   return <FunctionDeclaration
   export
@@ -38,28 +49,30 @@ export function ClientContextFactoryDeclaration(props: ClientContextFactoryProps
   parametersMode="replace"
   parameters={parameters}
 >
+  {resolvedEndpoint}
   return <ts.FunctionCallExpression refkey={httpRuntimeTemplateLib.getClient} args={[args]} />
 </FunctionDeclaration>;
 }
 
 interface ClientFactoryArgumentsProps {
   client: cl.Client;
+  endpointRef: ay.Refkey;
+  credentialsRef?: string;
 }
 
 function ClientFactoryArguments(props: ClientFactoryArgumentsProps) {
-  const parameters = buildClientParameters(props.client);
+  const params = [<>{props.endpointRef},</>];
 
-  // Get positional arguments
-  const positionalArguments: ay.Children = Object.entries(parameters)
-    .filter(([n, p]) => !p.optional)
-    .map(([name]) => name);
+  if (props.credentialsRef) {
+    params.push(<>{props.credentialsRef},</>);
+  }
 
-  return <>
-    {ay.mapJoin(positionalArguments, (arg) => arg, { joiner: ", " , ender: ", " })}
+  return [
+    ...params,
     <ClientOptionsExpression>
       <CredentialOptions client={props.client} />
-    </ClientOptionsExpression>
-  </>;
+    </ClientOptionsExpression>,
+  ];
 }
 
 interface CredentialOptionsProps {

@@ -19,7 +19,17 @@ export function createDemoServiceClientContext(
   endpoint: string,
   options?: DemoServiceClientOptions,
 ): DemoServiceClientContext {
-  return getClient(endpoint, {
+  const params: Record<string, any> = {
+    endpoint: endpoint,
+  };
+  const resolvedEndpoint = "{endpoint}".replace(/{([^}]+)}/g, (_, key) =>
+    key in params
+      ? String(params[key])
+      : (() => {
+          throw new Error(`Missing parameter: ${key}`);
+        })(),
+  );
+  return getClient(resolvedEndpoint, {
     ...options,
   });
 }

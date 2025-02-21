@@ -40,7 +40,7 @@ const clientOptions = {
 
 describe("Missing AdditionalProperties Endpoints", () => {
   describe("ExtendsString", () => {
-    const client = new ExtendsStringClient("http://localhost:3000", clientOptions);
+    const client = new ExtendsStringClient(clientOptions);
     const expected = {
       additionalProperties: { prop: "abc" },
       name: "ExtendsStringAdditionalProperties",
@@ -55,7 +55,7 @@ describe("Missing AdditionalProperties Endpoints", () => {
   });
 
   describe("IsString", () => {
-    const client = new IsStringClient("http://localhost:3000", { allowInsecureConnection: true });
+    const client = new IsStringClient({ allowInsecureConnection: true });
     const expected = {
       additionalProperties: { prop: "abc" },
       name: "IsStringAdditionalProperties",
@@ -70,7 +70,7 @@ describe("Missing AdditionalProperties Endpoints", () => {
   });
 
   describe("SpreadString", () => {
-    const client = new SpreadStringClient("http://localhost:3000", {
+    const client = new SpreadStringClient({
       allowInsecureConnection: true,
     });
     const expected = {
@@ -87,7 +87,7 @@ describe("Missing AdditionalProperties Endpoints", () => {
   });
 
   describe("ExtendsFloat", () => {
-    const client = new ExtendsFloatClient("http://localhost:3000", clientOptions);
+    const client = new ExtendsFloatClient(clientOptions);
     const expected = {
       additionalProperties: { prop: 43.125 },
       id: 43.125,
@@ -102,7 +102,7 @@ describe("Missing AdditionalProperties Endpoints", () => {
   });
 
   describe("IsFloat", () => {
-    const client = new IsFloatClient("http://localhost:3000", clientOptions);
+    const client = new IsFloatClient(clientOptions);
     const expected = {
       additionalProperties: { prop: 43.125 },
       id: 43.125,
@@ -117,7 +117,7 @@ describe("Missing AdditionalProperties Endpoints", () => {
   });
 
   describe("SpreadFloat", () => {
-    const client = new SpreadFloatClient("http://localhost:3000", clientOptions);
+    const client = new SpreadFloatClient(clientOptions);
     const expected = {
       additionalProperties: { prop: 43.125 },
       id: 43.125,
@@ -132,7 +132,7 @@ describe("Missing AdditionalProperties Endpoints", () => {
   });
 
   describe("ExtendsModel", () => {
-    const client = new ExtendsModelClient("http://localhost:3000", clientOptions);
+    const client = new ExtendsModelClient(clientOptions);
     const expected = {
       knownProp: { state: "ok" },
       additionalProperties: { prop: { state: "ok" } },
@@ -147,7 +147,7 @@ describe("Missing AdditionalProperties Endpoints", () => {
   });
 
   describe("IsModel", () => {
-    const client = new IsModelClient("http://localhost:3000", clientOptions);
+    const client = new IsModelClient(clientOptions);
     const expected = {
       knownProp: { state: "ok" },
       additionalProperties: { prop: { state: "ok" } },
@@ -162,7 +162,7 @@ describe("Missing AdditionalProperties Endpoints", () => {
   });
 
   describe("SpreadModel", () => {
-    const client = new SpreadModelClient("http://localhost:3000", clientOptions);
+    const client = new SpreadModelClient(clientOptions);
     const expected = {
       knownProp: { state: "ok" },
       additionalProperties: { prop: { state: "ok" } },
@@ -177,7 +177,7 @@ describe("Missing AdditionalProperties Endpoints", () => {
   });
 
   describe("ExtendsModelArray", () => {
-    const client = new ExtendsModelArrayClient("http://localhost:3000", clientOptions);
+    const client = new ExtendsModelArrayClient(clientOptions);
     const expected = {
       knownProp: [{ state: "ok" }, { state: "ok" }],
       additionalProperties: { prop: [{ state: "ok" }, { state: "ok" }] },
@@ -192,7 +192,7 @@ describe("Missing AdditionalProperties Endpoints", () => {
   });
 
   describe("IsModelArray", () => {
-    const client = new IsModelArrayClient("http://localhost:3000", clientOptions);
+    const client = new IsModelArrayClient(clientOptions);
     const expected = {
       knownProp: [{ state: "ok" }, { state: "ok" }],
       additionalProperties: { prop: [{ state: "ok" }, { state: "ok" }] },
@@ -207,7 +207,7 @@ describe("Missing AdditionalProperties Endpoints", () => {
   });
 
   describe("SpreadModelArray", () => {
-    const client = new SpreadModelArrayClient("http://localhost:3000", clientOptions);
+    const client = new SpreadModelArrayClient(clientOptions);
     const expected = {
       knownProp: [{ state: "ok" }, { state: "ok" }],
       additionalProperties: { prop: [{ state: "ok" }, { state: "ok" }] },
@@ -223,7 +223,7 @@ describe("Missing AdditionalProperties Endpoints", () => {
 
   // Known properties type is different from additional properties type
   describe("SpreadDifferentStringClient", () => {
-    const client = new SpreadDifferentStringClient("http://localhost:3000", clientOptions);
+    const client = new SpreadDifferentStringClient(clientOptions);
     const expected = {
       id: 43.125,
       additionalProperties: { prop: "abc" },
@@ -238,7 +238,7 @@ describe("Missing AdditionalProperties Endpoints", () => {
   });
 
   describe("SpreadDifferentFloatClient", () => {
-    const client = new SpreadDifferentFloatClient("http://localhost:3000", clientOptions);
+    const client = new SpreadDifferentFloatClient(clientOptions);
     const expected = {
       name: "abc",
       additionalProperties: { prop: 43.125 },
@@ -253,7 +253,7 @@ describe("Missing AdditionalProperties Endpoints", () => {
   });
 
   describe("SpreadDifferentModel", () => {
-    const client = new SpreadDifferentModelClient("http://localhost:3000", clientOptions);
+    const client = new SpreadDifferentModelClient(clientOptions);
     const expected = {
       knownProp: "abc",
       additionalProperties: { prop: { state: "ok" } },
@@ -268,7 +268,7 @@ describe("Missing AdditionalProperties Endpoints", () => {
   });
 
   describe("SpreadDifferentModelArrayClient", () => {
-    const client = new SpreadDifferentModelArrayClient("http://localhost:3000", clientOptions);
+    const client = new SpreadDifferentModelArrayClient(clientOptions);
     const expected = {
       knownProp: "abc",
       additionalProperties: { prop: [{ state: "ok" }, { state: "ok" }] },
@@ -283,7 +283,7 @@ describe("Missing AdditionalProperties Endpoints", () => {
   });
 
   describe("ExtendsDifferentSpreadString", () => {
-    const client = new ExtendsDifferentSpreadStringClient("http://localhost:3000", clientOptions);
+    const client = new ExtendsDifferentSpreadStringClient(clientOptions);
     const expected = {
       id: 43.125,
       additionalProperties: { prop: "abc" },
@@ -299,7 +299,7 @@ describe("Missing AdditionalProperties Endpoints", () => {
   });
 
   describe("ExtendsDifferentSpreadFloat", () => {
-    const client = new ExtendsDifferentSpreadFloatClient("http://localhost:3000", clientOptions);
+    const client = new ExtendsDifferentSpreadFloatClient(clientOptions);
     const expected = {
       name: "abc",
       additionalProperties: { prop: 43.125 },
@@ -315,7 +315,7 @@ describe("Missing AdditionalProperties Endpoints", () => {
   });
 
   describe("ExtendsDifferentSpreadModel", () => {
-    const client = new ExtendsDifferentSpreadModelClient("http://localhost:3000", clientOptions);
+    const client = new ExtendsDifferentSpreadModelClient(clientOptions);
     const expected = {
       knownProp: "abc",
       additionalProperties: { prop: { state: "ok" } },
@@ -331,10 +331,7 @@ describe("Missing AdditionalProperties Endpoints", () => {
   });
 
   describe("ExtendsDifferentSpreadModelArray", () => {
-    const client = new ExtendsDifferentSpreadModelArrayClient(
-      "http://localhost:3000",
-      clientOptions,
-    );
+    const client = new ExtendsDifferentSpreadModelArrayClient(clientOptions);
     const expected = {
       knownProp: "abc",
       additionalProperties: { prop: [{ state: "ok" }, { state: "ok" }] },
@@ -351,7 +348,7 @@ describe("Missing AdditionalProperties Endpoints", () => {
 
   // Multiple spread tests
   describe("MultipleSpreadRecord", () => {
-    const client = new MultipleSpreadClient("http://localhost:3000", clientOptions);
+    const client = new MultipleSpreadClient(clientOptions);
     const expected = {
       flag: true,
       additionalProperties: { prop1: "abc", prop2: 43.125 },
@@ -366,7 +363,7 @@ describe("Missing AdditionalProperties Endpoints", () => {
   });
 
   describe("SpreadRecordUnion", () => {
-    const client = new SpreadRecordUnionClient("http://localhost:3000", clientOptions);
+    const client = new SpreadRecordUnionClient(clientOptions);
     const expected = {
       flag: true,
       additionalProperties: { prop1: "abc", prop2: 43.125 },
@@ -381,7 +378,7 @@ describe("Missing AdditionalProperties Endpoints", () => {
   });
 
   describe("SpreadRecordDiscriminatedUnion", () => {
-    const client = new SpreadRecordDiscriminatedUnionClient("http://localhost:3000", clientOptions);
+    const client = new SpreadRecordDiscriminatedUnionClient(clientOptions);
     const expected: SpreadRecordForDiscriminatedUnion = {
       name: "abc",
       additionalProperties: {
@@ -403,10 +400,7 @@ describe("Missing AdditionalProperties Endpoints", () => {
   });
 
   describe("SpreadRecordNonDiscriminatedUnion", () => {
-    const client = new SpreadRecordNonDiscriminatedUnionClient(
-      "http://localhost:3000",
-      clientOptions,
-    );
+    const client = new SpreadRecordNonDiscriminatedUnionClient(clientOptions);
     const expected: SpreadRecordForNonDiscriminatedUnion = {
       name: "abc",
       additionalProperties: {
@@ -428,10 +422,7 @@ describe("Missing AdditionalProperties Endpoints", () => {
   });
 
   describe("SpreadRecordNonDiscriminatedUnion2", () => {
-    const client = new SpreadRecordNonDiscriminatedUnion2Client(
-      "http://localhost:3000",
-      clientOptions,
-    );
+    const client = new SpreadRecordNonDiscriminatedUnion2Client(clientOptions);
     const expected: SpreadRecordForNonDiscriminatedUnion2 = {
       name: "abc",
       additionalProperties: {
@@ -453,10 +444,7 @@ describe("Missing AdditionalProperties Endpoints", () => {
   });
 
   describe("SpreadRecordNonDiscriminatedUnion3", () => {
-    const client = new SpreadRecordNonDiscriminatedUnion3Client(
-      "http://localhost:3000",
-      clientOptions,
-    );
+    const client = new SpreadRecordNonDiscriminatedUnion3Client(clientOptions);
     const expected: SpreadRecordForNonDiscriminatedUnion3 = {
       name: "abc",
       additionalProperties: {

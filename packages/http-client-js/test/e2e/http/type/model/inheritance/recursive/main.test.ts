@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { RecursiveClient } from "../../../../../generated/type/model/inheritance/recursive/src/index.js";
 
 describe("Type.Model.Inheritance.Recursive", () => {
-  const client = new RecursiveClient("http://localhost:3000", { allowInsecureConnection: true });
+  const client = new RecursiveClient({ allowInsecureConnection: true });
 
   it("should send a PUT request with a recursive Extension model", async () => {
     await client.put({

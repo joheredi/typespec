@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { EnumDiscriminatorClient } from "../../../../../generated/type/model/inheritance/enum-discriminator/src/index.js";
 
 describe("Type.Model.Inheritance.EnumDiscriminator", () => {
-  const client = new EnumDiscriminatorClient("http://localhost:3000", {
+  const client = new EnumDiscriminatorClient({
     allowInsecureConnection: true,
     retryOptions: {
       maxRetries: 0,

@@ -39,7 +39,7 @@ const helloWorldBase64 = base64EncodeToUint8Array("hello, world!");
 
 describe("Type.Property.ValueTypes", () => {
   describe("BooleanClient", () => {
-    const client = new BooleanClient("http://localhost:3000", { allowInsecureConnection: true });
+    const client = new BooleanClient({ allowInsecureConnection: true });
 
     it("should handle a model with a boolean property", async () => {
       const response = await client.get();
@@ -52,7 +52,7 @@ describe("Type.Property.ValueTypes", () => {
   });
 
   describe("StringClient", () => {
-    const client = new StringClient("http://localhost:3000", { allowInsecureConnection: true });
+    const client = new StringClient({ allowInsecureConnection: true });
 
     it("should handle a model with a string property", async () => {
       const response = await client.get();
@@ -65,7 +65,7 @@ describe("Type.Property.ValueTypes", () => {
   });
 
   describe("BytesClient", () => {
-    const client = new BytesClient("http://localhost:3000", {
+    const client = new BytesClient({
       allowInsecureConnection: true,
       retryOptions: { maxRetries: 1 },
     });
@@ -81,7 +81,7 @@ describe("Type.Property.ValueTypes", () => {
   });
 
   describe("IntClient", () => {
-    const client = new IntClient("http://localhost:3000", { allowInsecureConnection: true });
+    const client = new IntClient({ allowInsecureConnection: true });
 
     it("should handle a model with an int property", async () => {
       const response = await client.get();
@@ -94,7 +94,7 @@ describe("Type.Property.ValueTypes", () => {
   });
 
   describe("FloatClient", () => {
-    const client = new FloatClient("http://localhost:3000", { allowInsecureConnection: true });
+    const client = new FloatClient({ allowInsecureConnection: true });
 
     it("should handle a model with a float property", async () => {
       const response = await client.get();
@@ -107,7 +107,7 @@ describe("Type.Property.ValueTypes", () => {
   });
 
   describe("DecimalClient", () => {
-    const client = new DecimalClient("http://localhost:3000", { allowInsecureConnection: true });
+    const client = new DecimalClient({ allowInsecureConnection: true });
 
     it("should handle a model with a decimal property", async () => {
       const response = await client.get();
@@ -120,7 +120,7 @@ describe("Type.Property.ValueTypes", () => {
   });
 
   describe("Decimal128Client", () => {
-    const client = new Decimal128Client("http://localhost:3000", { allowInsecureConnection: true });
+    const client = new Decimal128Client({ allowInsecureConnection: true });
 
     it("should handle a model with a decimal128 property", async () => {
       const response = await client.get();
@@ -133,7 +133,7 @@ describe("Type.Property.ValueTypes", () => {
   });
 
   describe("DatetimeClient", () => {
-    const client = new DatetimeClient("http://localhost:3000", { allowInsecureConnection: true });
+    const client = new DatetimeClient({ allowInsecureConnection: true });
 
     it("should handle a model with a datetime property", async () => {
       const response = await client.get();
@@ -146,7 +146,7 @@ describe("Type.Property.ValueTypes", () => {
   });
 
   describe("DurationClient", () => {
-    const client = new DurationClient("http://localhost:3000", { allowInsecureConnection: true });
+    const client = new DurationClient({ allowInsecureConnection: true });
 
     it("should handle a model with a duration property", async () => {
       const response = await client.get();
@@ -159,7 +159,7 @@ describe("Type.Property.ValueTypes", () => {
   });
 
   describe("EnumClient", () => {
-    const client = new EnumClient("http://localhost:3000", { allowInsecureConnection: true });
+    const client = new EnumClient({ allowInsecureConnection: true });
 
     it("should handle a model with an enum property", async () => {
       const response = await client.get();
@@ -172,7 +172,7 @@ describe("Type.Property.ValueTypes", () => {
   });
 
   describe("ExtensibleEnumClient", () => {
-    const client = new ExtensibleEnumClient("http://localhost:3000", {
+    const client = new ExtensibleEnumClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,
@@ -190,7 +190,7 @@ describe("Type.Property.ValueTypes", () => {
   });
 
   describe("CollectionsStringClient", () => {
-    const client = new CollectionsStringClient("http://localhost:3000", {
+    const client = new CollectionsStringClient({
       allowInsecureConnection: true,
       retryOptions: {
         maxRetries: 1,

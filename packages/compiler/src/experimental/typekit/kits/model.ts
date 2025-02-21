@@ -229,7 +229,7 @@ defineKit<TypekitExtension>({
         return spread;
       }
 
-      if(model.baseModel) {
+      if (model.baseModel) {
         return this.model.getAdditionalPropertiesRecord(model.baseModel);
       }
 

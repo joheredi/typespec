@@ -1,7 +1,7 @@
 [
   {
     "scenariosMetadata": {
-      "commit": "a7f4799329903afb70502a2d949d3f1a29f56bc0",
+      "commit": "2722b33d1a08893df7d15c18ed110224bda85dda",
       "version": "0.1.0-alpha.9",
       "packageName": "@typespec/http-specs"
     },
@@ -412,7 +412,7 @@
       "Type_Enum_Extensible_String_putKnownValue": "not-implemented",
       "Type_Enum_Extensible_String_getUnknownValue": "pass",
       "Type_Enum_Extensible_String_putUnknownValue": "not-implemented",
-      "Type_Enum_Fixed_String_getKnownValue": "not-implemented",
+      "Type_Enum_Fixed_String_getKnownValue": "pass",
       "Type_Enum_Fixed_String_putKnownValue": "not-implemented",
       "Type_Enum_Fixed_String_putUnknownValue": "not-implemented",
       "Type_Model_Empty_putEmpty": "pass",
@@ -669,6 +669,6 @@
       "Type_Model_Inheritance_SingleDiscriminator_getWrongDiscriminator": "pass",
       "Type_Model_Inheritance_SingleDiscriminator_getLegacyModel": "pass"
     },
-    "createdAt": "2025-02-21T06:39:53.541Z"
+    "createdAt": "2025-02-21T20:37:36.820Z"
   }
 ]

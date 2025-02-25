@@ -90,6 +90,18 @@ export const $lib = createTypeSpecLibrary({
         default: "The operation is defined as a Multipart operation but has no parts",
       },
     },
+    "use-encoding-context-without-provider": {
+      severity: "error",
+      messages: {
+        default: "Trying to use encoding context without a provider",
+      },
+    },
+    "unexpected-non-scalar-type": {
+      severity: "error",
+      messages: {
+        default: "Unexpected non-scalar type when trying to extract Scalar data",
+      },
+    },
   },
 });
 

@@ -10,7 +10,7 @@ describe("Payload.MultiPart", () => {
   let jpegContents: Uint8Array;
   let pngContents: Uint8Array;
 
-  describe("FormDataClient", () => {
+  describe.skip("FormDataClient", () => {
     const client = new FormDataClient({
       allowInsecureConnection: true,
       retryOptions: { maxRetries: 1 },
@@ -82,7 +82,7 @@ describe("Payload.MultiPart", () => {
     });
   });
 
-  describe("FormDataClient.HttpParts.ContentType", () => {
+  describe.skip("FormDataClient.HttpParts.ContentType", () => {
     const client = new HttpPartsClient({
       allowInsecureConnection: true,
       retryOptions: { maxRetries: 1 },

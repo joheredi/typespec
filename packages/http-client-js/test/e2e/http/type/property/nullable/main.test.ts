@@ -9,23 +9,15 @@ import {
   StringClient,
 } from "../../../../generated/type/property/nullable/src/index.js";
 
-const base64EncodeToUint8Array = (input: string): Uint8Array => {
-  // Encode the string as Base64
-  const base64String = btoa(input);
-
-  // Decode Base64 into a binary string
-  const binaryString = atob(base64String);
-
-  // Convert the binary string to a Uint8Array
-  const uint8Array = new Uint8Array(binaryString.length);
-  for (let i = 0; i < binaryString.length; i++) {
-    uint8Array[i] = binaryString.charCodeAt(i);
+const stringToUint8Array = (input: string): Uint8Array => {
+  const uint8Array = new Uint8Array(input.length);
+  for (let i = 0; i < input.length; i++) {
+    uint8Array[i] = input.charCodeAt(i);
   }
-
   return uint8Array;
 };
 
-const helloWorldBase64 = base64EncodeToUint8Array("hello, world!");
+const helloWorldBytes = stringToUint8Array("hello, world!");
 
 describe("Type.Property.Nullable", () => {
   describe("StringClient", () => {
@@ -69,7 +61,7 @@ describe("Type.Property.Nullable", () => {
       const response = await client.getNonNull();
       expect(response).toEqual({
         requiredProperty: "foo",
-        nullableProperty: "aGVsbG8sIHdvcmxkIQ==",
+        nullableProperty: helloWorldBytes,
       });
     });
 
@@ -84,7 +76,7 @@ describe("Type.Property.Nullable", () => {
     it("should patch a model with all properties present (nullable bytes)", async () => {
       await client.patchNonNull({
         requiredProperty: "foo",
-        nullableProperty: helloWorldBase64,
+        nullableProperty: helloWorldBytes,
       });
     });
 
@@ -103,7 +95,7 @@ describe("Type.Property.Nullable", () => {
       const response = await client.getNonNull();
       expect(response).toEqual({
         requiredProperty: "foo",
-        nullableProperty: "2022-08-26T18:38:00Z",
+        nullableProperty: new Date("2022-08-26T18:38:00Z"),
       });
     });
 
@@ -176,7 +168,7 @@ describe("Type.Property.Nullable", () => {
       const response = await client.getNonNull();
       expect(response).toEqual({
         requiredProperty: "foo",
-        nullableProperty: ["aGVsbG8sIHdvcmxkIQ==", "aGVsbG8sIHdvcmxkIQ=="],
+        nullableProperty: [helloWorldBytes, helloWorldBytes],
       });
     });
 
@@ -191,7 +183,7 @@ describe("Type.Property.Nullable", () => {
     it("should patch a model with all properties present (nullable collection bytes)", async () => {
       await client.patchNonNull({
         requiredProperty: "foo",
-        nullableProperty: [helloWorldBase64, helloWorldBase64],
+        nullableProperty: [helloWorldBytes, helloWorldBytes],
       });
     });
 

@@ -6,9 +6,9 @@ import * as cl from "@typespec/http-client";
 import { reportDiagnostic } from "../../lib.js";
 import { buildClientParameters } from "../../utils/parameters.jsx";
 import { httpRuntimeTemplateLib } from "../external-packages/ts-http-runtime.js";
-import { ParametrizedEndpoint } from "../static-helpers/parametrized-endpoint.jsx";
 import { addClientTestOptions } from "../testing/client-options.jsx";
 import { getClientcontextDeclarationRef } from "./client-context-declaration.jsx";
+import { ParametrizedEndpoint } from "./parametrized-endpoint.jsx";
 
 export interface ClientContextFactoryProps {
   client: cl.Client;

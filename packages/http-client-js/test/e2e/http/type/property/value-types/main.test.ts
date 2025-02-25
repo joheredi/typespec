@@ -15,27 +15,9 @@ import {
   StringClient,
 } from "../../../../generated/type/property/value-types/src/index.js";
 
-const base64EncodeToUint8Array = (input: string): Uint8Array => {
-  // Encode the string as Base64
-  const base64String = btoa(input);
-
-  // Decode Base64 into a binary string
-  const binaryString = atob(base64String);
-
-  // Convert the binary string to a Uint8Array
-  const uint8Array = new Uint8Array(binaryString.length);
-  for (let i = 0; i < binaryString.length; i++) {
-    uint8Array[i] = binaryString.charCodeAt(i);
-  }
-
-  return uint8Array;
-};
-
-const str = "Hello, World!";
+const str = "hello, world!";
 const encoder = new TextEncoder();
 const helloWorldUint8Array = encoder.encode(str);
-
-const helloWorldBase64 = base64EncodeToUint8Array("hello, world!");
 
 describe("Type.Property.ValueTypes", () => {
   describe("BooleanClient", () => {
@@ -72,7 +54,7 @@ describe("Type.Property.ValueTypes", () => {
 
     it("should handle a model with a bytes property", async () => {
       const response = await client.get();
-      expect(response).toStrictEqual({ property: helloWorldUint8Array });
+      expect(response.property).toStrictEqual(helloWorldUint8Array);
     });
 
     it("should send a model with a bytes property", async () => {

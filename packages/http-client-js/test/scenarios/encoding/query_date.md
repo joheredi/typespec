@@ -139,7 +139,7 @@ export async function get(
 }
 ```
 
-# Should populate a Date query parameter with explicit encoding rfc7231
+# onlyShould populate a Date query parameter with explicit encoding rfc7231
 
 This scenario tests that a Date query parameter is sent correctly to the wire. Explicit encode set to rfc7231
 

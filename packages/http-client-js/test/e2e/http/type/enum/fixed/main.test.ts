@@ -15,9 +15,13 @@ describe("Type.Enum.Fixed", () => {
       // Assert successful request
     });
 
-    it.only("should send an unknown value to the server", async () => {
-      await client.putUnknownValue("Weekend" as any);
-      // Assert successful request
+    it("should send an unknown value to the server", async () => {
+      try {
+        await client.putUnknownValue("Weekend" as any);
+        throw new Error("Expected error with status code 500 but request succeeded");
+      } catch (err: any) {
+        expect(err.response?.status).toBe("500");
+      }
     });
   });
 });

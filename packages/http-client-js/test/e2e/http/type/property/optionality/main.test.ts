@@ -57,7 +57,7 @@ describe("Type.Property.Optional", () => {
 
     it("should get all bytes properties", async () => {
       const response = await client.getAll();
-      expect(response).toEqual({ property: "aGVsbG8sIHdvcmxkIQ==" });
+      expect(response).toEqual({ property: helloWorldBase64 });
     });
 
     it("should get default bytes properties", async () => {
@@ -173,7 +173,7 @@ describe("Type.Property.Optional", () => {
     it("should get all collection byte properties", async () => {
       const response = await client.getAll();
       expect(response).toEqual({
-        property: ["aGVsbG8sIHdvcmxkIQ==", "aGVsbG8sIHdvcmxkIQ=="],
+        property: [helloWorldBase64, helloWorldBase64],
       });
     });
 

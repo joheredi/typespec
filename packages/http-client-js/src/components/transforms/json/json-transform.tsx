@@ -1,5 +1,5 @@
 import * as ay from "@alloy-js/core";
-import { EncodeData, Type } from "@typespec/compiler";
+import { Type } from "@typespec/compiler";
 import { $ } from "@typespec/compiler/experimental/typekit";
 import { ScalarDataTransform } from "../data-transform.jsx";
 import {
@@ -27,7 +27,6 @@ import {
 export interface JsonTransformProps {
   itemRef: ay.Refkey | ay.Children;
   type: Type;
-  encoding?: EncodeData;
   target: "transport" | "application";
 }
 
@@ -54,12 +53,10 @@ export function JsonTransform(props: JsonTransformProps) {
     case "Union":
       return <JsonUnionTransform type={type} itemRef={props.itemRef} target={props.target} />;
     case "ModelProperty": {
-      const encoding = $.modelProperty.getEncoding(type) ?? props.encoding;
-      return <JsonModelPropertyTransform type={type} itemRef={props.itemRef} target={props.target} encoding={encoding} />;
+      return <JsonModelPropertyTransform type={type} itemRef={props.itemRef} target={props.target} />;
     }
     case "Scalar": {
-      const encoding = $.scalar.getEncoding(type) ?? props.encoding;
-      return <ScalarDataTransform type={type} itemRef={props.itemRef} target={props.target} encoding={encoding}/>;
+      return <ScalarDataTransform type={type} itemRef={props.itemRef} target={props.target}/>;
     }
     default:
       return props.itemRef;

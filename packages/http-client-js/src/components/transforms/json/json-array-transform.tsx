@@ -21,7 +21,7 @@ export function JsonArrayTransform(props: JsonArrayTransformProps) {
 
   return ay.code`
     if(!${props.itemRef}) {
-      return undefined as any;
+      return ${props.itemRef} as any;
     }
     const _transformedArray = [];
 

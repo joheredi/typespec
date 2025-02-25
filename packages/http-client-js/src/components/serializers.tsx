@@ -9,6 +9,7 @@ import {
 } from "@typespec/emitter-framework/typescript";
 import { useClientLibrary } from "@typespec/http-client";
 import { flattenClients } from "../utils/client-discovery.js";
+import { EncodingProvider } from "./encoding-provider.jsx";
 import { DecodeBase64, EncodeUint8Array } from "./static-helpers/bytes-encoding.jsx";
 import { JsonTransformDeclaration } from "./transforms/json/json-transform.jsx";
 import { TransformDeclaration } from "./transforms/operation-transform-declaration.jsx";
@@ -33,11 +34,14 @@ export function ModelSerializers(props: ModelSerializersProps) {
       {operations.map(o => <TransformDeclaration operation={o} />)}
       {dataTypes
         .filter((m) => m.kind === "Model" || m.kind === "Union")
+        // Todo: Handle other kinds of serialization, for example XML. Might need to
+        // revisit the way we process these and might need to track the relationship
+        // between the data type and the operations that consume them.
         .map((type) => (
-          <>
+          <EncodingProvider defaults={{bytes: "base64"}}>
             <JsonTransformDeclaration type={type} target="transport" />
             <JsonTransformDeclaration type={type} target="application" />
-          </>          
+          </EncodingProvider>          
         ))}
     </ts.SourceFile>;
 }

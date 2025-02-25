@@ -3,6 +3,7 @@ import { isVoidType } from "@typespec/compiler";
 import { $ } from "@typespec/compiler/experimental/typekit";
 import { ClientOperation } from "@typespec/http-client";
 import { getCreateRestErrorRefkey } from "./static-helpers/rest-error.jsx";
+import { ContentTypeEncodingProvider } from "./transforms/content-type-encoding-provider.jsx";
 import { JsonTransform } from "./transforms/json/json-transform.jsx";
 export interface HttpResponseProps {
   operation: ClientOperation;
@@ -39,9 +40,9 @@ export function HttpResponses(props: HttpResponsesProps) {
 
       if (body && (body.bodyKind === "single" || (type && !isVoidType(type)))) {
         expression =
-          <>
+          <ContentTypeEncodingProvider contentType={contentType}>
             return <JsonTransform itemRef={"response.body"} target="application" type={body.type} />!;
-          </>;
+          </ContentTypeEncodingProvider>;
       }
 
       if ($.httpResponse.statusCode.isSingle(statusCode)) {

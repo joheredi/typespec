@@ -2,6 +2,7 @@ import { Children, code, Refkey } from "@alloy-js/core";
 import { BytesKnownEncoding, EncodeData, NoTarget, Scalar } from "@typespec/compiler";
 import { $ } from "@typespec/compiler/experimental/typekit";
 import * as ef from "@typespec/emitter-framework/typescript";
+import { useDefaultEncoding } from "../../context/encoding/encoding-context.jsx";
 import { reportDiagnostic } from "../../lib.js";
 import {
   getDecodeUint8ArrayRef,
@@ -45,32 +46,37 @@ const scalarTransformerMap = defineScalarTransformerMap({
 
   bytes: {
     toTransport: (itemRef, encoding) => {
-      if (!encoding?.encoding) {
-        return passthroughTransformer(itemRef);
-      }
-      const knownEncoding = encoding.encoding as BytesKnownEncoding;
-      switch (knownEncoding) {
+      const bytesEncoding: BytesKnownEncoding | undefined =
+        (encoding?.encoding as BytesKnownEncoding) ??
+        (useDefaultEncoding("bytes") as BytesKnownEncoding);
+      switch (bytesEncoding) {
         case "base64":
         case "base64url":
           const bytesEncodeRef = getEncodeUint8ArrayRef();
-          return code`${bytesEncodeRef}(${itemRef}, "${knownEncoding}")!`;
+          return code`${bytesEncodeRef}(${itemRef}, "${bytesEncoding}")!`;
         default:
-          reportDiagnostic($.program, { code: "unknown-encoding", target: encoding.type });
+          reportDiagnostic($.program, {
+            code: "unknown-encoding",
+            target: encoding?.type ?? NoTarget,
+          });
           return passthroughTransformer(itemRef);
       }
     },
     toApplication: (itemRef, encoding) => {
-      if (!encoding?.encoding) {
-        return passthroughTransformer(itemRef);
-      }
-      const knownEncoding = encoding.encoding as BytesKnownEncoding;
-      switch (knownEncoding) {
+      const bytesEncoding: BytesKnownEncoding | undefined =
+        (encoding?.encoding as BytesKnownEncoding) ??
+        (useDefaultEncoding("bytes") as BytesKnownEncoding);
+
+      switch (bytesEncoding) {
         case "base64":
         case "base64url":
           const bytesDecodeRef = getDecodeUint8ArrayRef();
           return code`${bytesDecodeRef}(${itemRef})!`;
         default:
-          reportDiagnostic($.program, { code: "unknown-encoding", target: encoding.type });
+          reportDiagnostic($.program, {
+            code: "unknown-encoding",
+            target: encoding?.type ?? NoTarget,
+          });
           return passthroughTransformer(itemRef);
       }
     },
@@ -163,7 +169,7 @@ const scalarTransformerMap = defineScalarTransformerMap({
   },
   utcDateTime: {
     toTransport: (itemRef, encoding) => {
-      const dateEncoding = encoding?.encoding ?? "rfc3339";
+      const dateEncoding = encoding?.encoding ?? useDefaultEncoding("datetime");
       let encodingFnRef: Refkey = ef.DateRfc3339SerializerRefkey;
       switch (dateEncoding) {
         case "unixTimestamp":
@@ -184,7 +190,7 @@ const scalarTransformerMap = defineScalarTransformerMap({
       return code`${encodingFnRef}(${itemRef})`;
     },
     toApplication: (itemRef, encoding) => {
-      const dateEncoding = encoding?.encoding ?? "rfc3339";
+      const dateEncoding = encoding?.encoding ?? useDefaultEncoding("datetime");
       let decodingFnRef: Refkey = ef.DateDeserializerRefkey;
       switch (dateEncoding) {
         case "unixTimestamp":

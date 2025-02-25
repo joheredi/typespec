@@ -1,8 +1,7 @@
 import * as ay from "@alloy-js/core";
 import { Children, mapJoin } from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
-import { EncodeData, ModelProperty } from "@typespec/compiler";
-import { $ } from "@typespec/compiler/experimental/typekit";
+import { ModelProperty } from "@typespec/compiler";
 import { useTransformNamePolicy } from "@typespec/emitter-framework";
 import { HttpProperty } from "@typespec/http";
 import { getDefaultValue } from "../utils/parameters.jsx";
@@ -53,13 +52,12 @@ export function HttpRequestParametersExpression(props: HttpRequestParametersExpr
       }
 
       const itemRef: ay.Children = parameter.optional ? ay.code`${optionsParamRef}?` : null;
-      const encoding = $.modelProperty.getEncoding(parameter) ?? getDefaultEncoding(parameter);
       if (parameter.optional) {
         return ay.code`
-        ...(${headerRef} && {${<JsonTransform itemRef={itemRef} type={parameter} target="transport" encoding={encoding}/>}})
+        ...(${headerRef} && {${<JsonTransform itemRef={itemRef} type={parameter} target="transport"/>}})
       `;
       } else {
-        return <JsonTransform itemRef={itemRef} type={parameter} target="transport" encoding={encoding}/>;
+        return <JsonTransform itemRef={itemRef} type={parameter} target="transport" />;
       }
     },
     { joiner: ",\n" },
@@ -70,17 +68,4 @@ export function HttpRequestParametersExpression(props: HttpRequestParametersExpr
   return <ts.ObjectExpression>
     {parameters}
   </ts.ObjectExpression>;
-}
-
-function getDefaultEncoding(prop: ModelProperty): EncodeData | undefined {
-  const type = prop.type;
-  if ($.scalar.isUtcDateTime(type) || $.scalar.extendsUtcDateTime(type)) {
-    return { type, encoding: "rfc3339" };
-  }
-
-  if ($.scalar.isBytes(type) || $.scalar.extendsBytes(type)) {
-    return { type, encoding: "base64url" };
-  }
-
-  return undefined;
 }

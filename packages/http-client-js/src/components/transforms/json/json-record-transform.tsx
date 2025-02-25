@@ -21,7 +21,7 @@ export function JsonRecordTransform(props: JsonRecordTransformProps) {
   // TODO: Do we need to cast?
   return ay.code`
     if(!${props.itemRef}) {
-      return undefined as any;
+      return ${props.itemRef} as any;
     }
       
     const _transformedRecord: any = {};

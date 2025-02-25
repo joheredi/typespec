@@ -27,7 +27,7 @@ export async function defaultEncoding(
 
   const httpRequestOptions = {
     headers: {
-      value: encodeUint8Array(value, "base64url")!,
+      value: encodeUint8Array(value, "base64")!,
     },
   };
 
@@ -74,7 +74,7 @@ export async function defaultEncoding(
   const httpRequestOptions = {
     headers: {
       ...(options?.value && {
-        value: encodeUint8Array(options?.value, "base64url")!,
+        value: encodeUint8Array(options?.value, "base64")!,
       }),
     },
   };

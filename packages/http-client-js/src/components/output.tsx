@@ -3,6 +3,7 @@ import * as ts from "@alloy-js/typescript";
 import { TransformNamePolicyContext } from "@typespec/emitter-framework";
 import { ClientLibrary } from "@typespec/http-client/components";
 import { httpParamsMutator } from "../utils/operations.js";
+import { EncodingProvider } from "./encoding-provider.jsx";
 import { httpRuntimeTemplateLib } from "./external-packages/ts-http-runtime.js";
 import { uriTemplateLib } from "./external-packages/uri-template.js";
 import { createTransformNamePolicy } from "./transforms/transform-name-policy.js";
@@ -17,7 +18,9 @@ export function Output(props: OutputProps) {
   return <ay.Output namePolicy={tsNamePolicy} externals={[uriTemplateLib, httpRuntimeTemplateLib]}>
     <ClientLibrary operationMutators={[httpParamsMutator]}>
       <TransformNamePolicyContext.Provider value={defaultTransformNamePolicy}>
-        {props.children}
+        <EncodingProvider>
+          {props.children}
+        </EncodingProvider>
       </TransformNamePolicyContext.Provider>
     </ClientLibrary>
     </ay.Output>;

@@ -26,7 +26,7 @@ export async function foo(
   const httpRequestOptions = {
     headers: {},
     body: {
-      profileImage: profileImage,
+      profileImage: encodeUint8Array(profileImage, "base64")!,
     },
   };
 

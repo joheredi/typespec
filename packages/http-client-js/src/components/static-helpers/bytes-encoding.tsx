@@ -28,7 +28,7 @@ export function DecodeBase64(): string {
   return <ts.FunctionDeclaration export name="decodeBase64"  parameters={{value: {type: "string", refkey: valueRef}}} returnType="Uint8Array | undefined"  refkey={refkey}>
     {ay.code` 
       if(!${valueRef}) {
-        return undefined as any;
+        return ${valueRef} as any;
       }
       // Normalize Base64URL to Base64
       const base64 = ${valueRef}.replace(/-/g, '+').replace(/_/g, '/')

@@ -1,13 +1,10 @@
 import * as ts from "@alloy-js/typescript";
 import { Type } from "@typespec/compiler";
 import { $ } from "@typespec/compiler/experimental/typekit";
-import {
-  HasName,
-  TransformNamePolicyContext,
-  useTransformNamePolicy,
-} from "@typespec/emitter-framework";
+import { HasName, TransformNamePolicyContext } from "@typespec/emitter-framework";
 import { ClientOperation } from "@typespec/http-client";
 import { reportDiagnostic } from "../../lib.js";
+import { ContentTypeEncodingProvider } from "./content-type-encoding-provider.jsx";
 import { JsonTransform } from "./json/json-transform.jsx";
 import { MultipartTransform } from "./multipart/multipart-transform.jsx";
 import { defaultTransportNameGetter } from "./transform-name-policy.js";
@@ -17,10 +14,7 @@ export interface OperationTransformToTransportExpression {
 }
 
 export function OperationTransformExpression(props: OperationTransformToTransportExpression) {
-  const namePolicy = useTransformNamePolicy();
   const body = props.operation.httpOperation.parameters.body;
-
-  // TODO: Handle content types other than application/json and multipart
 
   if (!body) {
     return;
@@ -32,10 +26,15 @@ export function OperationTransformExpression(props: OperationTransformToTranspor
     return <MultipartTransform body={body} />;
   }
 
+  // TODO: Handle content types other than application/json and multipart
+  // And multiple content types
+  const contentType = body.contentTypes[0];
   const payloadType = body.type;
-  return <TransformNamePolicyContext.Provider value={{ getTransportName: defaultTransportNameGetter, getApplicationName: payloadApplicationNameGetter }}>
+  return <ContentTypeEncodingProvider contentType={contentType}>
+    <TransformNamePolicyContext.Provider value={{ getTransportName: defaultTransportNameGetter, getApplicationName: payloadApplicationNameGetter }}>
       <JsonTransform itemRef={itemRef} target="transport" type={payloadType}  />
-  </TransformNamePolicyContext.Provider>;
+    </TransformNamePolicyContext.Provider>
+  </ContentTypeEncodingProvider>;
 }
 
 function payloadApplicationNameGetter(type: HasName<Type>) {

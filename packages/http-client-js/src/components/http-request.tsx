@@ -2,6 +2,7 @@ import { Children, code, refkey, Refkey } from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
 import { Reference } from "@alloy-js/typescript";
 import { ClientOperation } from "@typespec/http-client";
+import { EncodingProvider } from "./encoding-provider.jsx";
 import { uriTemplateLib } from "./external-packages/uri-template.js";
 import { HttpRequestOptions } from "./http-request-options.js";
 import { HttpRequestParametersExpression } from "./http-request-parameters-expression.js";
@@ -49,9 +50,9 @@ HttpRequest.Url = function HttpUrlDeclaration(props: HttpUrlProps) {
     (p) => p.kind === "path" || p.kind === "query",
   );
   const optionsParameter = getOperationOptionsParameterRefkey(props.operation.httpOperation);
-  return <>
+  return <EncodingProvider defaults={{bytes: "base64url"}}>
     <ts.VarDeclaration name="path" refkey={props.refkey}>
       {uriTemplateLib.parse}({JSON.stringify(urlTemplate)}).expand({<HttpRequestParametersExpression optionsParameter={optionsParameter!} parameters={urlParameters} />})
     </ts.VarDeclaration>
-  </>;
+  </EncodingProvider>;
 };

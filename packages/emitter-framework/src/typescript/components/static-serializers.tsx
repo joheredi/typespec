@@ -7,7 +7,7 @@ export function DateRfc3339Serializer() {
       <ts.FunctionDeclaration.Parameters>date?: Date</ts.FunctionDeclaration.Parameters>
       {code`
         if (!date) {
-          return undefined as any
+          return date as any
         }
 
         return date.toISOString();
@@ -21,7 +21,7 @@ export function DateRfc7231Serializer() {
       <ts.FunctionDeclaration.Parameters>date?: Date</ts.FunctionDeclaration.Parameters>
       {code`
         if (!date) {
-          return undefined as any;
+          return date as any;
         }
 
         return date.toUTCString();
@@ -35,7 +35,7 @@ export function DateDeserializer() {
       <ts.FunctionDeclaration.Parameters>date?: string</ts.FunctionDeclaration.Parameters>
       {code`
         if (!date) {
-          return undefined as any;
+          return date as any;
         }
 
         return new Date(date);
@@ -49,7 +49,7 @@ export function DateUnixTimestampDeserializer() {
       <ts.FunctionDeclaration.Parameters>date?: number</ts.FunctionDeclaration.Parameters>
       {code`
         if (!date) {
-          return undefined as any;
+          return date as any;
         }
 
         return new Date(date * 1000);
@@ -63,7 +63,7 @@ export function DateRfc7231Deserializer() {
       <ts.FunctionDeclaration.Parameters>date?: string</ts.FunctionDeclaration.Parameters>
       {code`
         if (!date) {
-          return undefined as any;
+          return date as any;
         }
 
         return new Date(date);
@@ -77,7 +77,7 @@ export function DateUnixTimestampSerializer() {
       <ts.FunctionDeclaration.Parameters>date?: Date</ts.FunctionDeclaration.Parameters>
       {code`
         if (!date) {
-          return undefined as any;
+          return date as any;
         }
 
         return Math.floor(date.getTime() / 1000);
@@ -93,7 +93,7 @@ export function RecordSerializer() {
       <ts.FunctionDeclaration.Parameters>record?: {recordType}, convertFn?: {convertFnType}</ts.FunctionDeclaration.Parameters>
       {code`
         if (!record) {
-          return undefined as any;
+          return record as any;
         }
         const output: Record<string, any> = {};
 
@@ -117,7 +117,7 @@ export function ArraySerializer() {
       <ts.FunctionDeclaration.Parameters>items?: {arrayType}, convertFn?: {convertFnType}</ts.FunctionDeclaration.Parameters>
       {code`
         if (!items) {
-          return undefined as any;
+          return items as any;
         }
           
         const output: any[] = [];

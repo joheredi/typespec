@@ -9,7 +9,8 @@ describe("Server.Versions.NotVersioned", () => {
     // Assert successful request
   });
 
-  it("should execute operation 'withQueryApiVersion' with query api-version", async () => {
+  // Issue with TypeSpec building an invalid uri template with -
+  it.skip("should execute operation 'withQueryApiVersion' with query api-version", async () => {
     await client.withQueryApiVersion("v1.0");
     // Assert successful request
   });

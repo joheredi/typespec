@@ -2,6 +2,7 @@ import * as ts from "@alloy-js/typescript";
 import { Type } from "@typespec/compiler";
 import { $ } from "@typespec/compiler/experimental/typekit";
 import * as ef from "@typespec/emitter-framework";
+import { kebabCase } from "change-case";
 import { reportDiagnostic } from "../../lib.js";
 
 export function useTransformNamePolicy(): ef.TransformNamePolicy {
@@ -113,7 +114,11 @@ export function defaultTransportNameGetter(
     reportDiagnostic($.program, { code: "symbol-name-not-supported", target: type });
     return "";
   }
-  const name = encoding ? $.type.getEncodedName(type, encoding) : type.name;
+  let name = encoding ? $.type.getEncodedName(type, encoding) : type.name;
+
+  if ($.modelProperty.is(type) && $.modelProperty.isHttpHeader(type)) {
+    name = kebabCase(name);
+  }
   return name;
 }
 

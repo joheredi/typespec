@@ -10,8 +10,8 @@ describe("SpecialHeaders.Repeatability", () => {
   });
 
   it("should recognize Repeatability-Request-ID and Repeatability-First-Sent headers", async () => {
-    const repeatabilityRequestID = "123e4567-e89b-12d3-a456-426614174000";
-    const repeatabilityFirstSent = new Date("2023-10-05T14:48:00.000Z");
+    const repeatabilityRequestID = "2378d9bc-1726-11ee-be56-0242ac120002";
+    const repeatabilityFirstSent = new Date("Tue, 15 Nov 2022 12:45:26 GMT");
 
     await client.immediateSuccess(repeatabilityRequestID, repeatabilityFirstSent);
   });

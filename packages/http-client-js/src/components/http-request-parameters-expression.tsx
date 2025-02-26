@@ -6,7 +6,6 @@ import { useTransformNamePolicy } from "@typespec/emitter-framework";
 import { HttpProperty } from "@typespec/http";
 import { getDefaultValue } from "../utils/parameters.jsx";
 import { JsonTransform } from "./transforms/json/json-transform.jsx";
-
 export interface HttpRequestParametersExpressionProps {
   optionsParameter: ay.Children;
   parameters?: HttpProperty[];
@@ -39,22 +38,22 @@ export function HttpRequestParametersExpression(props: HttpRequestParametersExpr
       const parameter = httpProperty.property;
 
       const defaultValue = getDefaultValue(httpProperty);
-      const headerName: ay.Children = transformNamer.getApplicationName(parameter);
+      const paramItemRef: ay.Children = transformNamer.getApplicationName(parameter);
 
-      const headerRef = ay.code`${optionsParamRef}?.${headerName}`;
+      const paramRef = ay.code`${optionsParamRef}?.${paramItemRef}`;
 
       if (defaultValue) {
         const defaultAssignment = defaultValue ? ` ?? ${defaultValue}` : "";
-        const headerValue = <>{headerRef}{defaultAssignment}</>;
+        const headerValue = <>{paramRef}{defaultAssignment}</>;
         const name = transformNamer.getTransportName(parameter);
-        const headerAssignment = <ts.ObjectProperty name={`"${name}"`} value={headerValue} />;
-        return headerAssignment;
+        const paramAssignment = <ts.ObjectProperty name={`"${name}"`} value={headerValue} />;
+        return paramAssignment;
       }
 
       const itemRef: ay.Children = parameter.optional ? ay.code`${optionsParamRef}?` : null;
       if (parameter.optional) {
         return ay.code`
-        ...(${headerRef} && {${<JsonTransform itemRef={itemRef} type={parameter} target="transport"/>}})
+        ...(${paramRef} && {${<JsonTransform itemRef={itemRef} type={parameter} target="transport"/>}})
       `;
       } else {
         return <JsonTransform itemRef={itemRef} type={parameter} target="transport" />;

@@ -17,19 +17,12 @@ describe("Versioning.RenamedFrom", () => {
 
     it("should handle 'newOp' with renamed properties and return the expected response", async () => {
       const body = {
+        enumProp: NewEnum.NewEnumMember,
         newProp: "foo",
-        enumProp: "newEnumMember",
         unionProp: 10,
       };
 
-      const response = await client.newOp(
-        {
-          enumProp: NewEnum.NewEnumMember,
-          newProp: "foo",
-          unionProp: 10,
-        },
-        "",
-      );
+      const response = await client.newOp(body, "bar");
       expect(response).toEqual(body); // Mock API expected to return the same body
     });
   });

@@ -70,6 +70,7 @@
     "typescript": "~5.7.3",
     "uri-template": "^2.0.0",
     "vitest": "^3.0.5",
-    "yargs": "^17.7.2"
+    "yargs": "^17.7.2",
+    "change-case": "^5.4.4"
   }
 }

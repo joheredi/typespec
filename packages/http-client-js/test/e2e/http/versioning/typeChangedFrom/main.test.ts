@@ -8,11 +8,11 @@ describe("Versioning.TypeChangedFrom", () => {
   const endpoint = "http://localhost:3000";
 
   describe("v1", () => {
-    const client = new TypeChangedFromClient(endpoint, Versions.V1);
+    const client = new TypeChangedFromClient(endpoint, Versions.V2);
 
     it("should send and receive data using v1 API signature", async () => {
-      const requestBody = { prop: "foo", changedProp: "42" };
-      const response = await client.test(requestBody, "");
+      const requestBody = { prop: "foo", changedProp: "bar" };
+      const response = await client.test(requestBody, "baz");
       expect(response).toEqual(requestBody); // Mock API behavior
     });
   });

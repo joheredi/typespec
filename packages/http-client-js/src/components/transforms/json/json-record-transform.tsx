@@ -64,7 +64,7 @@ export function JsonRecordTransformDeclaration(props: JsonRecordTransformDeclara
 
   const itemType = ay.code`Record<string, any>`;
   const returnType = props.target === "transport" ? "any" : itemType;
-  const inputType = props.target === "transport" ? itemType : "any";
+  const inputType = props.target === "transport" ? <>{itemType} | null</> : "any";
   const inputRef = ay.refkey();
 
   const parameters: Record<string, ts.ParameterDescriptor> = {

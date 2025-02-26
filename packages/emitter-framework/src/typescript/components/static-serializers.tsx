@@ -4,7 +4,7 @@ import * as ts from "@alloy-js/typescript";
 export const DateRfc3339SerializerRefkey = refkey();
 export function DateRfc3339Serializer() {
   return <ts.FunctionDeclaration export name="DateRfc3339Serializer" returnType="string" refkey={DateRfc3339SerializerRefkey}>
-      <ts.FunctionDeclaration.Parameters>date?: Date</ts.FunctionDeclaration.Parameters>
+      <ts.FunctionDeclaration.Parameters>date?: Date | null</ts.FunctionDeclaration.Parameters>
       {code`
         if (!date) {
           return date as any
@@ -18,7 +18,7 @@ export function DateRfc3339Serializer() {
 export const DateRfc7231SerializerRefkey = refkey();
 export function DateRfc7231Serializer() {
   return <ts.FunctionDeclaration export name="DateRfc7231Serializer" returnType="string" refkey={DateRfc7231SerializerRefkey}>
-      <ts.FunctionDeclaration.Parameters>date?: Date</ts.FunctionDeclaration.Parameters>
+      <ts.FunctionDeclaration.Parameters>date?: Date | null</ts.FunctionDeclaration.Parameters>
       {code`
         if (!date) {
           return date as any;
@@ -32,7 +32,7 @@ export function DateRfc7231Serializer() {
 export const DateDeserializerRefkey = refkey();
 export function DateDeserializer() {
   return <ts.FunctionDeclaration export name="DateDeserializer" returnType="Date" refkey={DateDeserializerRefkey}>
-      <ts.FunctionDeclaration.Parameters>date?: string</ts.FunctionDeclaration.Parameters>
+      <ts.FunctionDeclaration.Parameters>date?: string | null</ts.FunctionDeclaration.Parameters>
       {code`
         if (!date) {
           return date as any;
@@ -46,7 +46,7 @@ export function DateDeserializer() {
 export const DateUnixTimestampDeserializerRefkey = refkey();
 export function DateUnixTimestampDeserializer() {
   return <ts.FunctionDeclaration export name="DateUnixTimestampDeserializer" returnType="Date" refkey={DateUnixTimestampDeserializerRefkey}>
-      <ts.FunctionDeclaration.Parameters>date?: number</ts.FunctionDeclaration.Parameters>
+      <ts.FunctionDeclaration.Parameters>date?: number | null</ts.FunctionDeclaration.Parameters>
       {code`
         if (!date) {
           return date as any;
@@ -60,7 +60,7 @@ export function DateUnixTimestampDeserializer() {
 export const DateRfc7231DeserializerRefkey = refkey();
 export function DateRfc7231Deserializer() {
   return <ts.FunctionDeclaration export name="DateRfc7231Deserializer" returnType="Date" refkey={DateRfc7231DeserializerRefkey}>
-      <ts.FunctionDeclaration.Parameters>date?: string</ts.FunctionDeclaration.Parameters>
+      <ts.FunctionDeclaration.Parameters>date?: string | null</ts.FunctionDeclaration.Parameters>
       {code`
         if (!date) {
           return date as any;
@@ -74,7 +74,7 @@ export function DateRfc7231Deserializer() {
 export const DateUnixTimestampSerializerRefkey = refkey();
 export function DateUnixTimestampSerializer() {
   return <ts.FunctionDeclaration export name="DateUnixTimestampSerializer" returnType="number" refkey={DateUnixTimestampSerializerRefkey}>
-      <ts.FunctionDeclaration.Parameters>date?: Date</ts.FunctionDeclaration.Parameters>
+      <ts.FunctionDeclaration.Parameters>date?: Date | null</ts.FunctionDeclaration.Parameters>
       {code`
         if (!date) {
           return date as any;

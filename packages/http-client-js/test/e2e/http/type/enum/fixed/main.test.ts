@@ -20,6 +20,7 @@ describe("Type.Enum.Fixed", () => {
         await client.putUnknownValue("Weekend" as any);
         throw new Error("Expected error with status code 500 but request succeeded");
       } catch (err: any) {
+        console.error(err.response?.body);
         expect(err.response?.status).toBe("500");
       }
     });

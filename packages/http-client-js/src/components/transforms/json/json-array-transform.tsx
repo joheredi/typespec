@@ -63,7 +63,7 @@ export function JsonArrayTransformDeclaration(props: JsonArrayTransformDeclarati
 
   const itemType = ay.code`Array<${<ef.TypeExpression type={elementType} />}>`;
   const returnType = props.target === "transport" ? "any" : itemType;
-  const inputType = props.target === "transport" ? itemType : "any";
+  const inputType = props.target === "transport" ? <>{itemType} | null</> : "any";
   const inputRef = ay.refkey();
 
   const parameters: Record<string, ts.ParameterDescriptor> = {

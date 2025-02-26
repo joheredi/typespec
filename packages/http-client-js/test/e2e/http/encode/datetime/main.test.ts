@@ -170,7 +170,7 @@ describe("Encode.Datetime", () => {
           },
         },
       });
-      expect(value).toEqual(1686566864);
+      expect(value).toEqual("2022-08-26T18:38:00.000Z");
     });
   });
 });

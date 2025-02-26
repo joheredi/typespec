@@ -9,10 +9,10 @@ export function EncodeUint8Array(): string {
   const valueRef = ay.refkey();
   const encodingRef = ay.refkey();
   const refkey = getEncodeUint8ArrayRef();
-  return <ts.FunctionDeclaration export refkey={refkey} name="encodeUint8Array" parameters={{value: {type: "Uint8Array | undefined", refkey: valueRef,}, encoding: {type: "BufferEncoding", refkey: encodingRef}}} returnType="string | undefined">
+  return <ts.FunctionDeclaration export refkey={refkey} name="encodeUint8Array" parameters={{value: {type: "Uint8Array | undefined | null", refkey: valueRef,}, encoding: {type: "BufferEncoding", refkey: encodingRef}}} returnType="string | undefined">
    {ay.code`
       if (!${valueRef}) {
-        return undefined;
+        return ${valueRef} as any;
       }
       return Buffer.from(${valueRef}).toString(${encodingRef});
    `} 

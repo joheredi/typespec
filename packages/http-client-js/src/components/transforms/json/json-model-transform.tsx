@@ -58,7 +58,7 @@ export function JsonModelTransformDeclaration(
   );
 
   const returnType = props.target === "transport" ? "any" : ay.refkey(props.type);
-  const inputType = props.target === "transport" ? ay.refkey(props.type) : "any";
+  const inputType = props.target === "transport" ? <>{ay.refkey(props.type)} | null</> : "any";
   const inputRef = ay.refkey();
 
   const parameters: Record<string, ts.ParameterDescriptor> = {

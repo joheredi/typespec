@@ -34,7 +34,7 @@ describe("Parameters.Spread", () => {
     });
 
     it("should handle spread alias with inner model in parameters", async () => {
-      await client.spreadParameterWithInnerModel("1", "bar", "foo");
+      await client.spreadParameterWithInnerModel("1", "foo", "bar");
     });
 
     it("should handle spread alias with path and header parameters", async () => {
@@ -50,7 +50,7 @@ describe("Parameters.Spread", () => {
     });
 
     it("should handle spread alias containing another alias property as body", async () => {
-      await client.spreadParameterWithInnerAlias("1", "bar", 1, "foo");
+      await client.spreadParameterWithInnerAlias("1", "foo", 1, "bar");
     });
   });
 });

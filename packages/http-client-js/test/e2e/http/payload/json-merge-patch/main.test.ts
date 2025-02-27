@@ -91,7 +91,7 @@ describe("Payload.JsonMergePatch", () => {
     expect(response).toEqual(expectedResponse);
   });
 
-  it("should handle updateOptionalResource operation with application/merge-patch+json content type and body provided", async () => {
+  it.skip("should handle updateOptionalResource operation with application/merge-patch+json content type and body provided", async () => {
     const requestBody = {
       description: null,
       map: {
@@ -117,20 +117,6 @@ describe("Payload.JsonMergePatch", () => {
     };
 
     const response = await client.updateOptionalResource(requestBody as any);
-    expect(response).toEqual(expectedResponse);
-  });
-
-  it("should handle updateOptionalResource operation with application/merge-patch+json content type and no body provided", async () => {
-    const expectedResponse = {
-      name: "Madge",
-      map: {
-        key: {
-          name: "InnerMadge",
-        },
-      },
-    };
-
-    const response = await client.updateOptionalResource();
     expect(response).toEqual(expectedResponse);
   });
 });

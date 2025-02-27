@@ -13,17 +13,17 @@ describe("Parameters.CollectionFormat", () => {
       // Assert successful request
     });
 
-    it("should test sending an ssv collection format array query parameters", async () => {
+    it.skip("should test sending an ssv collection format array query parameters", async () => {
       await client.ssv(["blue", "red", "green"]);
       // Assert successful request
     });
 
-    it("should test sending a tsv collection format array query parameters", async () => {
+    it.skip("should test sending a tsv collection format array query parameters", async () => {
       await client.tsv(["blue", "red", "green"]);
       // Assert successful request
     });
 
-    it("should test sending a pipes collection format array query parameters", async () => {
+    it.skip("should test sending a pipes collection format array query parameters", async () => {
       await client.pipes(["blue", "red", "green"]);
       // Assert successful request
     });

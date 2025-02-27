@@ -52,8 +52,8 @@ describe("Versioning.Removed", () => {
         id: "123",
       };
       // Support versioning projections.s
-      // const response = await client.modelV3(body);
-      // expect(response).toEqual(body); // Mock API expected value
+      const response = await client.modelV3(body);
+      expect(response).toEqual(body); // Mock API expected value
     });
 
     it("should handle ModelV3 for v2", async () => {

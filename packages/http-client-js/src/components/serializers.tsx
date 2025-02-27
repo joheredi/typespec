@@ -22,6 +22,9 @@ export function ModelSerializers(props: ModelSerializersProps) {
   const dataTypes = clientLibrary.dataTypes;
   const flatClients = clientLibrary.topLevel.flatMap((c) => flattenClients(c));
   const operations = flatClients.flatMap((c) => c.operations);
+  // Todo: Handle other kinds of serialization, for example XML. Might need to
+  // revisit the way we process these and might need to track the relationship
+  // between the data type and the operations that consume them.
   return <ts.SourceFile path={props.path ?? "serializers.ts"}>
       <DecodeBase64 />
       <EncodeUint8Array />
@@ -34,9 +37,6 @@ export function ModelSerializers(props: ModelSerializersProps) {
       {operations.map(o => <TransformDeclaration operation={o} />)}
       {dataTypes
         .filter((m) => m.kind === "Model" || m.kind === "Union")
-        // Todo: Handle other kinds of serialization, for example XML. Might need to
-        // revisit the way we process these and might need to track the relationship
-        // between the data type and the operations that consume them.
         .map((type) => (
           <EncodingProvider defaults={{bytes: "base64"}}>
             <JsonTransformDeclaration type={type} target="transport" />

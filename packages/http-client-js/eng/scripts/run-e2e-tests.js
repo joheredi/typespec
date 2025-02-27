@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import chalk from "chalk";
 import { exec, spawn } from "child_process";
 import http from "http";

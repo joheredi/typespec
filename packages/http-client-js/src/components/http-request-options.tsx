@@ -36,7 +36,7 @@ HttpRequestOptions.Headers = function HttpRequestOptionsHeaders(
   );
 
   const optionsParam = getOperationOptionsParameterRefkey(props.operation.httpOperation);
-  return <EncodingProvider defaults={{bytes: "base64"}}><ts.ObjectProperty name="headers">
+  return <EncodingProvider defaults={{bytes: "base64", datetime: "rfc7231"}}><ts.ObjectProperty name="headers">
         <HttpRequestParametersExpression parameters={headers} optionsParameter={optionsParam} />,
     </ts.ObjectProperty></EncodingProvider>;
 };

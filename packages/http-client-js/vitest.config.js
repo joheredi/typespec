@@ -5,6 +5,7 @@ export default defineConfig({
   test: {
     include: ["test/**/*.test.ts", "test/**/*.test.tsx"],
     exclude: ["test/**/*.d.ts"],
+    passWithNoTests: true,
   },
   esbuild: {
     jsx: "preserve",

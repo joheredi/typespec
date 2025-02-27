@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import chalk from "chalk";
 import { readFile } from "fs/promises";
 import { dirname, join } from "path";

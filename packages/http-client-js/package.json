@@ -8,6 +8,8 @@
     "build-src": "babel src -d dist/src --extensions .ts,.tsx",
     "build": "tsc -p . && npm run build-src",
     "clean": "rimraf ./dist",
+    "lint": "eslint . --max-warnings=0",
+    "lint:fix": "eslint . --fix",
     "watch-src": "babel src -d dist/src --extensions .ts,.tsx --watch",
     "watch-tsc": "tsc -p . --watch",
     "watch": "concurrently --kill-others \"npm run watch-tsc\" \"npm run watch-src\"",
@@ -18,7 +20,7 @@
     "build:test": "tsc -p tsconfig.test.json",
     "start:server": "npx tsp-spector server start node_modules/@typespec/http-specs/specs --coverageFile ./tsp-spector-coverage-javascript-standard.json --debug",
     "stop:server": "npx tsp-spector server stop",
-    "test:e2e": "node eng/scripts/run-e2e-tests.js",
+    "test:e2e": "npm run emit:e2e && node eng/scripts/run-e2e-tests.js",
     "emit:e2e": "node eng/scripts/emit-e2e.js"
   },
   "keywords": [],

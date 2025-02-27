@@ -1,7 +1,7 @@
 [
   {
     "scenariosMetadata": {
-      "commit": "4df946dc8bfcab72090ea9020ddfff322e151211",
+      "commit": "e2e1374f56ea1dfcd7cfc1264d89c13f488b16ee",
       "version": "0.1.0-alpha.9",
       "packageName": "@typespec/http-specs"
     },
@@ -153,7 +153,7 @@
       "SpecialWords_Parameters_with": "pass",
       "SpecialWords_Parameters_yield": "pass",
       "SpecialWords_Parameters_cancellationToken": "pass",
-      "Authentication_ApiKey_invalid": "pass",
+      "Authentication_ApiKey_invalid": "not-implemented",
       "Authentication_ApiKey_valid": "pass",
       "Authentication_OAuth2_valid": "not-implemented",
       "Authentication_OAuth2_invalid": "not-implemented",
@@ -191,7 +191,7 @@
       "Encode_Datetime_Property_rfc7231": "pass",
       "Encode_Datetime_Property_unixTimestamp": "not-implemented",
       "Encode_Datetime_Property_unixTimestampArray": "not-implemented",
-      "Encode_Datetime_Header_default": "not-implemented",
+      "Encode_Datetime_Header_default": "pass",
       "Encode_Datetime_Header_rfc3339": "pass",
       "Encode_Datetime_Header_rfc7231": "pass",
       "Encode_Datetime_Header_unixTimestamp": "not-implemented",
@@ -240,10 +240,10 @@
       "Parameters_Spread_Alias_spreadAsRequestBody": "pass",
       "Parameters_Spread_Alias_spreadAsRequestParameter": "pass",
       "Parameters_Spread_Alias_spreadWithMultipleParameters": "pass",
-      "Parameters_Spread_Alias_spreadParameterWithInnerModel": "not-implemented",
-      "Parameters_Spread_Alias_spreadParameterWithInnerAlias": "not-implemented",
-      "Payload_ContentNegotiation_SameBody": "pass",
-      "Payload_ContentNegotiation_DifferentBody": "pass",
+      "Parameters_Spread_Alias_spreadParameterWithInnerModel": "pass",
+      "Parameters_Spread_Alias_spreadParameterWithInnerAlias": "pass",
+      "Payload_ContentNegotiation_SameBody": "not-implemented",
+      "Payload_ContentNegotiation_DifferentBody": "not-implemented",
       "Payload_JsonMergePatch_createResource": "pass",
       "Payload_JsonMergePatch_updateResource": "pass",
       "Payload_JsonMergePatch_updateOptionalResource": "not-implemented",
@@ -294,7 +294,7 @@
       "SpecialHeaders_ConditionalRequest_headIfModifiedSince": "pass",
       "SpecialHeaders_ConditionalRequest_postIfMatch": "not-implemented",
       "SpecialHeaders_ConditionalRequest_postIfNoneMatch": "not-implemented",
-      "SpecialHeaders_Repeatability_immediateSuccess": "not-implemented",
+      "SpecialHeaders_Repeatability_immediateSuccess": "pass",
       "Type_Array_Int32Value_get": "pass",
       "Type_Array_Int32Value_put": "pass",
       "Type_Array_Int64Value_get": "pass",
@@ -669,6 +669,6 @@
       "Type_Model_Inheritance_SingleDiscriminator_getWrongDiscriminator": "pass",
       "Type_Model_Inheritance_SingleDiscriminator_getLegacyModel": "pass"
     },
-    "createdAt": "2025-02-26T05:15:10.220Z"
+    "createdAt": "2025-02-27T01:23:57.187Z"
   }
 ]

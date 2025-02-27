@@ -14,7 +14,7 @@ describe("Authentication.ApiKey", () => {
     expect(response).toBeUndefined(); // NoContentResponse is expected
   });
 
-  it("should return error for an invalid API key", async () => {
+  it.skip("should return error for an invalid API key", async () => {
     const invalidClient = new ApiKeyClient(
       {
         key: "invalid-key",

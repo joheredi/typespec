@@ -26,9 +26,6 @@ describe("Type.Enum.Extensible", () => {
       try {
         await client.putUnknownValue("Weekend");
       } catch (err: any) {
-        if (err.response?.status !== "500") {
-          console.error(err.response?.body);
-        }
         expect(err.response?.status).toBe("500");
       }
       // Assert successful request

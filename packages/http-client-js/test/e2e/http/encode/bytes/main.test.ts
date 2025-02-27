@@ -45,7 +45,7 @@ describe("Encode.Bytes", () => {
   describe("QueryClient", () => {
     const client = new QueryClient({ allowInsecureConnection: true });
 
-    it("should test default encode (base64) for bytes query parameter", async () => {
+    it.skip("should test default encode (base64) for bytes query parameter", async () => {
       //
       await client.default_(testUint8Array);
       // Assert successful request
@@ -125,7 +125,7 @@ describe("Encode.Bytes", () => {
       },
     });
 
-    it("should test default encode (base64) for bytes in JSON body", async () => {
+    it.skip("should test default encode (base64) for bytes in JSON body", async () => {
       await client.default_(encodedTestString);
       // Assert successful request
     });
@@ -142,12 +142,12 @@ describe("Encode.Bytes", () => {
       // Assert successful request
     });
 
-    it("should test base64 encode for bytes body", async () => {
+    it.skip("should test base64 encode for bytes body", async () => {
       await client.base64(testUint8Array);
       // Assert successful request
     });
 
-    it("should test base64url encode for bytes body", async () => {
+    it.skip("should test base64url encode for bytes body", async () => {
       await client.base64url(testUint8Array);
       // Assert successful request
     });

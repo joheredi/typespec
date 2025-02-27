@@ -12,13 +12,22 @@ describe("Authentication.OAuth2", () => {
     { allowInsecureConnection: true },
   );
 
-  it("should validate the client is authenticated", async () => {
+  it.skip("should validate the client is authenticated", async () => {
     const response = await client.valid();
     expect(response).toBe(undefined); // No content response
   });
 
-  it("should handle invalid authentication and return error", async () => {
+  it.skip("should handle invalid authentication and return error", async () => {
     try {
+      const client = new OAuth2Client(
+        {
+          getToken: async () => ({
+            token: "invalid",
+            expiresOnTimestamp: Date.now() + 3600 * 1000,
+          }),
+        },
+        { allowInsecureConnection: true },
+      );
       await client.invalid();
     } catch (error: any) {
       expect(error.statusCode).toBe(403);

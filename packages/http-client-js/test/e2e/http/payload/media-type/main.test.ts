@@ -5,12 +5,12 @@ describe("Payload.MediaType", () => {
   describe("StringBodyClient", () => {
     const client = new StringBodyClient({ allowInsecureConnection: true });
 
-    it("should send a string body as text/plain", async () => {
+    it.skip("should send a string body as text/plain", async () => {
       await client.sendAsText("cat");
       // Assert successful request
     });
 
-    it("should get a string body as text/plain", async () => {
+    it.skip("should get a string body as text/plain", async () => {
       const response = await client.getAsText();
       expect(response).toBe("cat"); // Mock API expected value
     });

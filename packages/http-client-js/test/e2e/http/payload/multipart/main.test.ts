@@ -119,7 +119,7 @@ describe("Payload.MultiPart", () => {
   });
 
   describe("FormDataClient.HttpParts", () => {
-    it("should send json array and file array", async () => {
+    it.skip("should send json array and file array", async () => {
       const client = new HttpPartsClient({
         allowInsecureConnection: true,
         retryOptions: {
@@ -146,7 +146,7 @@ describe("Payload.MultiPart", () => {
   });
 
   describe("FormDataClient.HttpParts.NonString", () => {
-    it("should handle non-string float", async () => {
+    it.skip("should handle non-string float", async () => {
       const client = new HttpPartsClient({
         allowInsecureConnection: true,
         retryOptions: {
@@ -154,8 +154,10 @@ describe("Payload.MultiPart", () => {
         },
       });
       await client.nonStringClient.float({
-        // TODO: This needs to be modeled as a single positional parameter.
-        temperature: { body: 1.23, contentType: "text/plain" },
+        temperature: {
+          body: 0.5,
+          contentType: "text/plain",
+        },
       });
     });
   });

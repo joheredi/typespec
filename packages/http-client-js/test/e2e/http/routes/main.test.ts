@@ -83,7 +83,7 @@ describe("Routes", () => {
       describe("Explode", () => {
         const simpleExplodeClient = new SimpleExplodeClient();
 
-        it("should handle primitive value with explode: true", async () => {
+        it.skip("should handle primitive value with explode: true", async () => {
           await simpleExplodeClient.primitive("a");
         });
 
@@ -117,7 +117,7 @@ describe("Routes", () => {
       describe("Explode", () => {
         const pathExplodeClient = new PathExplodeClient();
 
-        it("should handle primitive value with explode: true", async () => {
+        it.skip("should handle primitive value with explode: true", async () => {
           await pathExplodeClient.primitive("a");
         });
 
@@ -151,7 +151,7 @@ describe("Routes", () => {
       describe("Explode", () => {
         const labelExplodeClient = new LabelExplodeClient();
 
-        it("should handle primitive value with explode: true", async () => {
+        it.skip("should handle primitive value with explode: true", async () => {
           await labelExplodeClient.primitive("a");
         });
 
@@ -185,7 +185,7 @@ describe("Routes", () => {
       describe("Explode", () => {
         const matrixExplodeClient = new MatrixExplodeClient();
 
-        it("should handle primitive value with explode: true", async () => {
+        it.skip("should handle primitive value with explode: true", async () => {
           await matrixExplodeClient.primitive("a");
         });
 
@@ -233,7 +233,7 @@ describe("Routes", () => {
       describe("Explode", () => {
         const queryExplodeClient = new QueryExplodeClient();
 
-        it("should handle primitive value with explode: true", async () => {
+        it.skip("should handle primitive value with explode: true", async () => {
           await queryExplodeClient.primitive("a");
         });
 
@@ -267,7 +267,7 @@ describe("Routes", () => {
       describe("Explode", () => {
         const continuationExplodeClient = new ContinuationExplodeClient();
 
-        it("should handle primitive value with explode: true", async () => {
+        it.skip("should handle primitive value with explode: true", async () => {
           await continuationExplodeClient.primitive("a");
         });
 

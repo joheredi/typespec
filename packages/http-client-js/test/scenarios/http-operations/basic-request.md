@@ -22,23 +22,22 @@ interface Widgets {
 ### Request
 
 ```ts src/api/widgetsClient/widgetsClientOperations.ts function read
-export async function read(client: WidgetsClientContext, options?: ReadOptions): Promise<void> {
+export async function read(
+  client: WidgetsClientContext,
+  options?: ReadOptions,
+): Promise<void> {
   const path = parse("/widgets").expand({});
-
   const httpRequestOptions = {
     headers: {},
   };
-
   const response = await client.pathUnchecked(path).get(httpRequestOptions);
 
   if (typeof options?.operationOptions?.onResponse === "function") {
     options?.operationOptions?.onResponse(response);
   }
-
   if (+response.status === 204 && !response.body) {
     return;
   }
-
   throw createRestError(response);
 }
 ```
@@ -87,7 +86,6 @@ export async function read(
     id: id,
     foo: foo,
   });
-
   const httpRequestOptions = {
     headers: {
       etag: etag,
@@ -96,17 +94,14 @@ export async function read(
       name: name,
     },
   };
-
   const response = await client.pathUnchecked(path).post(httpRequestOptions);
 
   if (typeof options?.operationOptions?.onResponse === "function") {
     options?.operationOptions?.onResponse(response);
   }
-
   if (+response.status === 204 && !response.body) {
     return;
   }
-
   throw createRestError(response);
 }
 ```
@@ -141,22 +136,18 @@ export async function read(
   options?: ReadOptions,
 ): Promise<void> {
   const path = parse("/widgets").expand({});
-
   const httpRequestOptions = {
     headers: {},
     body: count,
   };
-
   const response = await client.pathUnchecked(path).get(httpRequestOptions);
 
   if (typeof options?.operationOptions?.onResponse === "function") {
     options?.operationOptions?.onResponse(response);
   }
-
   if (+response.status === 204 && !response.body) {
     return;
   }
-
   throw createRestError(response);
 }
 ```

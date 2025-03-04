@@ -37,7 +37,6 @@ import {
 
 export class FooClient {
   #context: FooClientContext;
-
   constructor(endpoint: string, options?: FooClientOptions) {
     this.#context = createFooClientContext(endpoint, options);
   }
@@ -51,7 +50,12 @@ It should generate a client for Bar with `create` and `get` operations as define
 
 ```ts src/barClient.ts
 import { BarItem } from "./models/models.js";
-import { GetOptions, get, CreateOptions, create } from "./api/barClientOperations.js";
+import {
+  GetOptions,
+  get,
+  CreateOptions,
+  create,
+} from "./api/barClientOperations.js";
 import {
   BarClientContext,
   BarClientOptions,
@@ -60,7 +64,6 @@ import {
 
 export class BarClient {
   #context: BarClientContext;
-
   constructor(endpoint: string, options?: BarClientOptions) {
     this.#context = createBarClientContext(endpoint, options);
   }

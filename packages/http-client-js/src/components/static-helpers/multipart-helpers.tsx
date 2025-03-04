@@ -22,7 +22,7 @@ export function MultipartHelpers(props: MultipartHelpersProps) {
     filename?: string;
     </ts.InterfaceDeclaration>
     <ts.TypeDeclaration name="FileContents" export kind="type" refkey={getFileContentsTypeReference()}>
-      {ay.mapJoin(["string", "NodeJS.ReadableStream", "ReadableStream<Uint8Array>", "Uint8Array", "Blob"], (t) => t, {joiner: " | "})}
+      {ay.mapJoin(() => ["string", "NodeJS.ReadableStream", "ReadableStream<Uint8Array>", "Uint8Array", "Blob"], (t) => t, {joiner: " | "})}
     </ts.TypeDeclaration>
     <ts.FunctionDeclaration name="createFilePartDescriptor" parameters={getCreateFilePartParameters()} export returnType="any" refkey={getCreateFilePartDescriptorReference()}>
       {ay.code`

@@ -57,7 +57,7 @@ function buildClientParameterDescriptor(
       {
         refkey: ay.refkey(modelProperty),
         optional: modelProperty.optional,
-        type: ay.mapJoin(credentialType, (t) => t, { joiner: " | " }),
+        type: ay.mapJoin(() => credentialType, (t) => t, { joiner: " | " }),
       },
     ];
   }

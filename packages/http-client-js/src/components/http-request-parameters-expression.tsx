@@ -1,7 +1,5 @@
 import * as ay from "@alloy-js/core";
-import { Children, mapJoin } from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
-import { ModelProperty } from "@typespec/compiler";
 import { useTransformNamePolicy } from "@typespec/emitter-framework";
 import { HttpProperty } from "@typespec/http";
 import { getDefaultValue } from "../utils/parameters.jsx";
@@ -9,11 +7,11 @@ import { JsonTransform } from "./transforms/json/json-transform.jsx";
 export interface HttpRequestParametersExpressionProps {
   optionsParameter: ay.Children;
   parameters?: HttpProperty[];
-  children?: Children;
+  children?: ay.Children;
 }
 
 export function HttpRequestParametersExpression(props: HttpRequestParametersExpressionProps) {
-  const parameters: (ModelProperty | Children)[] = [];
+  const parameters: ay.Children[] = [];
   const transformNamer = useTransformNamePolicy();
 
   if (props.children || (Array.isArray(props.children) && props.children.length)) {
@@ -32,9 +30,8 @@ export function HttpRequestParametersExpression(props: HttpRequestParametersExpr
   }
 
   const optionsParamRef = props.optionsParameter ?? "options";
-  const members = mapJoin(
-    props.parameters,
-    (httpProperty) => {
+  const members = <ay.For each={props.parameters} line comma>
+    {(httpProperty) => {
       const parameter = httpProperty.property;
 
       const defaultValue = getDefaultValue(httpProperty);
@@ -58,11 +55,10 @@ export function HttpRequestParametersExpression(props: HttpRequestParametersExpr
       } else {
         return <JsonTransform itemRef={itemRef} type={parameter} target="transport" />;
       }
-    },
-    { joiner: ",\n" },
-  );
+    }}
+  </ay.For>;
 
-  parameters.push(...members);
+  parameters.push(members);
 
   return <ts.ObjectExpression>
     {parameters}

@@ -20,9 +20,9 @@ export function ClientContextOptionsDeclaration(props: ClientContextOptionsDecla
   const clientOptions: Map<string, ay.Children> = new Map();
 
   return <ts.InterfaceDeclaration export name={name} refkey={ref} extends={<ts.Reference refkey={httpRuntimeTemplateLib.ClientOptions}/>}>
-        {ay.mapJoin(clientOptions, (key, value) => (
-          <ts.InterfaceMember optional name={key} type={value} />
-        ), { joiner: ";\n" })}
-        <ts.InterfaceMember optional name="endpoint" type="string" />
+          <ay.For each={Array.from(clientOptions.entries())} semicolon line>
+            {([key, value]) => <ts.InterfaceMember optional name={key} type={value} />}
+          </ay.For>
+          <ts.InterfaceMember optional name="endpoint" type="string" />;
       </ts.InterfaceDeclaration>;
 }

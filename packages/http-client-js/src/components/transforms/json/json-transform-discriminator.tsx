@@ -41,7 +41,7 @@ export function JsonTransformDiscriminator(props: JsonTransformDiscriminatorProp
   // Need to cast to make sure that the general types which usually have a broader
   // type in the discriminator are compatible.
   const itemRef = ay.code`${props.itemRef} as any`;
-  const discriminatingCases = ay.mapJoin(
+  const discriminatingCases = ay.mapJoin(() => 
     discriminatedUnion.variants,
     (name, variant) => {
       return ay.code`

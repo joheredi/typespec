@@ -23,9 +23,9 @@ export function ClientOperations(props: ClientOperationsProps) {
   }
 
   return <ts.SourceFile path={`${fileName}.ts`}>
-  {ay.mapJoin(clientOperations, (operation) => {
-    return <ClientOperation clientOperation={operation} />;
-  })}
+    <ay.For each={clientOperations}>
+      {(operation) => <ClientOperation clientOperation={operation} />}
+    </ay.For>
 </ts.SourceFile>;
 }
 

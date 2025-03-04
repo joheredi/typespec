@@ -1,4 +1,4 @@
-import { Children, code, mapJoin, Refkey } from "@alloy-js/core";
+import { Children, code, For, Refkey } from "@alloy-js/core";
 import { isVoidType } from "@typespec/compiler";
 import { $ } from "@typespec/compiler/experimental/typekit";
 import { ClientOperation } from "@typespec/http-client";
@@ -27,12 +27,11 @@ export interface HttpResponsesProps {
 export function HttpResponses(props: HttpResponsesProps) {
   // Handle response by status code and content type
   const responses = $.httpOperation.flattenResponses(props.operation.httpOperation);
-  return mapJoin(
-    responses.filter((r) => !$.httpResponse.isErrorResponse(r)),
-    ({ statusCode, contentType, responseContent, type }) => {
+  return <For each={responses.filter((r) => !$.httpResponse.isErrorResponse(r))}>
+    {({ statusCode, contentType, responseContent, type }) => {
       const body = responseContent.body;
 
-      let expression = code`return;`;
+      let expression: Children = code`return;`;
 
       const contentTypeCheck = body
         ? ` && response.headers["content-type"]?.includes("${contentType}")`
@@ -62,7 +61,6 @@ export function HttpResponses(props: HttpResponsesProps) {
       }
 
       return null;
-    },
-    { joiner: "\n\n" },
-  );
+    }}
+    </For>
 }

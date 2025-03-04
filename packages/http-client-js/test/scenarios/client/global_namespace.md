@@ -17,7 +17,10 @@ export interface ClientContext extends Client {}
 ```
 
 ```ts src/api/clientContext.ts function createClientContext
-export function createClientContext(endpoint: string, options?: ClientOptions): ClientContext {
+export function createClientContext(
+  endpoint: string,
+  options?: ClientOptions,
+): ClientContext {
   const params: Record<string, any> = {
     endpoint: endpoint,
   };
@@ -39,7 +42,6 @@ It should generate a client for the Global Namespace with a single operation `fo
 ```ts src/client.ts class Client
 export class Client {
   #context: ClientContext;
-
   constructor(endpoint: string, options?: ClientOptions) {
     this.#context = createClientContext(endpoint, options);
   }
@@ -52,23 +54,22 @@ export class Client {
 It should generate an operation for foo
 
 ```ts src/api/clientOperations.ts function foo
-export async function foo(client: ClientContext, options?: FooOptions): Promise<void> {
+export async function foo(
+  client: ClientContext,
+  options?: FooOptions,
+): Promise<void> {
   const path = parse("/").expand({});
-
   const httpRequestOptions = {
     headers: {},
   };
-
   const response = await client.pathUnchecked(path).get(httpRequestOptions);
 
   if (typeof options?.operationOptions?.onResponse === "function") {
     options?.operationOptions?.onResponse(response);
   }
-
   if (+response.status === 204 && !response.body) {
     return;
   }
-
   throw createRestError(response);
 }
 ```

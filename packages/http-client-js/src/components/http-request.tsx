@@ -1,4 +1,4 @@
-import { Children, code, refkey, Refkey } from "@alloy-js/core";
+import { Children, code, refkey, Refkey, StatementList } from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
 import { Reference } from "@alloy-js/typescript";
 import { ClientOperation } from "@typespec/http-client";
@@ -18,7 +18,7 @@ export function HttpRequest(props: HttpRequestProps) {
   const requestOptionsRefkey = refkey();
   const httpResponseRefkey = props.responseRefkey ?? refkey();
   const verb = props.operation.httpOperation.verb;
-  return <>
+  return <StatementList>
     <HttpRequest.Url operation={props.operation}  refkey={operationUrlRefkey}/>
     
     <HttpRequestOptions operation={props.operation} refkey={requestOptionsRefkey}  />
@@ -34,7 +34,7 @@ export function HttpRequest(props: HttpRequestProps) {
       `}
       
     </ts.VarDeclaration>
-  </>;
+  </StatementList>;
 }
 
 export interface HttpUrlProps {

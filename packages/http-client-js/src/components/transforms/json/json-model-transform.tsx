@@ -30,9 +30,11 @@ export function JsonModelTransform(props: JsonModelTransformProps) {
   return <ts.ObjectExpression>
     <JsonAdditionalPropertiesTransform itemRef={props.itemRef} target={props.target} type={props.type} />
     {discriminator ? <>...{discriminate}({props.itemRef}),</>: null}
-    {ay.mapJoin(properties, (property) => {
+    <ay.For each={properties} joiner="," line>
+      {(property) => {
       return <JsonModelPropertyTransform itemRef={props.itemRef} type={property} target={props.target} />;
-    }, {joiner: ",\n"})}
+    }}
+    </ay.For>
   </ts.ObjectExpression>;
 }
 

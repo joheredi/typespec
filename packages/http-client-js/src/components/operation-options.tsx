@@ -19,8 +19,11 @@ export function OperationOptionsDeclaration(props: OperationOptionsProps) {
   );
 
   return <ts.InterfaceDeclaration export name={interfaceName} extends={getOperationOptionsInterfaceRefkey()} refkey={getOperationOptionsTypeRefkey(props.operation)}>
-    {ay.mapJoin(optionalParameters, (parameter) => (
-      <ts.InterfaceMember name={parameter.property.name} optional type={<ef.TypeExpression type={parameter.property.type} />} />
-    ))}
+    <ay.For each={optionalParameters} line>
+      {(parameter) => 
+        <ts.InterfaceMember name={parameter.property.name} optional type={<ef.TypeExpression type={parameter.property.type} />} />
+        }
+    </ay.For>
+
   </ts.InterfaceDeclaration>;
 }

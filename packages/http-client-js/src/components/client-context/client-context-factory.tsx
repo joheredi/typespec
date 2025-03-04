@@ -50,7 +50,7 @@ export function ClientContextFactoryDeclaration(props: ClientContextFactoryProps
   parameters={parameters}
 >
   {resolvedEndpoint}
-  return <ts.FunctionCallExpression refkey={httpRuntimeTemplateLib.getClient} args={[args]} />
+  return <ts.FunctionCallExpression target={httpRuntimeTemplateLib.getClient} args={[args]} />
 </FunctionDeclaration>;
 }
 
@@ -137,6 +137,8 @@ function ClientOptionsExpression(props: ClientOptionsExpressionProps) {
   }
 
   return <ts.ObjectExpression>
-    {ay.mapJoin(options, (child) => child, { joiner: ", " })}
+    <ay.For each={options} joiner="," line>
+      {(child) => child}
+    </ay.For>
   </ts.ObjectExpression>;
 }

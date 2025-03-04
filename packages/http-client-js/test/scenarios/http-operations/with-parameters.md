@@ -43,7 +43,6 @@ export async function read(
     id: id,
     foo: foo,
   });
-
   const httpRequestOptions = {
     headers: {
       etag: etag,
@@ -52,17 +51,14 @@ export async function read(
       name: name,
     },
   };
-
   const response = await client.pathUnchecked(path).post(httpRequestOptions);
 
   if (typeof options?.operationOptions?.onResponse === "function") {
     options?.operationOptions?.onResponse(response);
   }
-
   if (+response.status === 204 && !response.body) {
     return;
   }
-
   throw createRestError(response);
 }
 ```
@@ -74,11 +70,16 @@ It should generate the client class with the read operation that calls the opera
 ```ts src/demoServiceClient.ts class WidgetsClient
 export class WidgetsClient {
   #context: WidgetsClientContext;
-
   constructor(endpoint: string, options?: WidgetsClientOptions) {
     this.#context = createWidgetsClientContext(endpoint, options);
   }
-  async read(id: string, etag: string, foo: string, name: string, options?: ReadOptions) {
+  async read(
+    id: string,
+    etag: string,
+    foo: string,
+    name: string,
+    options?: ReadOptions,
+  ) {
     return read(this.#context, id, etag, foo, name, options);
   }
 }

@@ -11,9 +11,6 @@ importers:
 
   .:
     devDependencies:
-      '@alloy-js/prettier-plugin-alloy':
-        specifier: ^0.1.0
-        version: 0.1.0
       '@chronus/chronus':
         specifier: ^0.16.0
         version: 0.16.0
@@ -123,7 +120,7 @@ importers:
     dependencies:
       '@astrojs/check':
         specifier: ^0.9.4
-        version: 0.9.4(prettier-plugin-astro@0.14.1)(prettier@3.4.2)(typescript@5.7.3)
+        version: 0.9.4(prettier-plugin-astro@0.14.1)(prettier@3.5.3)(typescript@5.7.3)
       '@astrojs/starlight':
         specifier: ^0.31.1
         version: 0.31.1(astro@5.1.8(@azure/identity@4.6.0)(@azure/storage-blob@12.26.0)(@types/node@22.10.10)(jiti@1.21.6)(rollup@4.34.6)(tsx@4.19.2)(typescript@5.7.3)(yaml@2.7.0))
@@ -408,11 +405,11 @@ importers:
   packages/emitter-framework:
     dependencies:
       '@alloy-js/core':
-        specifier: ^0.5.0
-        version: 0.5.0
+        specifier: https://pkg.pr.new/alloy-framework/alloy/@alloy-js/core@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9
+        version: https://pkg.pr.new/alloy-framework/alloy/@alloy-js/core@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9
       '@alloy-js/typescript':
-        specifier: ^0.5.0
-        version: 0.5.0
+        specifier: https://pkg.pr.new/alloy-framework/alloy/@alloy-js/typescript@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9
+        version: https://pkg.pr.new/alloy-framework/alloy/@alloy-js/typescript@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9
       '@typespec/compiler':
         specifier: workspace:~
         version: link:../compiler
@@ -424,8 +421,8 @@ importers:
         version: link:../rest
     devDependencies:
       '@alloy-js/babel-preset':
-        specifier: ^0.1.1
-        version: 0.1.1(@babel/core@7.26.0)
+        specifier: https://pkg.pr.new/alloy-framework/alloy/@alloy-js/babel-preset@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9
+        version: https://pkg.pr.new/alloy-framework/alloy/@alloy-js/babel-preset@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9(@babel/core@7.26.0)
       '@babel/cli':
         specifier: ^7.24.8
         version: 7.26.4(@babel/core@7.26.0)
@@ -666,8 +663,8 @@ importers:
   packages/http-client:
     dependencies:
       '@alloy-js/core':
-        specifier: ^0.5.0
-        version: 0.5.0
+        specifier: https://pkg.pr.new/alloy-framework/alloy/@alloy-js/core@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9
+        version: https://pkg.pr.new/alloy-framework/alloy/@alloy-js/core@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9
       '@typespec/compiler':
         specifier: workspace:~
         version: link:../compiler
@@ -676,8 +673,8 @@ importers:
         version: link:../http
     devDependencies:
       '@alloy-js/babel-preset':
-        specifier: ^0.1.1
-        version: 0.1.1(@babel/core@7.26.0)
+        specifier: https://pkg.pr.new/alloy-framework/alloy/@alloy-js/babel-preset@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9
+        version: https://pkg.pr.new/alloy-framework/alloy/@alloy-js/babel-preset@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9(@babel/core@7.26.0)
       '@babel/cli':
         specifier: ^7.24.8
         version: 7.26.4(@babel/core@7.26.0)
@@ -709,11 +706,11 @@ importers:
   packages/http-client-js:
     dependencies:
       '@alloy-js/core':
-        specifier: ^0.5.0
-        version: 0.5.0
+        specifier: https://pkg.pr.new/alloy-framework/alloy/@alloy-js/core@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9
+        version: https://pkg.pr.new/alloy-framework/alloy/@alloy-js/core@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9
       '@alloy-js/typescript':
-        specifier: ^0.5.0
-        version: 0.5.0
+        specifier: https://pkg.pr.new/alloy-framework/alloy/@alloy-js/typescript@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9
+        version: https://pkg.pr.new/alloy-framework/alloy/@alloy-js/typescript@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9
       '@typespec/compiler':
         specifier: workspace:~
         version: link:../compiler
@@ -734,8 +731,8 @@ importers:
         version: 3.4.2
     devDependencies:
       '@alloy-js/babel-preset':
-        specifier: ^0.1.1
-        version: 0.1.1(@babel/core@7.26.0)
+        specifier: https://pkg.pr.new/alloy-framework/alloy/@alloy-js/babel-preset@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9
+        version: https://pkg.pr.new/alloy-framework/alloy/@alloy-js/babel-preset@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9(@babel/core@7.26.0)
       '@babel/cli':
         specifier: ^7.24.8
         version: 7.26.4(@babel/core@7.26.0)
@@ -2356,7 +2353,7 @@ importers:
     dependencies:
       '@astrojs/check':
         specifier: ^0.9.4
-        version: 0.9.4(prettier-plugin-astro@0.14.1)(prettier@3.4.2)(typescript@5.7.3)
+        version: 0.9.4(prettier-plugin-astro@0.14.1)(prettier@3.5.3)(typescript@5.7.3)
       '@astrojs/react':
         specifier: ^4.1.6
         version: 4.1.6(@types/node@22.10.10)(@types/react-dom@18.3.1)(@types/react@18.3.12)(jiti@1.21.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tsx@4.19.2)(yaml@2.7.0)
@@ -2629,28 +2626,29 @@ packages:
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
     engines: {node: '>=10'}
 
-  '@alloy-js/babel-plugin-jsx-dom-expressions@0.37.21':
-    resolution: {integrity: sha512-1ULoB6jxSgeRBnR9ktOqj6jewUc3zNRzx4sk8shyqwaD9kLKJ03cObmTFn0xDR3Y3JOP3TmhobL4/niycPyWYA==}
+  '@alloy-js/babel-plugin-jsx-dom-expressions@https://pkg.pr.new/alloy-framework/alloy/@alloy-js/babel-plugin-jsx-dom-expressions@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9':
+    resolution: {tarball: https://pkg.pr.new/alloy-framework/alloy/@alloy-js/babel-plugin-jsx-dom-expressions@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9}
+    version: 0.37.21
     peerDependencies:
       '@babel/core': ^7.24.7
 
-  '@alloy-js/babel-plugin@0.1.0':
-    resolution: {integrity: sha512-G4Is8ZECXVkbbSXvitMqJOfWeWYmd+ZRdnLxk9MGOrw/N2Sh/d8QXx9rI1DNJuMNf3wi3iE60p5srhtUGNLt8g==}
+  '@alloy-js/babel-plugin@https://pkg.pr.new/alloy-framework/alloy/@alloy-js/babel-plugin@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9':
+    resolution: {tarball: https://pkg.pr.new/alloy-framework/alloy/@alloy-js/babel-plugin@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9}
+    version: 0.1.0
     peerDependencies:
       '@babel/core': ^7.24.7
 
-  '@alloy-js/babel-preset@0.1.1':
-    resolution: {integrity: sha512-sX3nb9+qciBXTaafIYYa/aW3FFZPcSIWm7VFwz134nFJu79jMS+JgsBgcL+md6zH4Vf9WPE/8V1E4LX9WdxS1A==}
+  '@alloy-js/babel-preset@https://pkg.pr.new/alloy-framework/alloy/@alloy-js/babel-preset@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9':
+    resolution: {tarball: https://pkg.pr.new/alloy-framework/alloy/@alloy-js/babel-preset@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9}
+    version: 0.1.1
 
-  '@alloy-js/core@0.5.0':
-    resolution: {integrity: sha512-EGmjQ8f02xeKPchq3fLlRhK5mt1acce9x0eG1MLOGidNY/PNPlwm6McgT4kSlTIvqGB1R8S64MQQIh86fOpDhQ==}
+  '@alloy-js/core@https://pkg.pr.new/alloy-framework/alloy/@alloy-js/core@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9':
+    resolution: {tarball: https://pkg.pr.new/alloy-framework/alloy/@alloy-js/core@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9}
+    version: 0.5.0
 
-  '@alloy-js/prettier-plugin-alloy@0.1.0':
-    resolution: {integrity: sha512-mFfag8sQm5gPJMoGvJNc1fx66Z3X3nxCeoiitBeFnd5nkBMsMnvVw6LZSrVyybt2qTzY+G/9Qvz3ULkW7RB15Q==}
-    engines: {node: '>=18.0.0'}
-
-  '@alloy-js/typescript@0.5.0':
-    resolution: {integrity: sha512-asIUIxqCJDBw3HINDdy+mj5vWm3FUCLlXxfSuydyCzmFvVIfMz2TLQGa660CNx98KLsNzCWegmXnsC5QYH3rbg==}
+  '@alloy-js/typescript@https://pkg.pr.new/alloy-framework/alloy/@alloy-js/typescript@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9':
+    resolution: {tarball: https://pkg.pr.new/alloy-framework/alloy/@alloy-js/typescript@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9}
+    version: 0.5.0
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -11498,6 +11496,11 @@ packages:
     engines: {node: '>=14'}
     hasBin: true
 
+  prettier@3.5.3:
+    resolution: {integrity: sha512-QQtaxnoDJeAkDvDKWCLiwIXkTgRhwYDEQCghU9Z6q03iyek/rxRh/2lC3HB7P8sWT2xC/y5JDctPLBIGzHKbhw==}
+    engines: {node: '>=14'}
+    hasBin: true
+
   pretty-bytes@5.6.0:
     resolution: {integrity: sha512-FFw039TmrBqFK8ma/7OL3sDz/VytdtJr044/QUJtH0wK9lb9jLq9tJyIxUwtQJHwar2BqtiA4iCWSwo9JLkzFg==}
     engines: {node: '>=6'}
@@ -14032,7 +14035,7 @@ snapshots:
 
   '@alloc/quick-lru@5.2.0': {}
 
-  '@alloy-js/babel-plugin-jsx-dom-expressions@0.37.21(@babel/core@7.26.0)':
+  '@alloy-js/babel-plugin-jsx-dom-expressions@https://pkg.pr.new/alloy-framework/alloy/@alloy-js/babel-plugin-jsx-dom-expressions@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9(@babel/core@7.26.0)':
     dependencies:
       '@babel/core': 7.26.0
       '@babel/helper-module-imports': 7.18.6
@@ -14041,7 +14044,7 @@ snapshots:
       html-entities: 2.3.3
       validate-html-nesting: 1.2.2
 
-  '@alloy-js/babel-plugin@0.1.0(@babel/core@7.26.0)':
+  '@alloy-js/babel-plugin@https://pkg.pr.new/alloy-framework/alloy/@alloy-js/babel-plugin@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9(@babel/core@7.26.0)':
     dependencies:
       '@babel/core': 7.26.0
       '@babel/generator': 7.26.2
@@ -14049,30 +14052,29 @@ snapshots:
       '@babel/plugin-syntax-jsx': 7.25.9(@babel/core@7.26.0)
       '@babel/types': 7.26.5
 
-  '@alloy-js/babel-preset@0.1.1(@babel/core@7.26.0)':
+  '@alloy-js/babel-preset@https://pkg.pr.new/alloy-framework/alloy/@alloy-js/babel-preset@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9(@babel/core@7.26.0)':
     dependencies:
-      '@alloy-js/babel-plugin': 0.1.0(@babel/core@7.26.0)
-      '@alloy-js/babel-plugin-jsx-dom-expressions': 0.37.21(@babel/core@7.26.0)
+      '@alloy-js/babel-plugin': https://pkg.pr.new/alloy-framework/alloy/@alloy-js/babel-plugin@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9(@babel/core@7.26.0)
+      '@alloy-js/babel-plugin-jsx-dom-expressions': https://pkg.pr.new/alloy-framework/alloy/@alloy-js/babel-plugin-jsx-dom-expressions@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9(@babel/core@7.26.0)
     transitivePeerDependencies:
       - '@babel/core'
 
-  '@alloy-js/core@0.5.0':
+  '@alloy-js/core@https://pkg.pr.new/alloy-framework/alloy/@alloy-js/core@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9':
     dependencies:
-      '@alloy-js/babel-preset': 0.1.1(@babel/core@7.26.0)
+      '@alloy-js/babel-preset': https://pkg.pr.new/alloy-framework/alloy/@alloy-js/babel-preset@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9(@babel/core@7.26.0)
       '@babel/core': 7.26.0
       '@babel/preset-typescript': 7.26.0(@babel/core@7.26.0)
       '@vue/reactivity': 3.5.13
       chalk: 5.4.1
       cli-table3: 0.6.5
       pathe: 1.1.2
+      prettier: 3.5.3
     transitivePeerDependencies:
       - supports-color
 
-  '@alloy-js/prettier-plugin-alloy@0.1.0': {}
-
-  '@alloy-js/typescript@0.5.0':
+  '@alloy-js/typescript@https://pkg.pr.new/alloy-framework/alloy/@alloy-js/typescript@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9':
     dependencies:
-      '@alloy-js/core': 0.5.0
+      '@alloy-js/core': https://pkg.pr.new/alloy-framework/alloy/@alloy-js/core@5c31b7a29defd6a6c6a75dcd76df5a161e25d8f9
       change-case: 5.4.4
       pathe: 1.1.2
     transitivePeerDependencies:
@@ -14115,9 +14117,9 @@ snapshots:
     dependencies:
       grapheme-splitter: 1.0.4
 
-  '@astrojs/check@0.9.4(prettier-plugin-astro@0.14.1)(prettier@3.4.2)(typescript@5.7.3)':
+  '@astrojs/check@0.9.4(prettier-plugin-astro@0.14.1)(prettier@3.5.3)(typescript@5.7.3)':
     dependencies:
-      '@astrojs/language-server': 2.15.4(prettier-plugin-astro@0.14.1)(prettier@3.4.2)(typescript@5.7.3)
+      '@astrojs/language-server': 2.15.4(prettier-plugin-astro@0.14.1)(prettier@3.5.3)(typescript@5.7.3)
       chokidar: 4.0.1
       kleur: 4.1.5
       typescript: 5.7.3
@@ -14130,7 +14132,7 @@ snapshots:
 
   '@astrojs/internal-helpers@0.4.2': {}
 
-  '@astrojs/language-server@2.15.4(prettier-plugin-astro@0.14.1)(prettier@3.4.2)(typescript@5.7.3)':
+  '@astrojs/language-server@2.15.4(prettier-plugin-astro@0.14.1)(prettier@3.5.3)(typescript@5.7.3)':
     dependencies:
       '@astrojs/compiler': 2.10.3
       '@astrojs/yaml2ts': 0.2.2
@@ -14144,14 +14146,14 @@ snapshots:
       volar-service-css: 0.0.62(@volar/language-service@2.4.10)
       volar-service-emmet: 0.0.62(@volar/language-service@2.4.10)
       volar-service-html: 0.0.62(@volar/language-service@2.4.10)
-      volar-service-prettier: 0.0.62(@volar/language-service@2.4.10)(prettier@3.4.2)
+      volar-service-prettier: 0.0.62(@volar/language-service@2.4.10)(prettier@3.5.3)
       volar-service-typescript: 0.0.62(@volar/language-service@2.4.10)
       volar-service-typescript-twoslash-queries: 0.0.62(@volar/language-service@2.4.10)
       volar-service-yaml: 0.0.62(@volar/language-service@2.4.10)
       vscode-html-languageservice: 5.3.1
       vscode-uri: 3.0.8
     optionalDependencies:
-      prettier: 3.4.2
+      prettier: 3.5.3
       prettier-plugin-astro: 0.14.1
     transitivePeerDependencies:
       - typescript
@@ -25673,6 +25675,8 @@ snapshots:
 
   prettier@3.4.2: {}
 
+  prettier@3.5.3: {}
+
   pretty-bytes@5.6.0: {}
 
   pretty-format@27.5.1:
@@ -27825,12 +27829,12 @@ snapshots:
     optionalDependencies:
       '@volar/language-service': 2.4.10
 
-  volar-service-prettier@0.0.62(@volar/language-service@2.4.10)(prettier@3.4.2):
+  volar-service-prettier@0.0.62(@volar/language-service@2.4.10)(prettier@3.5.3):
     dependencies:
       vscode-uri: 3.0.8
     optionalDependencies:
       '@volar/language-service': 2.4.10
-      prettier: 3.4.2
+      prettier: 3.5.3
 
   volar-service-typescript-twoslash-queries@0.0.62(@volar/language-service@2.4.10):
     dependencies:

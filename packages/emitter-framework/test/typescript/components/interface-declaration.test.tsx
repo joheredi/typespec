@@ -1,6 +1,6 @@
 import { InterfaceDeclaration } from "../../../src/typescript/components/interface-declaration.js";
 
-import { mapJoin, Output, render } from "@alloy-js/core";
+import { Output, render, For, List } from "@alloy-js/core";
 import { SourceFile } from "@alloy-js/typescript";
 import { Namespace } from "@typespec/compiler";
 import { format } from "prettier";
@@ -26,9 +26,11 @@ describe("Typescript Interface", () => {
         const res = render(
           <Output>
               <SourceFile path="test.ts">
-                {models.map((model) => (
-                  <InterfaceDeclaration export type={model} />
-                ))}
+                <List hardline>
+                  {models.map((model) => (
+                    <InterfaceDeclaration export type={model} />
+                  ))}
+                </List>
               </SourceFile>
             </Output>,
         );
@@ -63,9 +65,9 @@ describe("Typescript Interface", () => {
         const res = render(
           <Output>
               <SourceFile path="test.ts">
-                {mapJoin(models, (name, model) => (
-                  <InterfaceDeclaration export  type={model} />
-                ))}
+                <For each={Array.from(models.values())} hardline>
+                  {(model) => <InterfaceDeclaration export type={model} />}
+                </For>
               </SourceFile>
             </Output>,
         );
@@ -97,9 +99,9 @@ describe("Typescript Interface", () => {
         const res = render(
           <Output>
               <SourceFile path="test.ts">
-                {mapJoin(models, (name, model) => (
-                  <InterfaceDeclaration export  type={model} />
-                ))}
+                <For each={Array.from(models.values())} hardline>
+                  {(model) => <InterfaceDeclaration export type={model} />}
+                </For>
               </SourceFile>
             </Output>,
         );
@@ -135,9 +137,9 @@ describe("Typescript Interface", () => {
         const res = render(
           <Output>
               <SourceFile path="test.ts">
-                {mapJoin(models, (name, model) => (
-                  <InterfaceDeclaration export type={model} />
-                ))}
+                <For each={Array.from(models.values())} hardline>
+                  {(model) => <InterfaceDeclaration export type={model} />}
+                </For>
               </SourceFile>
             </Output>,
         );
@@ -183,9 +185,9 @@ describe("Typescript Interface", () => {
         const res = render(
           <Output>
               <SourceFile path="test.ts">
-                {mapJoin(models, (name, model) => (
-                  <InterfaceDeclaration export type={model} />
-                ))}
+                <For each={Array.from(models.values())} hardline>
+                  {(model) => <InterfaceDeclaration export type={model} />}
+                </For>
               </SourceFile>
             </Output>,
         );
@@ -203,6 +205,7 @@ describe("Typescript Interface", () => {
             }
             export interface DifferentSpreadModelDerived extends DifferentSpreadModelRecord {
               derivedProp: ModelForRecord;
+              additionalProperties?: Record<string, ModelForRecord>;
             }
             `,
           {
@@ -240,10 +243,11 @@ describe("Typescript Interface", () => {
         assert(testFile, "test.ts file not rendered");
         const actualContent = await format(testFile.contents as string, { parser: "typescript" });
         const expectedContent = await format(
-          `export interface Widget extends Record<string, unknown> {
+          `export interface Widget {
             id: string;
             weight: number;
             color: "blue" | "red";
+            additionalProperties?: Record<string, unknown>;
           }`,
           {
             parser: "typescript",

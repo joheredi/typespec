@@ -64,7 +64,7 @@ function DiscriminateExpression(props: DiscriminateExpressionProps) {
   return item as any;
   `;
 
-  return mapJoin(
+  return mapJoin(() => 
     discriminatedUnion.variants,
     (name, variant) => {
       return code`
@@ -193,7 +193,7 @@ export function ModelTransformExpression(props: ModelTransformExpressionProps) {
 
   return <ts.ObjectExpression>
       {baseModelTransform}
-      {mapJoin(
+      {mapJoin( () => 
         modelProperties,
         (_, property) => {
           const unpackedType = $.httpPart.unpack(property.type) ?? property.type;
@@ -239,13 +239,13 @@ function TransformReference(props: TransformReferenceProps) {
 
   if ($.model.is(props.type) && $.array.is(props.type)) {
     return code`
-  (i: any) => ${<ts.FunctionCallExpression refkey={ArraySerializerRefkey} args={["i", <TransformReference target={props.target} type={$.array.getElementType(props.type)} />]} />}
+  (i: any) => ${<ts.FunctionCallExpression target={ArraySerializerRefkey} args={["i", <TransformReference target={props.target} type={$.array.getElementType(props.type)} />]} />}
     `;
   }
 
   if ($.model.is(props.type) && $.record.is(props.type)) {
     return code`
-  (i: any) => ${<ts.FunctionCallExpression refkey={RecordSerializerRefkey} args={["i", <TransformReference target={props.target} type={$.record.getElementType(props.type)} />]} />}
+  (i: any) => ${<ts.FunctionCallExpression target={RecordSerializerRefkey} args={["i", <TransformReference target={props.target} type={$.record.getElementType(props.type)} />]} />}
     `;
   }
 
@@ -329,7 +329,7 @@ export function TypeTransformCall(props: TypeTransformCallProps) {
       $.httpPart.unpack($.array.getElementType(transformType)) ??
       $.array.getElementType(transformType);
     return <ts.FunctionCallExpression
-        refkey={ArraySerializerRefkey}
+        target={ArraySerializerRefkey}
         args={[
           itemName,
           <TransformReference target={props.target} type={unpackedElement} />,
@@ -342,7 +342,7 @@ export function TypeTransformCall(props: TypeTransformCallProps) {
       $.httpPart.unpack($.record.getElementType(transformType)) ??
       $.record.getElementType(transformType);
     return <ts.FunctionCallExpression
-        refkey={RecordSerializerRefkey}
+        target={RecordSerializerRefkey}
         args={[
           itemName,
           <TransformReference target={props.target} type={unpackedElement} />,
@@ -351,7 +351,7 @@ export function TypeTransformCall(props: TypeTransformCallProps) {
   }
 
   if ($.scalar.isUtcDateTime(transformType)) {
-    return <ts.FunctionCallExpression refkey={props.target === "application" ? DateDeserializerRefkey : DateRfc3339SerializerRefkey} args={[itemName]} />;
+    return <ts.FunctionCallExpression target={props.target === "application" ? DateDeserializerRefkey : DateRfc3339SerializerRefkey} args={[itemName]} />;
   }
 
   if ($.model.is(transformType)) {
@@ -360,7 +360,7 @@ export function TypeTransformCall(props: TypeTransformCallProps) {
 
       return <ModelTransformExpression type={effectiveModel} itemPath={itemPath} target={props.target} optionsBagName={props.optionsBagName} />;
     }
-    return <ts.FunctionCallExpression refkey={ getTypeTransformerRefkey(transformType, props.target)} args={[itemName]} />;
+    return <ts.FunctionCallExpression target={ getTypeTransformerRefkey(transformType, props.target)} args={[itemName]} />;
   }
 
   return itemName;

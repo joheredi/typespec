@@ -26,15 +26,13 @@ export function JsonModelPropertyTransform(props: JsonModelPropertyTransformProp
   let propertyValue: ay.Children;
 
   if ($.scalar.is(propertyValueType)) {
-    propertyValue =
-      <ScalarDataTransform
-        type={props.type}
-        target={props.target}
-        itemRef={propertyValueRef}
-      />;
+    propertyValue = (
+      <ScalarDataTransform type={props.type} target={props.target} itemRef={propertyValueRef} />
+    );
   } else {
-    propertyValue =
-      <JsonTransform type={propertyValueType} target={props.target} itemRef={propertyValueRef} />;
+    propertyValue = (
+      <JsonTransform type={propertyValueType} target={props.target} itemRef={propertyValueRef} />
+    );
   }
 
   return <ts.ObjectProperty name={JSON.stringify(targetName)} value={propertyValue} />;

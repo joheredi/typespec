@@ -15,52 +15,52 @@ export function HttpRequestParametersExpression(props: HttpRequestParametersExpr
   const transformNamer = useTransformNamePolicy();
 
   if (props.children || (Array.isArray(props.children) && props.children.length)) {
-    parameters.push(<>
-      {props.children},
-
-    </>);
+    parameters.push(<>{props.children},</>);
   }
 
   if (!props.parameters && parameters.length) {
-    return <ts.ObjectExpression>
-      {parameters}
-    </ts.ObjectExpression>;
+    return <ts.ObjectExpression>{parameters}</ts.ObjectExpression>;
   } else if (!props.parameters) {
     return <ts.ObjectExpression />;
   }
 
   const optionsParamRef = props.optionsParameter ?? "options";
-  const members = <ay.For each={props.parameters} line comma>
-    {(httpProperty) => {
-      const parameter = httpProperty.property;
+  const members = (
+    <ay.For each={props.parameters} line comma>
+      {(httpProperty) => {
+        const parameter = httpProperty.property;
 
-      const defaultValue = getDefaultValue(httpProperty);
-      const paramItemRef: ay.Children = transformNamer.getApplicationName(parameter);
+        const defaultValue = getDefaultValue(httpProperty);
+        const paramItemRef: ay.Children = transformNamer.getApplicationName(parameter);
 
-      const paramRef = ay.code`${optionsParamRef}?.${paramItemRef}`;
+        const paramRef = ay.code`${optionsParamRef}?.${paramItemRef}`;
 
-      if (defaultValue) {
-        const defaultAssignment = defaultValue ? ` ?? ${defaultValue}` : "";
-        const headerValue = <>{paramRef}{defaultAssignment}</>;
-        const name = transformNamer.getTransportName(parameter);
-        const paramAssignment = <ts.ObjectProperty name={`"${name}"`} value={headerValue} />;
-        return paramAssignment;
-      }
+        if (defaultValue) {
+          const defaultAssignment = defaultValue ? ` ?? ${defaultValue}` : "";
+          const headerValue = (
+            <>
+              {paramRef}
+              {defaultAssignment}
+            </>
+          );
+          const name = transformNamer.getTransportName(parameter);
+          const paramAssignment = <ts.ObjectProperty name={`"${name}"`} value={headerValue} />;
+          return paramAssignment;
+        }
 
-      const itemRef: ay.Children = parameter.optional ? ay.code`${optionsParamRef}?` : null;
-      if (parameter.optional) {
-        return ay.code`
-        ...(${paramRef} && {${<JsonTransform itemRef={itemRef} type={parameter} target="transport"/>}})
+        const itemRef: ay.Children = parameter.optional ? ay.code`${optionsParamRef}?` : null;
+        if (parameter.optional) {
+          return ay.code`
+        ...(${paramRef} && {${(<JsonTransform itemRef={itemRef} type={parameter} target="transport" />)}})
       `;
-      } else {
-        return <JsonTransform itemRef={itemRef} type={parameter} target="transport" />;
-      }
-    }}
-  </ay.For>;
+        } else {
+          return <JsonTransform itemRef={itemRef} type={parameter} target="transport" />;
+        }
+      }}
+    </ay.For>
+  );
 
   parameters.push(members);
 
-  return <ts.ObjectExpression>
-    {parameters}
-  </ts.ObjectExpression>;
+  return <ts.ObjectExpression>{parameters}</ts.ObjectExpression>;
 }

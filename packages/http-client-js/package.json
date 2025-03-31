@@ -68,7 +68,7 @@
     "@typespec/http": "workspace:^",
     "@typespec/http-specs": "workspace:^",
     "@typespec/spector": "workspace:^",
-    "@typespec/ts-http-runtime": "0.1.0",
+    "@typespec/ts-http-runtime": "link:/home/joheredi/dev/azure-sdk-for-js/sdk/core/ts-http-runtime",
     "@typespec/tspd": "workspace:^",
     "@typespec/versioning": "workspace:^",
     "@vitest/ui": "^3.0.9",

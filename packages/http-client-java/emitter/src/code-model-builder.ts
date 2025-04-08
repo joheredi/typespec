@@ -18,6 +18,7 @@ import {
   ImplementationLocation,
   KeySecurityScheme,
   Language,
+  License,
   Metadata,
   NumberSchema,
   OAuth2SecurityScheme,
@@ -147,6 +148,7 @@ import {
 } from "./type-utils.js";
 import {
   DiagnosticError,
+  escapeJavaKeywords,
   getNamespace,
   isStableApiVersion,
   pascalCase,
@@ -164,6 +166,9 @@ export interface EmitterOptionsDev {
   "service-name"?: string;
   "service-versions"?: string[]; // consider to remove
 
+  // license
+  license?: License;
+
   // sample and test
   "generate-samples"?: boolean;
   "generate-tests"?: boolean;
@@ -174,7 +179,6 @@ export interface EmitterOptionsDev {
   "custom-types"?: string;
   "custom-types-subpackage"?: string;
   "customization-class"?: string;
-  polling?: any;
 
   // configure
   "skip-special-headers"?: string[];
@@ -185,6 +189,7 @@ export interface EmitterOptionsDev {
   "enable-sync-stack"?: boolean;
   "stream-style-serialization"?: boolean;
   "use-object-for-unknown"?: boolean;
+  polling?: any;
 
   // versioning
   "api-version"?: string;
@@ -197,6 +202,7 @@ export interface EmitterOptionsDev {
   // internal use for codegen
   "output-dir": string;
   arm?: boolean;
+  "license-header"?: string;
 }
 
 type SdkHttpOperationParameterType = SdkHttpOperation["parameters"][number];
@@ -214,6 +220,8 @@ export class CodeModelBuilder {
   private codeModel: CodeModel;
   private emitterContext: EmitContext<EmitterOptions>;
   private serviceNamespace: Namespace;
+
+  private readonly javaNamespaceCache = new Map<string, string>();
 
   readonly schemaCache = new ProcessingCache((type: SdkType, name: string) =>
     this.processSchemaImpl(type, name),
@@ -282,6 +290,18 @@ export class CodeModelBuilder {
       additionalDecorators: ["Azure\\.ClientGenerator\\.Core\\.@override"],
       versioning: { previewStringRegex: /$/ },
     }); // include all versions and do the filter by ourselves
+    this.program.reportDiagnostics(this.sdkContext.diagnostics);
+
+    // license
+    if (this.sdkContext.sdkPackage.licenseInfo) {
+      this.codeModel.info.license = new License(this.sdkContext.sdkPackage.licenseInfo.name, {
+        url: this.sdkContext.sdkPackage.licenseInfo.link,
+        extensions: {
+          header: this.sdkContext.sdkPackage.licenseInfo.header,
+          company: this.sdkContext.sdkPackage.licenseInfo.company,
+        },
+      });
+    }
 
     // java namespace
     if (this.options.namespace) {
@@ -295,11 +315,7 @@ export class CodeModelBuilder {
       // otherwise, the clientNamespace from SdkType will be used.
       this.baseJavaNamespace = this.getBaseJavaNamespace();
     }
-
     this.codeModel.language.java!.namespace = this.baseJavaNamespace;
-
-    // potential problem https://github.com/Azure/typespec-azure/issues/1675
-    this.program.reportDiagnostics(this.sdkContext.diagnostics);
 
     // auth
     // TODO: it is not very likely, but different client could have different auth
@@ -329,7 +345,7 @@ export class CodeModelBuilder {
     const hostParameters: Parameter[] = [];
     let parameter;
     sdkPathParameters.forEach((arg) => {
-      if (arg.isApiVersionParam) {
+      if (this.isApiVersionParameter(arg)) {
         parameter = this.createApiVersionParameter(arg.name, ParameterLocation.Uri);
       } else {
         const schema = this.processSchema(arg.type, arg.name);
@@ -348,9 +364,8 @@ export class CodeModelBuilder {
               serializedName: arg.serializedName,
             },
           },
-          // TODO: deprecate this logic of string/url for x-ms-skip-url-encoding
           extensions: {
-            "x-ms-skip-url-encoding": schema instanceof UriSchema,
+            "x-ms-skip-url-encoding": arg.allowReserved,
           },
           clientDefaultValue: arg.clientDefaultValue,
         });
@@ -679,7 +694,7 @@ export class CodeModelBuilder {
 
     // preprocess operation groups and operations
     // operations without operation group
-    const serviceMethodsWithoutSubClient = this.listServiceMethodsUnderClient(client);
+    const serviceMethodsWithoutSubClient = client.methods;
     let codeModelGroup = new OperationGroup("");
     codeModelGroup.language.default.crossLanguageDefinitionId = client.crossLanguageDefinitionId;
     for (const serviceMethod of serviceMethodsWithoutSubClient) {
@@ -701,7 +716,7 @@ export class CodeModelBuilder {
     } else {
       // operations under operation groups
       for (const subClient of subClients) {
-        const serviceMethods = this.listServiceMethodsUnderClient(subClient);
+        const serviceMethods = subClient.methods;
         // operation group with no operation is skipped
         if (serviceMethods.length > 0) {
           codeModelGroup = new OperationGroup(subClient.name);
@@ -762,9 +777,8 @@ export class CodeModelBuilder {
   ): SdkClientType<SdkHttpOperation>[] {
     const isRootClient = !client.parent;
     const subClients: SdkClientType<SdkHttpOperation>[] = [];
-    for (const method of client.methods) {
-      if (method.kind === "clientaccessor") {
-        const subClient = method.response;
+    if (client.children) {
+      for (const subClient of client.children) {
         if (!isRootClient) {
           // if it is not root client, append the parent client's name
           subClient.name =
@@ -782,18 +796,6 @@ export class CodeModelBuilder {
       }
     }
     return subClients;
-  }
-
-  private listServiceMethodsUnderClient(
-    client: SdkClientType<SdkHttpOperation>,
-  ): SdkServiceMethod<SdkHttpOperation>[] {
-    const methods: SdkServiceMethod<SdkHttpOperation>[] = [];
-    for (const method of client.methods) {
-      if (method.kind !== "clientaccessor") {
-        methods.push(method);
-      }
-    }
-    return methods;
   }
 
   /**
@@ -1305,7 +1307,7 @@ export class CodeModelBuilder {
     param: SdkHttpOperationParameterType,
     clientContext: ClientContext,
   ) {
-    if (clientContext.apiVersions && param.isApiVersionParam && param.kind !== "cookie") {
+    if (clientContext.apiVersions && this.isApiVersionParameter(param) && param.kind !== "cookie") {
       // pre-condition for "isApiVersion": the client supports ApiVersions
       if (this.isArm()) {
         // Currently we assume ARM tsp only have one client and one api-version.
@@ -2686,7 +2688,6 @@ export class CodeModelBuilder {
     }
 
     if (prop.kind === "property" && prop.serializationOptions.multipart) {
-      // TODO: handle MultipartOptions.isMulti
       if (prop.serializationOptions.multipart?.isFilePart) {
         schema = this.processMultipartFormDataFilePropertySchema(prop);
       } else if (
@@ -2969,7 +2970,7 @@ export class CodeModelBuilder {
     if (!baseJavaNamespace) {
       baseJavaNamespace = this.namespace;
     }
-    return baseJavaNamespace.toLowerCase();
+    return this.escapeJavaNamespace(baseJavaNamespace.toLowerCase());
   }
 
   private getJavaNamespace(
@@ -3024,7 +3025,27 @@ export class CodeModelBuilder {
     if (this.legacyJavaNamespace || !clientNamespace) {
       return this.baseJavaNamespace;
     } else {
-      return clientNamespace.toLowerCase();
+      return this.escapeJavaNamespace(clientNamespace.toLowerCase());
+    }
+  }
+
+  private escapeJavaNamespace(namespace: string): string {
+    if (this.javaNamespaceCache.has(namespace)) {
+      return this.javaNamespaceCache.get(namespace)!;
+    } else {
+      const processedJavaNamespace = namespace
+        .split(".")
+        .map((segment) => escapeJavaKeywords(segment, "namespace"))
+        .join(".");
+      if (processedJavaNamespace !== namespace) {
+        reportDiagnostic(this.program, {
+          code: "invalid-java-namespace",
+          format: { namespace: namespace, processedNamespace: processedJavaNamespace },
+          target: NoTarget,
+        });
+      }
+      this.javaNamespaceCache.set(namespace, processedJavaNamespace);
+      return processedJavaNamespace;
     }
   }
 
@@ -3124,6 +3145,10 @@ export class CodeModelBuilder {
         },
       },
     );
+  }
+
+  private isApiVersionParameter(param: SdkHttpOperationParameterType): boolean {
+    return param.isApiVersionParam;
   }
 
   private _apiVersionParameter?: Parameter;

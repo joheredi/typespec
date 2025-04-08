@@ -9,7 +9,7 @@ import { getClientcontextDeclarationRef } from "./client-context/client-context-
 import { HttpRequest } from "./http-request.jsx";
 import { HttpResponse } from "./http-response.jsx";
 import { OperationPipeline } from "./operation-handlers/operation-pipeline.jsx";
-import { PaginatedOperationHandler } from "./operation-handlers/paginated-operation-handler.jsx";
+import { PaginatedOperationHandler } from "./operation-handlers/paging/paginated-operation-handler.jsx";
 import { OperationOptionsDeclaration } from "./operation-options.jsx";
 import { getOperationParameters } from "./operation-parameters.jsx";
 
@@ -61,10 +61,10 @@ export function ClientOperation(props: ClientOperationProps) {
   const returnType = $.httpOperation.getReturnType(props.httpOperation);
   const responseRefkey = ay.refkey(props.httpOperation, "http-response");
   const clientContextInterfaceRef = getClientcontextDeclarationRef(client);
-  const signatureParams: Record<string, ts.ParameterDescriptor | ay.Children> = {
-    client: { type: clientContextInterfaceRef, refkey: ay.refkey(client, "client") },
+  const signatureParams: ts.ParameterDescriptor[] = [
+    { name: "client", type: clientContextInterfaceRef, refkey: ay.refkey(client, "client") },
     ...getOperationParameters(props.httpOperation),
-  };
+  ];
   return (
     <ay.List hardline>
       <OperationOptionsDeclaration operation={props.httpOperation} />

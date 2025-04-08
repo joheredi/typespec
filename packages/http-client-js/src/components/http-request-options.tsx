@@ -1,11 +1,10 @@
 import { Children, code, Refkey } from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
+import { HttpOperation } from "@typespec/http";
 import { EncodingProvider } from "./encoding-provider.jsx";
 import { HttpRequestParametersExpression } from "./http-request-parameters-expression.jsx";
 import { getOperationOptionsParameterRefkey } from "./operation-parameters.jsx";
 import { OperationTransformExpression } from "./transforms/operation-transform-expression.jsx";
-import { $ } from "@typespec/compiler/experimental/typekit";
-import { HttpOperation } from "@typespec/http";
 
 export interface HttpRequestOptionsProps {
   httpOperation: HttpOperation;
@@ -33,6 +32,7 @@ HttpRequestOptions.Headers = function HttpRequestOptionsHeaders(
   props: HttpRequestOptionsHeadersProps,
 ) {
   // Extract the header request parameters from the operation
+  const httpOperation = props.httpOperation;
   const headers = props.httpOperation.parameters.properties.filter(
     (p) => p.kind === "header" || p.kind === "contentType",
   );
@@ -41,7 +41,12 @@ HttpRequestOptions.Headers = function HttpRequestOptionsHeaders(
   return (
     <EncodingProvider defaults={{ bytes: "base64", datetime: "rfc7231" }}>
       <ts.ObjectProperty name="headers">
-        <HttpRequestParametersExpression parameters={headers} optionsParameter={optionsParam} />,
+        <HttpRequestParametersExpression
+          parameters={headers}
+          optionsParameter={optionsParam}
+          httpOperation={httpOperation}
+        />
+        ,
       </ts.ObjectProperty>
     </EncodingProvider>
   );

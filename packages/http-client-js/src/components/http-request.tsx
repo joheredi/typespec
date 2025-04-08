@@ -1,12 +1,12 @@
 import { Children, code, List, refkey, Refkey, StatementList } from "@alloy-js/core";
 import * as ts from "@alloy-js/typescript";
 import { Reference } from "@alloy-js/typescript";
+import { HttpOperation } from "@typespec/http";
 import { EncodingProvider } from "./encoding-provider.jsx";
 import { uriTemplateLib } from "./external-packages/uri-template.js";
 import { HttpRequestOptions } from "./http-request-options.js";
 import { HttpRequestParametersExpression } from "./http-request-parameters-expression.js";
 import { getOperationOptionsParameterRefkey } from "./operation-parameters.jsx";
-import { HttpOperation } from "@typespec/http";
 
 export interface HttpRequestProps {
   httpOperation: HttpOperation;
@@ -20,18 +20,19 @@ export function HttpRequest(props: HttpRequestProps) {
   const verb = props.httpOperation.verb;
   return (
     <List>
-    <StatementList>
-      <HttpRequest.Url httpOperation={props.httpOperation} refkey={operationUrlRefkey} />
+      <StatementList>
+        <HttpRequest.Url httpOperation={props.httpOperation} refkey={operationUrlRefkey} />
 
-      <HttpRequestOptions httpOperation={props.httpOperation} refkey={requestOptionsRefkey} />
+        <HttpRequestOptions httpOperation={props.httpOperation} refkey={requestOptionsRefkey} />
 
-      <ts.VarDeclaration name="response" refkey={httpResponseRefkey}>
-        {code`
+        <ts.VarDeclaration name="response" refkey={httpResponseRefkey}>
+          {code`
       await client.pathUnchecked(${(<Reference refkey={operationUrlRefkey} />)}).${verb}(${(<Reference refkey={requestOptionsRefkey} />)})
       `}
-      </ts.VarDeclaration>
-    </StatementList>
-    {code`      
+        </ts.VarDeclaration>
+        <hbr />
+      </StatementList>
+      {code`      
       if (typeof options?.operationOptions?.onResponse === "function") {
         options?.operationOptions?.onResponse(response);
       }`}
@@ -57,6 +58,7 @@ HttpRequest.Url = function HttpUrlDeclaration(props: HttpUrlProps) {
         {uriTemplateLib.parse}({JSON.stringify(urlTemplate)}).expand(
         {
           <HttpRequestParametersExpression
+            httpOperation={props.httpOperation}
             optionsParameter={optionsParameter!}
             parameters={urlParameters}
           />

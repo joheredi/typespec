@@ -78,6 +78,13 @@ export interface CreateTypeSpecBundleOptions {
   gzip?: boolean;
 }
 
+export interface MultiTypeSpecBundleResult {
+  /** Per-library bundles, keyed by library name. */
+  libraries: Record<string, TypeSpecBundle>;
+  /** Shared chunks created by esbuild splitting (e.g., deduplicated alloy-js code). */
+  sharedFiles: TypeSpecBundleFile[];
+}
+
 export async function createTypeSpecBundle(
   libraryPath: string,
   options?: CreateTypeSpecBundleOptions,
@@ -239,7 +246,11 @@ async function createEsBuildContext(
     format: "esm",
     target: "es2024",
     minify,
-    plugins: [virtualPlugin, nodeModulesPolyfillPlugin({}), ...plugins],
+    plugins: [
+      virtualPlugin,
+      nodeModulesPolyfillPlugin({ globals: { process: true } }),
+      ...plugins,
+    ],
   });
 }
 
@@ -344,4 +355,209 @@ function createImportMap(definition: TypeSpecBundleDefinition): Record<string, s
   }
 
   return imports;
+}
+
+// --- Multi-library bundling ---
+
+interface MultiLibraryData {
+  definitions: Record<string, TypeSpecBundleDefinition>;
+  entryContents: Record<string, { content: string; resolveDir: string }>;
+  entryPoints: Record<string, string>;
+}
+
+async function resolveMultiLibraryData(
+  libraryPaths: Record<string, string>,
+): Promise<MultiLibraryData> {
+  const definitions: Record<string, TypeSpecBundleDefinition> = {};
+  const entryContents: Record<string, { content: string; resolveDir: string }> = {};
+  const entryPoints: Record<string, string> = {};
+
+  for (const [name, path] of Object.entries(libraryPaths)) {
+    const definition = await resolveTypeSpecBundleDefinition(path);
+    definitions[name] = definition;
+
+    const libraryPath = definition.path;
+    const program = await compile(NodeHost, libraryPath, { noEmit: true });
+    const jsFiles = new Set([resolvePath(libraryPath, definition.packageJson.main)]);
+    for (const file of program.jsSourceFiles.keys()) {
+      if (file.startsWith(libraryPath)) {
+        jsFiles.add(file);
+      }
+    }
+    const typespecFiles: Record<string, string> = {
+      [normalizePath(join(libraryPath, "package.json"))]: JSON.stringify(definition.packageJson),
+    };
+    for (const [filename, sourceFile] of program.sourceFiles) {
+      typespecFiles[filename] = sourceFile.file.text;
+    }
+
+    const content = createBundleEntrypoint({
+      libraryPath,
+      mainFile: definition.main,
+      jsSourceFileNames: [...jsFiles],
+      typespecSourceFiles: typespecFiles,
+    });
+
+    const virtualPath = `virtual:${name}/entry.js`;
+    entryContents[virtualPath] = { content, resolveDir: libraryPath };
+    entryPoints[`${name}/index`] = virtualPath;
+
+    for (const [key, value] of Object.entries(definition.exports)) {
+      entryPoints[`${name}/${key.replace("./", "")}`] = normalizePath(
+        resolve(libraryPath, getExportEntryPoint(value)),
+      );
+    }
+  }
+
+  return { definitions, entryContents, entryPoints };
+}
+
+async function createMultiEsBuildContext(
+  data: MultiLibraryData,
+  plugins: Plugin[] = [],
+  options?: CreateTypeSpecBundleOptions,
+) {
+  const minify = options?.minify ?? true;
+
+  const allPeerDeps = new Set<string>();
+  for (const def of Object.values(data.definitions)) {
+    if (def.packageJson.peerDependencies) {
+      for (const dep of Object.keys(def.packageJson.peerDependencies)) {
+        allPeerDeps.add(dep);
+      }
+    }
+  }
+
+  const virtualPlugin: Plugin = {
+    name: "virtual-multi",
+    setup(build) {
+      build.onResolve({ filter: /^virtual:/ }, (args) => ({
+        path: args.path,
+        namespace: "virtual",
+      }));
+
+      build.onResolve({ filter: /.*/ }, (args) => {
+        if ([...allPeerDeps].some((x) => args.path.startsWith(x))) {
+          return { path: args.path, external: true };
+        }
+        return null;
+      });
+
+      build.onLoad({ filter: /^virtual:/, namespace: "virtual" }, async (args) => {
+        const entry = data.entryContents[args.path];
+        if (entry) {
+          return { contents: entry.content, resolveDir: entry.resolveDir };
+        }
+        return null;
+      });
+    },
+  };
+
+  return await context({
+    write: false,
+    entryPoints: data.entryPoints,
+    bundle: true,
+    splitting: true,
+    outdir: "out",
+    platform: "browser",
+    format: "esm",
+    target: "es2024",
+    minify,
+    plugins: [
+      virtualPlugin,
+      nodeModulesPolyfillPlugin({ globals: { process: true } }),
+      ...plugins,
+    ],
+  });
+}
+
+function resolveMultiTypeSpecBundleResult(
+  data: MultiLibraryData,
+  result: BuildResult<BuildOptions>,
+): MultiTypeSpecBundleResult {
+  const libraries: Record<string, TypeSpecBundle> = {};
+  const sharedFiles: TypeSpecBundleFile[] = [];
+
+  for (const [name, definition] of Object.entries(data.definitions)) {
+    libraries[name] = {
+      definition,
+      manifest: createManifest(definition),
+      files: [],
+    };
+  }
+
+  // Sort library names by length descending so longer names (e.g. scoped packages) match first
+  const sortedNames = Object.keys(data.definitions).sort((a, b) => b.length - a.length);
+
+  for (const file of result.outputFiles!) {
+    const relativePath = file.path.replaceAll("\\", "/").split("/out/")[1];
+
+    let assigned = false;
+    for (const name of sortedNames) {
+      if (relativePath.startsWith(name + "/")) {
+        libraries[name].files.push({
+          filename: relativePath.slice(name.length + 1),
+          content: file.text,
+        });
+        assigned = true;
+        break;
+      }
+    }
+
+    if (!assigned) {
+      sharedFiles.push({
+        filename: relativePath,
+        content: file.text,
+      });
+    }
+  }
+
+  return { libraries, sharedFiles };
+}
+
+/**
+ * Bundle multiple TypeSpec libraries in a single esbuild context.
+ * This enables esbuild's code splitting to deduplicate shared dependencies
+ * (e.g., @alloy-js/core) across library bundles.
+ */
+export async function createMultiTypeSpecBundle(
+  libraryPaths: Record<string, string>,
+  options?: CreateTypeSpecBundleOptions,
+): Promise<MultiTypeSpecBundleResult> {
+  const data = await resolveMultiLibraryData(libraryPaths);
+  const ctx = await createMultiEsBuildContext(data, [], options);
+  try {
+    const result = await ctx.rebuild();
+    return resolveMultiTypeSpecBundleResult(data, result);
+  } finally {
+    await ctx.dispose();
+  }
+}
+
+/**
+ * Watch multiple TypeSpec libraries in a single esbuild context.
+ * Triggers the callback whenever any library's source files change.
+ */
+export async function watchMultiTypeSpecBundle(
+  libraryPaths: Record<string, string>,
+  onBundle: (result: MultiTypeSpecBundleResult) => void,
+  options?: CreateTypeSpecBundleOptions,
+) {
+  const data = await resolveMultiLibraryData(libraryPaths);
+  const ctx = await createMultiEsBuildContext(
+    data,
+    [
+      {
+        name: "multi-watch-callback",
+        setup(build) {
+          build.onEnd(async (result) => {
+            const bundle = resolveMultiTypeSpecBundleResult(data, result);
+            onBundle(bundle);
+          });
+        },
+      },
+    ],
+    options,
+  );
+  await ctx.watch();
 }

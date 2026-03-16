@@ -3,9 +3,13 @@ import { resolve } from "path";
 import type { IndexHtmlTransformContext, Plugin, ResolvedConfig } from "vite";
 import {
   CreateTypeSpecBundleOptions,
+  MultiTypeSpecBundleResult,
   TypeSpecBundle,
   TypeSpecBundleDefinition,
+  TypeSpecBundleFile,
+  createMultiTypeSpecBundle,
   createTypeSpecBundle,
+  watchMultiTypeSpecBundle,
   watchTypeSpecBundle,
 } from "../bundler.js";
 
@@ -22,6 +26,15 @@ export function typespecBundlePlugin(options: TypeSpecBundlePluginOptions): Plug
   let config: ResolvedConfig;
   const definitions: Record<string, TypeSpecBundleDefinition> = {};
   const bundles: Record<string, TypeSpecBundle> = {};
+  let sharedFiles: TypeSpecBundleFile[] = [];
+
+  function applyMultiBundleResult(result: MultiTypeSpecBundleResult) {
+    for (const [name, bundle] of Object.entries(result.libraries)) {
+      bundles[name] = bundle;
+      definitions[name] = bundle.definition;
+    }
+    sharedFiles = result.sharedFiles;
+  }
 
   return {
     name: "typespec-bundle",
@@ -32,11 +45,12 @@ export function typespecBundlePlugin(options: TypeSpecBundlePluginOptions): Plug
     async buildStart() {
       // Minify only in production mode
       const minify = config.command === "build";
+      const libraryPaths: Record<string, string> = {};
       for (const name of options.libraries) {
-        const bundle = await bundleLibrary(config.root, name, { minify });
-        bundles[name] = bundle;
-        definitions[name] = bundle.definition;
+        libraryPaths[name] = resolve(config.root, "node_modules", name);
       }
+      const result = await createMultiTypeSpecBundle(libraryPaths, { minify });
+      applyMultiBundleResult(result);
     },
     async configureServer(server) {
       server.middlewares.use((req, res, next) => {
@@ -66,6 +80,7 @@ export function typespecBundlePlugin(options: TypeSpecBundlePluginOptions): Plug
           return undefined;
         };
         if (id.startsWith(start) && id.endsWith(".js")) {
+          // Try library-specific files
           const found = findPkgName(id);
           if (found) {
             const [pkgId, path] = found;
@@ -77,23 +92,32 @@ export function typespecBundlePlugin(options: TypeSpecBundlePluginOptions): Plug
               return;
             }
           }
+          // Try shared chunks (created by esbuild splitting for deduplicated deps)
+          const sharedPath = id.slice(start.length);
+          const shared = sharedFiles.find((f) => f.filename === sharedPath);
+          if (shared) {
+            res.writeHead(200, "Ok", { "Content-Type": "application/javascript" });
+            res.write(shared.content);
+            res.end();
+            return;
+          }
         }
         next();
       });
 
-      for (const library of options.libraries) {
-        // Don't minify in dev/watch mode for faster rebuilds
-        void watchBundleLibrary(
-          config.root,
-          library,
-          (bundle) => {
-            bundles[library] = bundle;
-            definitions[library] = bundle.definition;
-            server.ws.send({ type: "full-reload" });
-          },
-          { minify: false },
-        );
+      const libraryPaths: Record<string, string> = {};
+      for (const name of options.libraries) {
+        libraryPaths[name] = resolve(config.root, "node_modules", name);
       }
+      // Watch all libraries in a single esbuild context for shared chunk deduplication
+      void watchMultiTypeSpecBundle(
+        libraryPaths,
+        (result) => {
+          applyMultiBundleResult(result);
+          server.ws.send({ type: "full-reload" });
+        },
+        { minify: false },
+      );
     },
 
     async generateBundle() {
@@ -105,6 +129,14 @@ export function typespecBundlePlugin(options: TypeSpecBundlePluginOptions): Plug
             source: file.content,
           });
         }
+      }
+      // Emit shared chunks
+      for (const file of sharedFiles) {
+        this.emitFile({
+          type: "asset",
+          fileName: `${options.folderName}/${file.filename}`,
+          source: file.content,
+        });
       }
     },
 
@@ -140,19 +172,4 @@ function createImportMap(
   };
 
   return importMap;
-}
-async function bundleLibrary(
-  projectRoot: string,
-  name: string,
-  options?: CreateTypeSpecBundleOptions,
-) {
-  return await createTypeSpecBundle(resolve(projectRoot, "node_modules", name), options);
-}
-async function watchBundleLibrary(
-  projectRoot: string,
-  name: string,
-  onChange: (bundle: TypeSpecBundle) => void,
-  options?: CreateTypeSpecBundleOptions,
-) {
-  return await watchTypeSpecBundle(resolve(projectRoot, "node_modules", name), onChange, options);
 }

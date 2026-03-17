@@ -246,11 +246,7 @@ async function createEsBuildContext(
     format: "esm",
     target: "es2024",
     minify,
-    plugins: [
-      virtualPlugin,
-      nodeModulesPolyfillPlugin({ globals: { process: true } }),
-      ...plugins,
-    ],
+    plugins: [virtualPlugin, nodeModulesPolyfillPlugin({ globals: { process: true } }), ...plugins],
   });
 }
 
@@ -463,11 +459,7 @@ async function createMultiEsBuildContext(
     format: "esm",
     target: "es2024",
     minify,
-    plugins: [
-      virtualPlugin,
-      nodeModulesPolyfillPlugin({ globals: { process: true } }),
-      ...plugins,
-    ],
+    plugins: [virtualPlugin, nodeModulesPolyfillPlugin({ globals: { process: true } }), ...plugins],
   });
 }
 
